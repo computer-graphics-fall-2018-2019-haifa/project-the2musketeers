@@ -74,13 +74,14 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 
 void Renderer::Render(const Scene& scene)
 {
+	Draw_Line_Bresenham(100, 500, 100, 100, glm::vec3(1, 0, 0));
 	//#############################################
 	//## You should override this implementation ##
 	//## Here you should render the scene.       ##
 	//#############################################
 
 	// Draw a chess board in the middle of the screen
-	for (int i = 100; i < viewportWidth - 100; i++)
+	/*for (int i = 100; i < viewportWidth - 100; i++)
 	{
 		for (int j = 100; j < viewportHeight - 100; j++)
 		{
@@ -97,7 +98,8 @@ void Renderer::Render(const Scene& scene)
 				putPixel(i, j, glm::vec3(1, 0, 0));
 			}
 		}
-	}
+	}*/
+	
 }
 
 //##############################
@@ -211,4 +213,57 @@ void Renderer::SwapBuffers()
 
 	// Finally renders the data.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+
+void Renderer::Draw_Line_Bresenham(int x1, int y1, int x2, int y2,glm::vec3& Color)
+{
+	if (x1 > x2) {
+		Draw_Line_Bresenham(x2, y2, x1, y1, Color);
+		return;
+	}
+	if (x1 == x2) {
+		int y;
+		if (y1 <= y2) {
+			for (y = y1; y <= y2; y++) {
+				putPixel(x1, y, Color);
+			}
+		}
+		else {
+			for (y = y2; y <= y1; y++) {
+				putPixel(x1, y, Color);
+			}
+		}
+		return;
+	}
+	int dx=(x2 - x1);
+	int dy = (y2 - y1);
+	int a = dy/dx;
+	if (a == 0) {
+		for (int x = x1; x <= x2; x++) {
+			putPixel(x, y1, Color);
+		}return;
+	}
+
+	if (a > 1 || a < -1) {
+		Draw_Line_Bresenham(y1, x1, y2, x2, Color);
+		return;
+	}
+	int flag = y2 > y1 ? 1 : -1;
+	a *= flag;
+	int c = y1 - (a * x1);
+	int x = x1, y = y1;
+	int e = -dx;
+	while (x < x2) {
+		if (e > 0){
+			y++;
+			e -= 2 * dx;
+		}
+		if(flag>0)
+			putPixel(x, y, Color);
+		else
+			putPixel(x, -y, Color);
+		x++;
+		e += 2 * dy;
+	}return;
 }
