@@ -74,7 +74,7 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 
 void Renderer::Render(const Scene& scene)
 {
-	Draw_Line_Bresenham(100, 500, 100, 100, glm::vec3(1, 0, 0));
+	Draw_Line_Bresenham(100, 1000, 500, 100, glm::vec3(1, 0, 0));
 	//#############################################
 	//## You should override this implementation ##
 	//## Here you should render the scene.       ##
@@ -216,54 +216,66 @@ void Renderer::SwapBuffers()
 }
 
 
-void Renderer::Draw_Line_Bresenham(int x1, int y1, int x2, int y2,glm::vec3& Color)
+void Renderer::Draw_Line_Bresenham(int x1, int y1, int x2, int y2,glm::vec3& Color,bool flip)
 {
+	
 	if (x1 > x2) {
 		Draw_Line_Bresenham(x2, y2, x1, y1, Color);
 		return;
 	}
 	if (x1 == x2) {
-		int y;
-		if (y1 <= y2) {
-			for (y = y1; y <= y2; y++) {
-				putPixel(x1, y, Color);
-			}
-		}
-		else {
-			for (y = y2; y <= y1; y++) {
-				putPixel(x1, y, Color);
-			}
+		int yMin=(y2>y1?y1:y2),yMax=(y2>y1?y2:y1);
+		while (yMin <= yMax) {
+			putPixel(x1, yMin, Color);
+			yMin++;
 		}
 		return;
-	}
-	int dx=(x2 - x1);
-	int dy = (y2 - y1);
-	int a = dy/dx;
-	if (a == 0) {
-		for (int x = x1; x <= x2; x++) {
-			putPixel(x, y1, Color);
-		}return;
 	}
 
-	if (a > 1 || a < -1) {
-		Draw_Line_Bresenham(y1, x1, y2, x2, Color);
+	int dx=(x2 - x1);
+	int dy = (y2 - y1);
+	float a = ((float)dy/(float)dx);
+	int x = x1, y = y1;
+
+	if (a == 0) {
+		while (x <= x2) {
+			putPixel(x, y1, Color);
+			x++;
+		}
 		return;
 	}
-	int flag = y2 > y1 ? 1 : -1;
-	a *= flag;
-	int c = y1 - (a * x1);
-	int x = x1, y = y1;
+	
+	if ((a > 1) || (a < -1)) {
+		Draw_Line_Bresenham(y1, x1, y2, x2, Color,1);
+		return;
+	}
+
+	int flag = y2 >= y1 ? 1 : -1;
 	int e = -dx;
+	dy *= flag;
 	while (x < x2) {
 		if (e > 0){
 			y++;
-			e -= 2 * dx;
+			e -= (2 * dx);
 		}
-		if(flag>0)
-			putPixel(x, y, Color);
-		else
-			putPixel(x, -y, Color);
+
+		if (flip == 0) {
+			if (flag > 0) {
+				putPixel(x, y, Color);
+			}
+			else {
+				putPixel(x, y1 - (y - y1), Color);
+			}
+		}else {
+			if (flag > 0) {
+				putPixel(y, x, Color);
+			}
+			else {
+				putPixel(y1 - (y - y1), x, Color);
+			}
+		}
 		x++;
-		e += 2 * dy;
+		e += (2 * dy);
 	}return;
+
 }
