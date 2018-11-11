@@ -187,3 +187,38 @@ m4 Utils::ReflectAxis(AX c)
 	if (c = z)
 		return m4(1, 0, 0, 0,    0, 1, 0, 0,    0, 0, -1, 0,    0, 0, 0, 1);
 }
+
+
+float Utils::dot_product(const v3 &w, const v3 &n)
+{
+	return( (w.x * n.x)+ (w.y * n.y)+ (w.z * n.z));
+}
+
+
+v3 Utils::cross_product(const v3 &w, const v3 &n)
+{
+	float x = w.y * n.z - w.z * n.y;
+	float y = (w.x * n.z - w.z * n.x)*(-1);
+	float z = w.x * n.y - w.y * n.x;
+	return v3(x, y, z);
+}
+
+
+m4 Utils::rotate_arbitrary_axis(const float& a, const v3& p, const v3& dir)
+{
+	float 
+		x = dir.x - p.x,
+		y = dir.y - p.y,
+		z = dir.z - p.z;
+
+	float
+		xAngle = asinf(z / sqrtf(x * x + y * y + z * z)),
+		yAngle = acosf(y / sqrtf(x * x + y * y));
+
+	v3 w = Utils::back_from_hom(Utils::getScaleMatrix(v3(-1, -1, -1))*Utils::swtitch_to_hom(p));
+	m4 M = Utils::getRotateMatrixBy_y(-yAngle)*Utils::getRotateMatrixBy_x(-xAngle)*Utils::getTranslateMatrix(w);
+	m4 invM = Utils::getTranslateMatrix(p)*Utils::getRotateMatrixBy_x(xAngle)*Utils::getRotateMatrixBy_y(yAngle);
+	return invM * Utils::getRotateMatrixBy_z(a)*M;
+
+
+}

@@ -19,20 +19,25 @@ public:
 	static glm::vec2 Vec2fFromStream(std::istream& issLine);
 	static MeshModel LoadMeshModel(const std::string& filePath);
 
-	v4 swtitch_to_hom(const v3 &v);
-	v3 back_from_hom(const v4 &v);
+	static v4 swtitch_to_hom(const v3 &v);
+	static v3 back_from_hom(const v4 &v);
 
-	m4 getScaleMatrix(const v3 &v);
-	m4 getScaleMatrix(const float& x, const float& y, const float& z);
+	static m4 getScaleMatrix(const v3 &v);
+	static m4 getScaleMatrix(const float& x, const float& y, const float& z);
 
-	m4 getRotateMatrixBy_x(const float &a);
-	m4 getRotateMatrixBy_y(const float &a);
-	m4 getRotateMatrixBy_z(const float &a);
+	static m4 getRotateMatrixBy_x(const float &a);
+	static m4 getRotateMatrixBy_y(const float &a);
+	static m4 getRotateMatrixBy_z(const float &a);
 
-	m4 getTranslateMatrix(const v3 &v);
-	m4 getTranslateMatrix(const float& x, const float& y, const float& z);
+	static m4 getTranslateMatrix(const v3 &v);
+	static m4 getTranslateMatrix(const float& x, const float& y, const float& z);
 
-	m4 ReflectAxis(AX c);
+	static m4 ReflectAxis(AX c);
+
+	static float dot_product(const v3 &w, const v3 &n);
+	static v3 cross_product(const v3 &w, const v3 &n);
+	static m4 rotate_arbitrary_axis(const float& a, const v3& p, const v3& dir);
+	
 
 
 
