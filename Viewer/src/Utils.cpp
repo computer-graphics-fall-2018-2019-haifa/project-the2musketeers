@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 
+
+
 glm::vec3 Utils::Vec3fFromStream(std::istream& issLine)
 {
 	float x, y, z;
@@ -46,7 +48,7 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 		}
 		else if (lineType == "vn")
 		{
-			// Add the required code here...
+			normals.push_back(Utils::Vec3fFromStream(issLine));
 		}
 		else if (lineType == "vt")
 		{
@@ -104,3 +106,73 @@ std::string Utils::GetFileName(const std::string& filePath)
 
 	return filePath.substr(index + 1, len - index);
 }
+
+
+
+
+
+
+v4 Utils::swtitch_to_hom(const v3 &v)
+{
+	return v4(v.x, v.y, v.z, 1);
+}
+
+v3 Utils::back_from_hom(const v4 &v)
+{
+	float z = v.z;
+	return v3(v.w / z, v.x / z, v.y / z);
+}
+
+
+
+
+m4 Utils::getScaleMatrix(const v3 &v)
+{
+	return m4(	v.x, 0, 0, 0,
+				0, v.y, 0, 0,
+				0, 0, v.z, 0,
+				0, 0, 0, 1 );
+}
+
+m4 Utils::getScaleMatrix(const float& x, const float& y, const float& z)
+{
+	return(getScaleMatrix(v3(x, y, z)));
+}
+
+
+m4 Utils::getTranslateMatrix(const v3 &v)
+{
+	return m4(	1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				v.x, v.y, v.z, 1 );
+}
+
+m4 Utils::getTranslateMatrix(const float& x, const float& y, const float& z)
+{
+	return(getTranslateMatrix(v3(x, y, z)));
+}
+
+m4 Utils::getRotateMatrixBy_x(const float &a)
+{
+	return m4(1, 0, 0, 0,
+			0, cos(a), sin(a), 0,
+			0, -sin(a), cos(a), 0,
+			0, 0, 0, 1);
+}
+
+m4 Utils::getRotateMatrixBy_y(const float &a)
+{
+	return m4(cos(a), 0, -sin(a), 0,
+		0, 1, 0, 0,
+		sin(a), 0, cos(a), 0,
+		0, 0, 0, 1);
+}
+
+m4 Utils::getRotateMatrixBy_z(const float &a)
+{
+	return m4(cos(a), sin(a), 0, 0,
+		-sin(a), cos(a), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1);
+} 
