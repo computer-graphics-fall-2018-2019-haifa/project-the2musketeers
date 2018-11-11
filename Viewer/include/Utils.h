@@ -6,6 +6,7 @@
 typedef glm::vec3 v3;
 typedef glm::vec4 v4;
 typedef glm::mat4 m4;
+enum AX { x = 'x', y = 'y', z = 'z' };
 
 /*
  * Utils class.
@@ -30,6 +31,8 @@ public:
 
 	m4 getTranslateMatrix(const v3 &v);
 	m4 getTranslateMatrix(const float& x, const float& y, const float& z);
+
+	m4 ReflectAxis(AX c);
 
 
 

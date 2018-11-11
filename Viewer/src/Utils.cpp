@@ -176,3 +176,14 @@ m4 Utils::getRotateMatrixBy_z(const float &a)
 		0, 0, 1, 0,
 		0, 0, 0, 1);
 } 
+
+
+m4 Utils::ReflectAxis(AX c)
+{
+	if (c = x)
+		return m4(-1, 0, 0, 0,    0, 1, 0, 0,    0, 0, 1, 0,    0, 0, 0, 1);
+	if (c = y)
+		return m4(1, 0, 0, 0,    0, -1, 0, 0,    0, 0, 1, 0,    0, 0, 0, 1);
+	if (c = z)
+		return m4(1, 0, 0, 0,    0, 1, 0, 0,    0, 0, -1, 0,    0, 0, 0, 1);
+}
