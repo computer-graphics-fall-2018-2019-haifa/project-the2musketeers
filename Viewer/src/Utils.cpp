@@ -222,3 +222,10 @@ m4 Utils::rotate_arbitrary_axis(const float& a, const v3& p, const v3& dir)
 
 
 }
+
+
+v3 Utils::normalize(const v3& w)
+{
+	float normal = (w.x*w.x + w.y*w.y + w.z*w.z);
+	return v3(w.x / normal, w.y / normal, w.z / normal);
+}

@@ -3,10 +3,11 @@
 #include <string>
 #include "MeshModel.h"
 
+
+enum AX { x = 'x', y = 'y', z = 'z' };
 typedef glm::vec3 v3;
 typedef glm::vec4 v4;
 typedef glm::mat4 m4;
-enum AX { x = 'x', y = 'y', z = 'z' };
 
 /*
  * Utils class.
@@ -37,6 +38,8 @@ public:
 	static float dot_product(const v3 &w, const v3 &n);
 	static v3 cross_product(const v3 &w, const v3 &n);
 	static m4 rotate_arbitrary_axis(const float& a, const v3& p, const v3& dir);
+
+	static v3 normalize(const v3& w);
 	
 
 
