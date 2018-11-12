@@ -36,7 +36,9 @@ void Scene::SetActiveCameraIndex(int index)
 	if (index >= 0 && index < cameras.size())
 	{
 		activeCameraIndex = index;
+
 	}
+	return;
 }
 
 const int Scene::GetActiveCameraIndex() const

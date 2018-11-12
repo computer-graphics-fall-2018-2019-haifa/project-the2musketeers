@@ -42,5 +42,5 @@ public:
 	// Add more methods/functionality as needed...
 
 
-	void DrawTriangle(const Face& F);
+	//void DrawTriangle(const Face& F);
 };

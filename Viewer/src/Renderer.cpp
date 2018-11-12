@@ -74,7 +74,7 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 
 void Renderer::Render(const Scene& scene)
 {
-	DrawTriangle(50, 50, 50, 200, 130, 200);
+	//DrawTriangle(50, 50, 50, 200, 130, 200);
 	//Draw_Line_Bresenham(100, 1000, 300, 50, glm::vec3(1, 0, 0));
 	//#############################################
 	//## You should override this implementation ##
@@ -292,7 +292,7 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 	}return;
 }
 
-
+/*
 void Renderer::DrawTriangle(const Face& F,const Scene& S)
 {
 	v3 p1 = vertices[F.GetVertexIndex(0)];
@@ -304,3 +304,5 @@ void Renderer::DrawTriangle(const Face& F,const Scene& S)
 
 	return;
 }
+
+*/
