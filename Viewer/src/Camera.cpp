@@ -10,12 +10,11 @@ Camera::Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) :
 	SetCameraLookAt(eye, at, up);
 }
 
-Camera::~Camera()
-{
-}
+Camera::~Camera() {}
 
 void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up)
 {
+
 
 }
 
