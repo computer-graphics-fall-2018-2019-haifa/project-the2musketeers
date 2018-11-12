@@ -4,7 +4,6 @@
 #include "MeshModel.h"
 
 
-enum AX { x = 'x', y = 'y', z = 'z' };
 typedef glm::vec3 v3;
 typedef glm::vec4 v4;
 typedef glm::mat4 m4;
@@ -33,7 +32,7 @@ public:
 	static m4 getTranslateMatrix(const v3 &v);
 	static m4 getTranslateMatrix(const float& x, const float& y, const float& z);
 
-	static m4 ReflectAxis(AX c);
+	static m4 ReflectAxis(char c);
 
 	static float dot_product(const v3 &w, const v3 &n);
 	static v3 cross_product(const v3 &w, const v3 &n);

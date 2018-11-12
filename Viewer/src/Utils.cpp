@@ -178,13 +178,13 @@ m4 Utils::getRotateMatrixBy_z(const float &a)
 } 
 
 
-m4 Utils::ReflectAxis(AX c)
+m4 Utils::ReflectAxis(char c)
 {
-	if (c = x)
+	if (c == 'x')
 		return m4(-1, 0, 0, 0,    0, 1, 0, 0,    0, 0, 1, 0,    0, 0, 0, 1);
-	if (c = y)
+	if (c == 'y')
 		return m4(1, 0, 0, 0,    0, -1, 0, 0,    0, 0, 1, 0,    0, 0, 0, 1);
-	if (c = z)
+	if (c == 'z')
 		return m4(1, 0, 0, 0,    0, 1, 0, 0,    0, 0, -1, 0,    0, 0, 0, 1);
 }
 
