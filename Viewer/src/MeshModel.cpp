@@ -8,12 +8,12 @@
 
 MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName) :
 	modelName(modelName),
-	worldTransform(glm::mat4x4(1))
+	worldTransform(glm::mat4x4(1)),
+	faces(faces),
+	vertices(vertices),
+	normals(normals),
+	color(v4(0,0,0,0))
 {
-	this-> faces = faces;
-	this-> vertices = vertices;
-	this-> normals = normals;
-	this->color = v4(0,0,0,0);
 }
 
 MeshModel::~MeshModel()
@@ -74,4 +74,18 @@ const Face& MeshModel::getFaceI(int index) const
 {
 	if (index >= 0 && index < faces.size())
 		return faces[index];
+}
+
+int MeshModel::getFacesNumber()
+{
+	return faces.size();
+}
+
+int MeshModel::getVerticesNumber()
+{
+	return vertices.size();
+}
+int MeshModel::getNormalsNumber()
+{
+	return normals.size();
 }

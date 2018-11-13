@@ -39,5 +39,9 @@ public:
 	const glm::vec3& getNormalI(int index)const;
 	const Face& getFaceI(int index) const;
 
+	int getFacesNumber();
+	int getVerticesNumber();
+	int getNormalsNumber();
+
 	// Add more methods/functionality as needed...
 };

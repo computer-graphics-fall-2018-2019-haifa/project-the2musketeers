@@ -295,9 +295,22 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 
 void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
 {
-	Renderer::Draw_Line_Bresenham(abs(10*a.x / a.z), abs(5*a.y / a.z), abs(10 * b.x / b.z), abs(5 * b.y / b.z),color);
-	Renderer::Draw_Line_Bresenham(1200*b.x / b.z, 720 * b.y / b.z, 1200 * c.x/c.z, 720 * c.y / c.z, color);
-	Renderer::Draw_Line_Bresenham(1200*a.x / a.z, 720 * a.y / a.z, 1200 * c.x / c.z, 720 * c.y / c.z, color);
+	int x1 = a.x / a.z, y1 = a.y / a.z;
+	int x2 = b.x / b.z, y2 = b.y / b.z;
+	int x3 = c.x / c.z, y3 = c.y / c.z;
+
+	x1 += 320;
+	x2 += 320;
+	x3 += 320;
+	y1 += 180;
+	y2 += 180;
+	y3 += 180;
+
+
+	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
+	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
+	Renderer::Draw_Line_Bresenham(x3, y3, x2, y2, color);
+
 }
 
 void Renderer::drawFaces(const Scene& scene)
@@ -310,14 +323,17 @@ void Renderer::drawFaces(const Scene& scene)
 	const std::shared_ptr<MeshModel>& model = scene.getModeli(modelIndex);
 
 //	const std::vector<Face>& faces = model->getFaces;
-	const Face& face = model->getFaceI(1);
-	int v1Index = face.GetVertexIndex(0);
-	int v2Index = face.GetVertexIndex(1);
-	int v3Index = face.GetVertexIndex(2);
-	const v3& p1 = model->getVertixI(v1Index);
-	const v3& p2 = model->getVertixI(v2Index);
-	const v3& p3 = model->getVertixI(v3Index);
+	for (int i = 0; i < model->getFacesNumber(); i++)
+	{
+		const Face& face = model->getFaceI(i);
+		int v1Index = face.GetVertexIndex(0);
+		int v2Index = face.GetVertexIndex(1);
+		int v3Index = face.GetVertexIndex(2);
+		const v3& p1 = model->getVertixI(v1Index - 1);
+		const v3& p2 = model->getVertixI(v2Index - 1);
+		const v3& p3 = model->getVertixI(v3Index - 1);
 
-	Renderer::DrawTriangleOnScreen(p1, p2, p3, v3(1, 0, 0));
-	
+		Renderer::DrawTriangleOnScreen(p1, p2, p3, v3(1, 0, 0));
+	}
+
 }
