@@ -295,16 +295,16 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 
 void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
 {
-	int x1 = 100.0 * a.x, x2= 100.0 * b.x, x3= 100.0 * c.x,
-		y1= 100.0 * a.y, y2 = 100.0 * b.y, y3 = 100.0 * c.y;
-
+	int x1 = a.x, x2= b.x, x3= c.x,
+		y1= a.y, y2 = b.y, y3 = c.y;
+/*
 	x1 += 320;
 	x2 += 320;
 	x3 += 320;
 	y1 += 180;
 	y2 += 180;
 	y3 += 180;
-
+*/
 	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
 	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
 	Renderer::Draw_Line_Bresenham(x3, y3, x2, y2, color);
@@ -331,7 +331,29 @@ void Renderer::drawFaces(const Scene& scene)
 		const v3& p2 = model->getVertixI(v2Index - 1);
 		const v3& p3 = model->getVertixI(v3Index - 1);
 
-		Renderer::DrawTriangleOnScreen(p1, p2, p3, v3(1, 0, 0));
+		v3 tP1 = applyTransformations(p1);
+		v3 tP2 = applyTransformations(p2);
+		v3 tP3 = applyTransformations(p3);
+
+		Renderer::DrawTriangleOnScreen(tP1, tP2, tP3, v3(1, 0, 0));
 	}
 
 }
+
+const v3 Renderer::applyTransformations(const v3& point)
+{
+	v4 p = Utils::swtitch_to_hom(point);
+	p = Utils::getScaleMatrix(v3(1, 1, 1))*p;
+//	p = Utils::getRotateMatrixBy_y(3.14/2)*p;
+//	p = Utils::ReflectAxis('y')*p;
+	p = Utils::getTranslateMatrix(v3(520, 380, 100))*p;
+
+	return Utils::back_from_hom(p);
+}
+/*
+const v3 Renderer::applyTransformations(const v4& point)
+{
+	return Utils::back_from_hom(Utils::getTranslateMatrix(v3(500, 500, 500)) * point);
+	return Utils::getScaleMatrix(v3(2,2,2))*point;
+}
+*/
