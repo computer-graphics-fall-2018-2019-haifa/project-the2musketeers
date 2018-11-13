@@ -119,8 +119,8 @@ v4 Utils::swtitch_to_hom(const v3 &v)
 
 v3 Utils::back_from_hom(const v4 &v)
 {
-	float z = v.z;
-	return v3(v.w / z, v.x / z, v.y / z);
+	float w = v.w;
+	return v3(v.x / w, v.y / w, v.z / w);
 }
 
 
@@ -145,7 +145,7 @@ m4 Utils::getTranslateMatrix(const v3 &v)
 	return m4(	1, 0, 0, 0,
 				0, 1, 0, 0,
 				0, 0, 1, 0,
-				v.x, v.y, v.z, 1 );
+				v.x,v.y,v.z, 1 );
 }
 
 m4 Utils::getTranslateMatrix(const float& x, const float& y, const float& z)
@@ -154,25 +154,28 @@ m4 Utils::getTranslateMatrix(const float& x, const float& y, const float& z)
 }
 
 m4 Utils::getRotateMatrixBy_x(const float &a)
+
 {
-	return m4(1, 0, 0, 0,
-			0, cos(a), sin(a), 0,
-			0, -sin(a), cos(a), 0,
-			0, 0, 0, 1);
+	return m4(
+		1, 0, 0, 0,
+		0, cosf(a), sinf(a), 0,
+		0, -sinf(a), cosf(a), 0,
+		0, 0, 0, 1);
 }
 
 m4 Utils::getRotateMatrixBy_y(const float &a)
 {
-	return m4(cos(a), 0, -sin(a), 0,
+	return m4(
+		cosf(a), 0, -sinf(a), 0,
 		0, 1, 0, 0,
-		sin(a), 0, cos(a), 0,
+		sinf(a), 0, cosf(a), 0,
 		0, 0, 0, 1);
 }
 
 m4 Utils::getRotateMatrixBy_z(const float &a)
 {
-	return m4(cos(a), sin(a), 0, 0,
-		-sin(a), cos(a), 0, 0,
+	return m4(cosf(a), sinf(a), 0, 0,
+		-sinf(a), cosf(a), 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1);
 } 
