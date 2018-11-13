@@ -18,10 +18,21 @@ bool showAnotherWindow = false;
 
 glm::vec4 clearColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
-const glm::vec4& GetClearColor()
-{
-	return clearColor;
-}
+const glm::vec4& GetClearColor() {return clearColor;}
+
+
+
+glm::vec4 ModelColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.00f);
+
+const glm::vec4& GetModelColor() {return ModelColor;}
+
+
+
+glm::vec4 NormalsColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.00f);
+
+const glm::vec4& GetNormalsColor() {return NormalsColor;}
+
+
 
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
@@ -33,7 +44,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
-		static float f = 0.0f;
+		static float Far = 10.0f;
+		static float Near = 1.0f;
+		static float fov_angle_rad = 0.0f;
 		static int counter = 0;
 
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
@@ -42,8 +55,16 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Checkbox("Demo Window", &showDemoWindow);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Another Window", &showAnotherWindow);
 
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderAngle("Fovy", &fov_angle_rad, 0, 180);
+		ImGui::SliderFloat("Near", &Near, 1.0f, 10.0f);  // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("Far", &Far, 1.0f, 10.0f);
+		
+
+
 		ImGui::ColorEdit3("clear color", (float*)&clearColor); // Edit 3 floats representing a color
+		ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
+		ImGui::ColorEdit3("Normal color", (float*)&NormalsColor);
+		
 
 		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 			counter++;
