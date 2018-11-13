@@ -40,7 +40,7 @@ public:
 	void Draw_Line_Bresenham(int x1, int y1, int x2, int y2, glm::vec3& Color,bool flip=0);
 	void matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3& Color); //when slope less than -1
 	// Add more methods/functionality as needed...
-//	void DrawTriangle(const Face& F, const Scene& S);
+	void DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color);
 
 	//void DrawTriangle(const Face& F);
 };
