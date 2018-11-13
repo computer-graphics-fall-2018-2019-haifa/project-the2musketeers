@@ -12,7 +12,7 @@ Scene::Scene() :
 void Scene::AddModel(const std::shared_ptr<MeshModel>& model)
 {
 	models.push_back(model);
-	SetActiveModelIndex(models.size() - 1);
+//	SetActiveModelIndex(models.size() - 1);
 }
 
 const int Scene::GetModelCount() const
@@ -58,4 +58,17 @@ void Scene::SetActiveModelIndex(int index)
 const int Scene::GetActiveModelIndex() const
 {
 	return activeModelIndex;
+}
+
+const Camera& Scene::getCamerai(int index) const
+{
+	if (index >= 0 && index < models.size())
+		return cameras[index];
+}
+
+const std::shared_ptr<MeshModel>& Scene::getModeli (int index) const
+{
+	if (index >= 0 && index < models.size())
+		return models[index];
+	return nullptr;
 }

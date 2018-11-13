@@ -291,11 +291,14 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 		e += (2 * dx);
 	}return;
 }
-
 /*
-void Renderer::DrawTriangle(const Face& F,const Scene& S)
+void Renderer::DrawTriangle(const Face& f,const Scene& s)
 {
-	v3 p1 = vertices[F.GetVertexIndex(0)];
+	int modelIndex = s.GetActiveModelIndex();
+	const std::shared_ptr<MeshModel>& mm = s.getModeli(modelIndex);
+
+
+	v3 p1 = S.GetActiveModelIndex;
 	v3 p2 = F.GetVertexIndex(1);
 	v3 p3 = F.GetVertexIndex(2);
 	Renderer::Draw_Line_Bresenham(p1.x, p1.y, p2.x, p2.y, v3(1, 0, 0));
@@ -304,5 +307,4 @@ void Renderer::DrawTriangle(const Face& F,const Scene& S)
 
 	return;
 }
-
 */
