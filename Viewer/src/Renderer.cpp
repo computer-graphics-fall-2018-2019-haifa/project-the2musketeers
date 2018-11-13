@@ -295,9 +295,9 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 
 void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
 {
-	Renderer::Draw_Line_Bresenham(a.x/a.z, a.y / a.z, b.x / b.z, b.y / b.z,color);
-	Renderer::Draw_Line_Bresenham(b.x/b.z, b.y / b.z, c.x/c.z, c.y / c.z, color);
-	Renderer::Draw_Line_Bresenham(a.x / a.z, a.y / a.z, c.x / c.z, c.y / c.z, color);
+	Renderer::Draw_Line_Bresenham(abs(10*a.x / a.z), abs(5*a.y / a.z), abs(10 * b.x / b.z), abs(5 * b.y / b.z),color);
+	Renderer::Draw_Line_Bresenham(1200*b.x / b.z, 720 * b.y / b.z, 1200 * c.x/c.z, 720 * c.y / c.z, color);
+	Renderer::Draw_Line_Bresenham(1200*a.x / a.z, 720 * a.y / a.z, 1200 * c.x / c.z, 720 * c.y / c.z, color);
 }
 
 void Renderer::drawFaces(const Scene& scene)
