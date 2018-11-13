@@ -295,9 +295,8 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 
 void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
 {
-	int x1 = a.x / a.z, y1 = a.y / a.z;
-	int x2 = b.x / b.z, y2 = b.y / b.z;
-	int x3 = c.x / c.z, y3 = c.y / c.z;
+	int x1 = 100.0 * a.x, x2= 100.0 * b.x, x3= 100.0 * c.x,
+		y1= 100.0 * a.y, y2 = 100.0 * b.y, y3 = 100.0 * c.y;
 
 	x1 += 320;
 	x2 += 320;
@@ -305,7 +304,6 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 	y1 += 180;
 	y2 += 180;
 	y3 += 180;
-
 
 	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
 	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
