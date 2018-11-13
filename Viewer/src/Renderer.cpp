@@ -74,6 +74,7 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 
 void Renderer::Render(const Scene& scene)
 {
+	drawFaces(scene);
 	//DrawTriangle(50, 50, 50, 200, 130, 200);
 	//Draw_Line_Bresenham(100, 1000, 300, 50, glm::vec3(1, 0, 0));
 	//#############################################
@@ -297,4 +298,26 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 	Renderer::Draw_Line_Bresenham(a.x/a.z, a.y / a.z, b.x / b.z, b.y / b.z,color);
 	Renderer::Draw_Line_Bresenham(b.x/b.z, b.y / b.z, c.x/c.z, c.y / c.z, color);
 	Renderer::Draw_Line_Bresenham(a.x / a.z, a.y / a.z, c.x / c.z, c.y / c.z, color);
+}
+
+void Renderer::drawFaces(const Scene& scene)
+{
+	if (scene.GetModelCount() == 0)
+		return;
+//	Draw_Line_Bresenham(10, 20, 20, 40, v3(1, 0, 0));
+
+	int modelIndex = scene.GetActiveModelIndex();
+	const std::shared_ptr<MeshModel>& model = scene.getModeli(modelIndex);
+
+//	const std::vector<Face>& faces = model->getFaces;
+	const Face& face = model->getFaceI(1);
+	int v1Index = face.GetVertexIndex(0);
+	int v2Index = face.GetVertexIndex(1);
+	int v3Index = face.GetVertexIndex(2);
+	const v3& p1 = model->getVertixI(v1Index);
+	const v3& p2 = model->getVertixI(v2Index);
+	const v3& p3 = model->getVertixI(v3Index);
+
+	Renderer::DrawTriangleOnScreen(p1, p2, p3, v3(1, 0, 0));
+	
 }

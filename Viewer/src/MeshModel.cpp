@@ -56,3 +56,19 @@ const std::vector<glm::vec3>& MeshModel::getNormals() const
 {
 	return this->normals;
 }
+
+const glm::vec3& MeshModel::getVertixI(int index) const
+{
+	if(index>=0 && index < vertices.size())
+		return vertices[index];
+}
+const glm::vec3& MeshModel::getNormalI(int index)const
+{
+	if (index >= 0 && index < normals.size())
+		return normals[index];
+}
+const Face& MeshModel::getFaceI(int index) const
+{
+	if (index >= 0 && index < faces.size())
+		return faces[index];
+}

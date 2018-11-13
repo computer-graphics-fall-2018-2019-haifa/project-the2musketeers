@@ -35,6 +35,9 @@ public:
 	const std::vector<glm::vec3>& getVertices() const;
 	const std::vector<glm::vec3>& getNormals() const;
 
+	const glm::vec3& getVertixI(int index)const;
+	const glm::vec3& getNormalI(int index)const;
+	const Face& getFaceI(int index) const;
 
 	// Add more methods/functionality as needed...
 };
