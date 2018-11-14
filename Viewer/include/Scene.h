@@ -23,7 +23,15 @@ private:
 	int activeCameraIndex;
 	int activeModelIndex;
 
+<<<<<<< HEAD
 
+=======
+	float scale=10.0f;
+	bool reflect_by_x = 0;
+	bool reflect_by_y = 0;
+	bool reflect_by_z = 0;
+	v4 color = v4(1, 0, 0, 0);
+>>>>>>> 4344099eb10b60dbbec08a9bf8aa498a2425ab9b
 
 public:
 	Scene();
