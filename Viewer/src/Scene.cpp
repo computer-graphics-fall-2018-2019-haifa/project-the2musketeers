@@ -142,7 +142,6 @@ void Scene::changeReflextZ(bool a) {
 	models[index]->ChangeReflextZ(a);
 }
 
-	
 const v4 Scene::getColor() const {
 	if (models.size() == 0)
 		return v4(0,0,0,0);
@@ -155,7 +154,6 @@ void Scene::setColor(v4 c) {
 	int index = GetActiveModelIndex();
 	models[index]->SetColor(c);
 }
-
 
 const float Scene::getRotationX() const
 {
@@ -185,7 +183,6 @@ void Scene::setRotationX(float a)
 		a -= 2 * M_PI;
 	while (a < 2 * -M_PI)
 		a += 2 * M_PI;
-
 	return models[index]->setRotationX(a);
 }
 
@@ -197,7 +194,6 @@ void Scene::setRotationY(float a)
 		a -= 2 * M_PI;
 	while (a < 2 * -M_PI)
 		a += 2 * M_PI;
-
 	return models[index]->setRotationY(a);
 }
 
