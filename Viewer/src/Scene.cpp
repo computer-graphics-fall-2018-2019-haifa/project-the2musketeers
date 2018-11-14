@@ -76,16 +76,12 @@ const std::shared_ptr<MeshModel>& Scene::getModeli (int index) const
 
 
 
-<<<<<<< HEAD
+
 const float Scene::getScale() const {
 	int index = GetActiveModelIndex();
 	return models[index]->getscale();
 }
 
-void Scene::setScale(const float s) { 
-	int index = GetActiveModelIndex();
-	return models[index]->setscale(s);
-}
 
 const bool Scene::getReflextX() const {
 	int index = GetActiveModelIndex();
@@ -100,17 +96,18 @@ const bool Scene::getReflextY() const {
 const bool Scene::getReflextZ() const {
 	int index = GetActiveModelIndex();
 	return models[index]->getreflextZ();
-=======
-const float Scene::getScale() const { return scale; }
+}
+
 void Scene::setScale(const float s) 
 {
+	int index = GetActiveModelIndex();
 	if (s < 0.001)
-		scale = 0.001;
+		models[index]->setscale(0.001f);
 	else if (s > 2000.0f)
-		scale = 2000.0f;
+		models[index]->setscale(2000.0f);
 	else
-		scale = s;
->>>>>>> 4344099eb10b60dbbec08a9bf8aa498a2425ab9b
+		models[index]->setscale(s);
+
 }
 
 void Scene::changeReflextX(bool a) {
