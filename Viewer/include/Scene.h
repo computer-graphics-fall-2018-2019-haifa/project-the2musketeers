@@ -23,7 +23,7 @@ private:
 	int activeCameraIndex;
 	int activeModelIndex;
 
-	float Scale=10.0f;
+	float scale=10.0f;
 	bool reflect_by_x = 0;
 	bool reflect_by_y = 0;
 	bool reflect_by_z = 0;

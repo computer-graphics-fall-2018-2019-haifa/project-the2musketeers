@@ -75,8 +75,16 @@ const std::shared_ptr<MeshModel>& Scene::getModeli (int index) const
 
 
 
-const float Scene::getScale() const { return Scale; }
-void Scene::setScale(const float s) { Scale = s; }
+const float Scene::getScale() const { return scale; }
+void Scene::setScale(const float s) 
+{
+	if (s < 0.001)
+		scale = 0.001;
+	else if (s > 2000.0f)
+		scale = 2000.0f;
+	else
+		scale = s;
+}
 
 
 
