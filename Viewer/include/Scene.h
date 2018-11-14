@@ -24,6 +24,10 @@ private:
 	int activeModelIndex;
 
 	float Scale=10.0f;
+	bool reflect_by_x = 0;
+	bool reflect_by_y = 0;
+	bool reflect_by_z = 0;
+	v4 color = v4(1, 0, 0, 0);
 
 public:
 	Scene();
@@ -45,6 +49,18 @@ public:
 
 	const float getScale() const;
 	void setScale(const float s);
+
+	const bool getReflextX() const;
+	const bool getReflextY() const;
+	const bool getReflextZ() const;
+
+	void changeReflextX(bool a);
+	void changeReflextY(bool a);
+	void changeReflextZ(bool a);
+
+
+	const v4 getColor() const;
+	void setColor(v4 c);
 
 	// Add more methods as needed...
 };

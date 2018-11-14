@@ -336,7 +336,10 @@ void Renderer::drawFaces(const Scene& scene)
 		v3 tP2 = applyTransformations(p2,scene);
 		v3 tP3 = applyTransformations(p3,scene);
 
-		Renderer::DrawTriangleOnScreen(tP1, tP2, tP3, v3(1, 0, 0));
+		v4 c = scene.getColor();
+		v3 col = v3(c.x, c.y, c.z);
+
+		Renderer::DrawTriangleOnScreen(tP1, tP2, tP3, col);
 	}
 
 }
@@ -349,7 +352,12 @@ const v3 Renderer::applyTransformations(const v3& point, const Scene& scene)
 	v4 p = Utils::swtitch_to_hom(point);
 	p = Utils::getScaleMatrix(v3(scale, scale, scale))*p;
 //	p = Utils::getRotateMatrixBy_y(3.14/2)*p;
-//	p = Utils::ReflectAxis('y')*p;
+	if(scene.getReflextX())
+		p = Utils::ReflectAxis('x')*p;
+	if (scene.getReflextY())
+		p = Utils::ReflectAxis('y')*p;
+	if (scene.getReflextZ())
+		p = Utils::ReflectAxis('z')*p;
 	p = Utils::getTranslateMatrix(v3(520, 380, 100))*p;
 
 	return Utils::back_from_hom(p);

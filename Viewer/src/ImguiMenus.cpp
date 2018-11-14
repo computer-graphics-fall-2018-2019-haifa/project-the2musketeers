@@ -16,21 +16,27 @@
 bool showDemoWindow = false;
 bool showAnotherWindow = false;
 
+
+
 glm::vec4 clearColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
 const glm::vec4& GetClearColor() {return clearColor;}
 
 
 
-glm::vec4 ModelColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.00f);
 
-const glm::vec4& GetModelColor() {return ModelColor;}
+
+
 
 
 
 glm::vec4 NormalsColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.00f);
 
 const glm::vec4& GetNormalsColor() {return NormalsColor;}
+
+
+
+
 
 
 
@@ -49,9 +55,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		static float Near = 1.0f;
 		static float fov_angle_rad = 0.0f;
 		static int counter = 0;
+
+
 		float sc = scene.getScale();
+		
 
-
+		// 3 bool for reflecting axis
+		bool x = scene.getReflextX() ;
+		bool y = scene.getReflextY();
+		bool z = scene.getReflextZ();
 
 
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
@@ -66,10 +78,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("Scale", &sc, 0.01f, 2000.0f);
 		scene.setScale(sc);
 		
+		ImGui::Checkbox("Reflext by X", &x);
+		ImGui::Checkbox("Reflext by Y", &y);
+		ImGui::Checkbox("Reflext by Z", &z);
 
+		scene.changeReflextX(x);
+		scene.changeReflextY(y);
+		scene.changeReflextZ(z);
 
+		v4 ModelColor = scene.getColor();
 		ImGui::ColorEdit3("clear color", (float*)&clearColor); // Edit 3 floats representing a color
 		ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
+		scene.setColor(ModelColor);
 		ImGui::ColorEdit3("Normal color", (float*)&NormalsColor);
 		
 
@@ -81,6 +101,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
+
+
+
+
+
+
+
+
 
 	// 3. Show another simple window.
 	if (showAnotherWindow)
