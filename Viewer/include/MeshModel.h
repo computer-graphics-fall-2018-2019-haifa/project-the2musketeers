@@ -19,6 +19,11 @@ private:
 	glm::vec4 color;
 	std::string modelName;
 
+	float Scale = 10.0f;
+	bool reflect_by_x = 0;
+	bool reflect_by_y = 0;
+	bool reflect_by_z = 0;
+
 public:
 	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
 	virtual ~MeshModel();
@@ -42,6 +47,19 @@ public:
 	int getFacesNumber();
 	int getVerticesNumber();
 	int getNormalsNumber();
+
+
+	const float getscale() const;
+	void setscale(const float s);
+
+	const bool getreflextX() const;
+	const bool getreflextY() const;
+	const bool getreflextZ() const;
+
+	void ChangeReflextX(bool a);
+	void ChangeReflextY(bool a);
+	void ChangeReflextZ(bool a);
+
 
 	// Add more methods/functionality as needed...
 };

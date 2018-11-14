@@ -89,3 +89,19 @@ int MeshModel::getNormalsNumber()
 {
 	return normals.size();
 }
+
+
+
+
+
+
+const float MeshModel::getscale() const { return Scale; }
+void MeshModel::setscale(const float s) { Scale = s; }
+
+const bool MeshModel::getreflextX() const { return reflect_by_x; }
+const bool MeshModel::getreflextY() const { return reflect_by_y; }
+const bool MeshModel::getreflextZ() const { return reflect_by_z; }
+
+void MeshModel::ChangeReflextX(bool a) { reflect_by_x = a; }
+void MeshModel::ChangeReflextY(bool a) { reflect_by_y = a; }
+void MeshModel::ChangeReflextZ(bool a) { reflect_by_z = a; }
