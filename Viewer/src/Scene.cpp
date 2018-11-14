@@ -78,28 +78,38 @@ const std::shared_ptr<MeshModel>& Scene::getModeli (int index) const
 
 
 const float Scene::getScale() const {
+	if (models.size() < 1)
+		return 1.0;
 	int index = GetActiveModelIndex();
 	return models[index]->getscale();
 }
 
 
 const bool Scene::getReflextX() const {
+	if (models.size() == 0)
+		return 0;
 	int index = GetActiveModelIndex();
 	return models[index]->getreflextX();
 }
 
 const bool Scene::getReflextY() const { 
+	if (models.size() == 0)
+		return 0;
 	int index = GetActiveModelIndex();
 	return models[index]->getreflextY();
 }
 
 const bool Scene::getReflextZ() const {
+	if (models.size() == 0)
+		return 0;
 	int index = GetActiveModelIndex();
 	return models[index]->getreflextZ();
 }
 
 void Scene::setScale(const float s) 
 {
+	if (models.size() == 0)
+		return;
 	int index = GetActiveModelIndex();
 	if (s < 0.001)
 		models[index]->setscale(0.001f);
@@ -111,27 +121,37 @@ void Scene::setScale(const float s)
 }
 
 void Scene::changeReflextX(bool a) {
+	if (models.size() == 0)
+		return ;
 	int index = GetActiveModelIndex();
 	models[index]->ChangeReflextX(a);
 }
 
 void Scene::changeReflextY(bool a) {
+	if (models.size() == 0)
+		return ;
 	int index = GetActiveModelIndex();
 	models[index]->ChangeReflextY(a);
 }
 
 void Scene::changeReflextZ(bool a) { 
+	if (models.size() == 0)
+		return ;
 	int index = GetActiveModelIndex();
 	models[index]->ChangeReflextZ(a);
 }
 
 	
 const v4 Scene::getColor() const {
+	if (models.size() == 0)
+		return v4(0,0,0,0);
 	int index = GetActiveModelIndex();
 	return models[index]->GetColor();
 }
 
 void Scene::setColor(v4 c) {
+	if (models.size() == 0)
+		return ;
 	int index = GetActiveModelIndex();
 	models[index]->SetColor(c);
 }
