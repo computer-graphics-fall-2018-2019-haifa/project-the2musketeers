@@ -4,6 +4,7 @@
 #include "InitShader.h"
 #include "MeshModel.h"
 #include <imgui/imgui.h>
+#include "ImguiMenus.h"
 #include <vector>
 #include <cmath>
 
@@ -331,19 +332,22 @@ void Renderer::drawFaces(const Scene& scene)
 		const v3& p2 = model->getVertixI(v2Index - 1);
 		const v3& p3 = model->getVertixI(v3Index - 1);
 
-		v3 tP1 = applyTransformations(p1);
-		v3 tP2 = applyTransformations(p2);
-		v3 tP3 = applyTransformations(p3);
+		v3 tP1 = applyTransformations(p1,scene);
+		v3 tP2 = applyTransformations(p2,scene);
+		v3 tP3 = applyTransformations(p3,scene);
 
 		Renderer::DrawTriangleOnScreen(tP1, tP2, tP3, v3(1, 0, 0));
 	}
 
 }
 
-const v3 Renderer::applyTransformations(const v3& point)
+
+const v3 Renderer::applyTransformations(const v3& point, const Scene& scene)
 {
+	float scale = scene.getScale();
+//	float scale = scene.getScale();
 	v4 p = Utils::swtitch_to_hom(point);
-	p = Utils::getScaleMatrix(v3(1, 1, 1))*p;
+	p = Utils::getScaleMatrix(v3(scale, scale, scale))*p;
 //	p = Utils::getRotateMatrixBy_y(3.14/2)*p;
 //	p = Utils::ReflectAxis('y')*p;
 	p = Utils::getTranslateMatrix(v3(520, 380, 100))*p;

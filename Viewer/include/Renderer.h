@@ -43,7 +43,7 @@ public:
 	void DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color);
 	void drawFaces(const Scene& scene);
 	
-	const v3 applyTransformations(const v3& point);
-	const v3 applyTransformations(const v4& point);
+	const v3 applyTransformations(const v3& point,const Scene& scene);
+	//const v3 applyTransformations(const v4& point);
 
 };

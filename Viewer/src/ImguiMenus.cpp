@@ -34,6 +34,7 @@ const glm::vec4& GetNormalsColor() {return NormalsColor;}
 
 
 
+
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -48,6 +49,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		static float Near = 1.0f;
 		static float fov_angle_rad = 0.0f;
 		static int counter = 0;
+		float sc = scene.getScale();
+
+
+
 
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
@@ -58,6 +63,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderAngle("Fovy", &fov_angle_rad, 0, 180);
 		ImGui::SliderFloat("Near", &Near, 1.0f, 10.0f);  // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::SliderFloat("Far", &Far, 1.0f, 10.0f);
+		ImGui::SliderFloat("Scale", &sc, 0.01f, 2000.0f);
+		scene.setScale(sc);
 		
 
 

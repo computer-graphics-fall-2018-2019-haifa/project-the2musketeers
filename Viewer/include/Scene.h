@@ -8,6 +8,9 @@
 #include "MeshModel.h"
 #include "Camera.h"
 
+
+
+
 /*
  * Scene class.
  * This class holds all the scene information (models, cameras, lights, etc..)
@@ -19,6 +22,8 @@ private:
 
 	int activeCameraIndex;
 	int activeModelIndex;
+
+	float Scale=10.0f;
 
 public:
 	Scene();
@@ -38,6 +43,8 @@ public:
 	const std::shared_ptr<MeshModel>& getModeli(int index) const;
 	const Camera& getCamerai(int index) const;
 
+	const float getScale() const;
+	void setScale(const float s);
 
 	// Add more methods as needed...
 };
