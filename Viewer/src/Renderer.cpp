@@ -351,7 +351,12 @@ const v3 Renderer::applyTransformations(const v3& point, const Scene& scene)
 //	float scale = scene.getScale();
 	v4 p = Utils::swtitch_to_hom(point);
 	p = Utils::getScaleMatrix(v3(scale, scale, scale))*p;
-//	p = Utils::getRotateMatrixBy_y(3.14/2)*p;
+	
+	float angleY = scene.getRotationY();
+	float angleX = scene.getRotationX();
+	p = Utils::getRotateMatrixBy_y(angleY)*p;
+	p = Utils::getRotateMatrixBy_x(angleX)*p;
+
 	if(scene.getReflextX())
 		p = Utils::ReflectAxis('x')*p;
 	if (scene.getReflextY())

@@ -2,6 +2,7 @@
 #include "MeshModel.h"
 #include <string>
 
+
 Scene::Scene() :
 	activeCameraIndex(0),
 	activeModelIndex(0)
@@ -150,10 +151,60 @@ const v4 Scene::getColor() const {
 }
 
 void Scene::setColor(v4 c) {
-	if (models.size() == 0)
-		return ;
+	if (models.size() == 0) return;
 	int index = GetActiveModelIndex();
 	models[index]->SetColor(c);
 }
 
+
+const float Scene::getRotationX() const
+{
+	if (models.size() == 0) return 0;
+	int index = GetActiveModelIndex();
+	return models[index]->getRotationX();
+}
+const float Scene::getRotationY() const
+{
+	if (models.size() == 0) return 0;
+	int index = GetActiveModelIndex();
+	return models[index]->getRotationY();
+}
+
+const float Scene::getRotationZ() const
+{
+	if (models.size() == 0) return 0;
+	int index = GetActiveModelIndex();
+	return models[index]->getRotationZ();
+}
+
+void Scene::setRotationX(float a)
+{
+	if (models.size() == 0) return;
+	int index = GetActiveModelIndex();
+	while (a > 2 * M_PI)
+		a -= 2 * M_PI;
+	while (a < 2 * -M_PI)
+		a += 2 * M_PI;
+
+	return models[index]->setRotationX(a);
+}
+
+void Scene::setRotationY(float a)
+{
+	if (models.size() == 0) return;
+	int index = GetActiveModelIndex();
+	while (a > 2 * M_PI)
+		a -= 2 * M_PI;
+	while (a < 2 * -M_PI)
+		a += 2 * M_PI;
+
+	return models[index]->setRotationY(a);
+}
+
+void Scene::setRotationZ(float a)
+{
+	if (models.size() == 0) return;
+	int index = GetActiveModelIndex();
+	return models[index]->setRotationZ(a);
+}
 

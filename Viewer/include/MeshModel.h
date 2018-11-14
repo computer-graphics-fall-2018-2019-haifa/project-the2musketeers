@@ -23,6 +23,10 @@ private:
 	bool reflect_by_x = 0;
 	bool reflect_by_y = 0;
 	bool reflect_by_z = 0;
+	float rotationX = 0.0f;
+	float rotationY = 0.0f;
+	float rotationZ = 0.0f;
+
 
 public:
 	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
@@ -60,6 +64,13 @@ public:
 	void ChangeReflextY(bool a);
 	void ChangeReflextZ(bool a);
 
+	const float getRotationX() const;
+	const float getRotationY() const;
+	const float getRotationZ() const;
+
+	void setRotationX(float a);
+	void setRotationY(float a);
+	void setRotationZ(float a);
 
 	// Add more methods/functionality as needed...
 };

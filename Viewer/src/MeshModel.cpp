@@ -105,3 +105,11 @@ const bool MeshModel::getreflextZ() const { return reflect_by_z; }
 void MeshModel::ChangeReflextX(bool a) { reflect_by_x = a; }
 void MeshModel::ChangeReflextY(bool a) { reflect_by_y = a; }
 void MeshModel::ChangeReflextZ(bool a) { reflect_by_z = a; }
+
+const float MeshModel::getRotationX() const { return rotationX; }
+const float MeshModel::getRotationY() const { return rotationY; }
+const float MeshModel::getRotationZ() const { return rotationZ; }
+
+void MeshModel::setRotationX(float a) { rotationX = a; }
+void MeshModel::setRotationY(float a) { rotationY = a; }
+void MeshModel::setRotationZ(float a) { rotationZ = a; }

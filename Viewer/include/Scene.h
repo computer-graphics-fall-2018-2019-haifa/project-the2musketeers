@@ -1,5 +1,5 @@
 #pragma once
-
+#define _USE_MATH_DEFINES
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
@@ -57,6 +57,14 @@ public:
 
 	const v4 getColor() const;
 	void setColor(v4 c);
+
+	const float getRotationX() const;
+	const float getRotationY() const;
+	const float getRotationZ() const;
+
+	void setRotationX(float a);
+	void setRotationY(float a);
+	void setRotationZ(float a);
 
 	// Add more methods as needed...
 };
