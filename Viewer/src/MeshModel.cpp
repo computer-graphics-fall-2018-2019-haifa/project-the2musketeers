@@ -8,7 +8,7 @@
 
 MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName) :
 	modelName(modelName),
-	worldTransform(glm::mat4x4(1)),
+	worldTransform(glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)),
 	faces(faces),
 	vertices(vertices),
 	normals(normals),
@@ -59,6 +59,13 @@ const std::vector<glm::vec3>& MeshModel::getNormals() const
 {
 	return this->normals;
 }
+
+
+void MeshModel::MultiplyWorldTransformation(const glm::mat4x4& matrix)
+{
+	this->worldTransform = matrix * worldTransform;
+}
+
 
 const glm::vec3& MeshModel::getVertixI(int index) const
 {

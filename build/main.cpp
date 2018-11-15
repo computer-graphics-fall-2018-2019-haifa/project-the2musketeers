@@ -56,32 +56,48 @@ int main(int argc, char ** argv)
 	// Register a mouse scroll-wheel callback
 	glfwSetScrollCallback(window, ScrollCallback);
 
+	float tester = 0;
 	// This is the main game loop..
 	ImVec2 drag= ImVec2(0,0);
+
 	while (!glfwWindowShouldClose(window))
 	{
 
 		glfwPollEvents();
 		StartFrame();
 
-		float currentScale = scene.getScale();
-		scene.setScale(currentScale += 30 * yOff);
-		yOff = 0.0;
+		const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
+		if (model != nullptr)
+		{
+			if (!io.WantCaptureMouse)
+			{
+				float currentScale = model->getscale();
+				model->setscale(currentScale += 30 * yOff);
 
-		ImVec2 d = ImGui::GetMouseDragDelta(0);
-		float recentAngleY = scene.getRotationY();
-		float recentAngleX = scene.getRotationX();
-		scene.setRotationY(recentAngleY + (d.x / 360.0)*M_PI);
-		scene.setRotationX(recentAngleX + (d.y / 360.0)*M_PI);
+				ImVec2 d = ImGui::GetMouseDragDelta(0);
+				float recentAngleY = model->getRotationY();
+				float recentAngleX = model->getRotationX();
+				model->setRotationY(recentAngleY + (d.x / 720)*M_PI);
+				model->setRotationX(recentAngleX + (d.y / 720)*M_PI);
+/*
+				if (tester != model->getRotationY())
+				{
+					std::cout << scene.getRotationY() << "\n";
+					tester = scene.getRotationY();
 
-		ImVec2 dr = ImGui::GetMouseDragDelta(1);
-		int translationX = scene.getTranslationVector().x;
-		int translationY = scene.getTranslationVector().y;
-		int translationZ = scene.getTranslationVector().z;
-		scene.setTranslationVector(v3(translationX + dr.x, translationY - dr.y, translationZ));
+				}
+*/
+				ImVec2 dr = ImGui::GetMouseDragDelta(1);
+				int translationX = model->getTranslationVector().x;
+				int translationY = model->getTranslationVector().y;
+				int translationZ = model->getTranslationVector().z;
+				model->setTranslationVector(v3(translationX + dr.x, translationY - dr.y, translationZ));
+			}
 
+		}
 		ImGui::ResetMouseDragDelta(0);
 		ImGui::ResetMouseDragDelta(1);
+		yOff = 0.0;
 
 		// Here we build the menus for the next frame. Feel free to pass more arguments to this function call
 		DrawImguiMenus(io, scene);

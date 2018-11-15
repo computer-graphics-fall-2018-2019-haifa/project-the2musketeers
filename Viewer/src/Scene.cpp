@@ -62,6 +62,12 @@ const int Scene::GetActiveModelIndex() const
 	return activeModelIndex;
 }
 
+const std::shared_ptr<MeshModel>& Scene::getActiveModel() const
+{
+	int index = GetActiveModelIndex();
+	return getModeli(index);
+}
+
 const Camera& Scene::getCamerai(int index) const
 {
 	if (index >= 0 && index < models.size())
@@ -154,7 +160,7 @@ void Scene::setColor(v4 c) {
 	int index = GetActiveModelIndex();
 	models[index]->SetColor(c);
 }
-
+/*
 const float Scene::getRotationX() const
 {
 	if (models.size() == 0) return 0;
@@ -177,11 +183,13 @@ const float Scene::getRotationZ() const
 
 void Scene::setRotationX(float a)
 {
+	if (1) return;
+
 	if (models.size() == 0) return;
 	int index = GetActiveModelIndex();
-	while (a > 2 * M_PI)
+	while (a > 2*M_PI)
 		a -= 2 * M_PI;
-	while (a < 2 * -M_PI)
+	while (a < -2*M_PI)
 		a += 2 * M_PI;
 	return models[index]->setRotationX(a);
 }
@@ -190,9 +198,9 @@ void Scene::setRotationY(float a)
 {
 	if (models.size() == 0) return;
 	int index = GetActiveModelIndex();
-	while (a > 2 * M_PI)
+	while (a > M_PI)
 		a -= 2 * M_PI;
-	while (a < 2 * -M_PI)
+	while (a < -M_PI)
 		a += 2 * M_PI;
 	return models[index]->setRotationY(a);
 }
@@ -217,3 +225,4 @@ void Scene::setTranslationVector(glm::vec3 v)
 	int index = GetActiveModelIndex();
 	return models[index]->getTranslationVector();
 }
+*/

@@ -75,36 +75,46 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 
 void Renderer::Render(const Scene& scene)
 {
-	m4 matrix = getTransformationsMatrix(scene);
+//	m4 matrix = getTransformationsMatrix(scene);
 
+	const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
+	if (model == nullptr)
+		return;
+//	model->MultiplyWorldTransformation(Utils::getTranslateMatrix(model->getTranslationVector()));
+//	model->setTranslationVector(v3(0, 0, 0));
+	if (model->getreflextX())
+		model->MultiplyWorldTransformation(Utils::ReflectAxis('x'));
+	if (model->getreflextY())
+		model->MultiplyWorldTransformation(Utils::ReflectAxis('y'));
+	if (model->getreflextZ())
+		model->MultiplyWorldTransformation(Utils::ReflectAxis('z'));
+
+	model->ChangeReflextX(false);
+	model->ChangeReflextY(false);
+	model->ChangeReflextZ(false);
+
+//	float scale = model->getscale();
+//	model->MultiplyWorldTransformation(Utils::getScaleMatrix(v3(scale, scale, scale)));
+//	model->setscale(1.0);
+
+	float angleY = model->getRotationY();
+	float angleX = model->getRotationX();
+	model->MultiplyWorldTransformation(Utils::getRotateMatrixBy_x(angleX));
+
+	model->MultiplyWorldTransformation(Utils::getRotateMatrixBy_y(angleY));
+
+	model->setRotationX(0.0);
+	model->setRotationY(0.0);
+	float scale = model->getscale();
+	//	model->MultiplyWorldTransformation(Utils::getScaleMatrix(v3(scale, scale, scale)));
+	//	model->MultiplyWorldTransformation(Utils::getTranslateMatrix(model->getTranslationVector()));
+//	model->setTranslationVector(v3(0, 0, 0));
+
+	m4 matrix = Utils::getTranslateMatrix(model->getTranslationVector()) *
+		Utils::getScaleMatrix(v3(scale, scale, scale)) *
+		model->GetWorldTransformation();
 	drawFaces(scene, matrix);
-	//DrawTriangle(50, 50, 50, 200, 130, 200);
-	//Draw_Line_Bresenham(100, 1000, 300, 50, glm::vec3(1, 0, 0));
-	//#############################################
-	//## You should override this implementation ##
-	//## Here you should render the scene.       ##
-	//#############################################
 
-	// Draw a chess board in the middle of the screen
-	/*for (int i = 100; i < viewportWidth - 100; i++)
-	{
-		for (int j = 100; j < viewportHeight - 100; j++)
-		{
-			int mod_i = i / 50;
-			int mod_j = j / 50;
-
-			int odd = (mod_i + mod_j) % 2;
-			if (odd)
-			{
-				putPixel(i, j, glm::vec3(0, 1, 0));
-			}
-			else
-			{
-				putPixel(i, j, glm::vec3(1, 0, 0));
-			}
-		}
-	}*/
-	
 }
 
 //##############################
@@ -344,7 +354,7 @@ void Renderer::drawFaces(const Scene& scene,m4 matrix)
 
 }
 
-
+/*
 const v3 Renderer::applyTransformations(const v3& point, const Scene& scene)
 {
 	float scale = scene.getScale();
@@ -367,14 +377,6 @@ const v3 Renderer::applyTransformations(const v3& point, const Scene& scene)
 
 	return Utils::back_from_hom(p);
 }
-/*
-const v3 Renderer::applyTransformations(const v4& point)
-{
-	return Utils::back_from_hom(Utils::getTranslateMatrix(v3(500, 500, 500)) * point);
-	return Utils::getScaleMatrix(v3(2,2,2))*point;
-}
-*/
-
 
 m4 Renderer::getTransformationsMatrix(const Scene& scene)
 {
@@ -402,3 +404,4 @@ m4 Renderer::getTransformationsMatrix(const Scene& scene)
 	return transformationsMatrix;
 
 }
+*/

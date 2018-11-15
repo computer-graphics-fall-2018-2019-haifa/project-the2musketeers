@@ -40,6 +40,8 @@ public:
 	void SetActiveModelIndex(int index);
 	const int GetActiveModelIndex() const;
 
+	const std::shared_ptr<MeshModel>& getActiveModel() const;
+
 	const std::shared_ptr<MeshModel>& getModeli(int index) const;
 	const Camera& getCamerai(int index) const;
 

@@ -38,6 +38,9 @@ public:
 	const glm::vec4& GetColor() const;
 	void SetColor(const glm::vec4& color);
 
+	void MeshModel::MultiplyWorldTransformation(const glm::mat4x4& matrix);
+
+
 	const std::string& GetModelName();
 
 	const std::vector<Face>& getFaces() const;
