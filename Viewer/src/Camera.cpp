@@ -28,7 +28,8 @@ void Camera::SetOrthographicProjection(
 	const float near,
 	const float far)
 {
-
+	float wedith = aspectRatio * height;
+	
 
 }
 
@@ -38,6 +39,7 @@ void Camera::SetPerspectiveProjection(
 	const float near,
 	const float far)
 {
+
 
 }
 
@@ -55,9 +57,10 @@ m4 LookAt(const v3& eye, const v3& at, const v3& up)
 	v3 y = Utils::cross_product(z, x);
 	x = Utils::normalize(x);
 	y = Utils::normalize(y);
-	return m4(
+	m4 m= m4(
 		x.x, x.y, x.z, -Utils::dot_product(x, eye),
 		y.x, y.y, y.z, -Utils::dot_product(y, eye),
 		z.x, z.y, z.z, -Utils::dot_product(z, eye),
 		0, 0, 0, 1);
+	return m * Utils::getTranslateMatrix(-eye);
 }
