@@ -63,17 +63,25 @@ int main(int argc, char ** argv)
 
 		glfwPollEvents();
 		StartFrame();
+
 		float currentScale = scene.getScale();
 		scene.setScale(currentScale += 30 * yOff);
 		yOff = 0.0;
 
-		ImVec2 d = ImGui::GetMouseDragDelta();
+		ImVec2 d = ImGui::GetMouseDragDelta(0);
 		float recentAngleY = scene.getRotationY();
 		float recentAngleX = scene.getRotationX();
-		scene.setRotationY(recentAngleY + (d.x / 180.0)*M_PI);
-		scene.setRotationX(recentAngleX + (d.y / 180.0)*M_PI);
-		
-		ImGui::ResetMouseDragDelta();
+		scene.setRotationY(recentAngleY + (d.x / 360.0)*M_PI);
+		scene.setRotationX(recentAngleX + (d.y / 360.0)*M_PI);
+
+		ImVec2 dr = ImGui::GetMouseDragDelta(1);
+		int translationX = scene.getTranslationVector().x;
+		int translationY = scene.getTranslationVector().y;
+		int translationZ = scene.getTranslationVector().z;
+		scene.setTranslationVector(v3(translationX + dr.x, translationY - dr.y, translationZ));
+
+		ImGui::ResetMouseDragDelta(0);
+		ImGui::ResetMouseDragDelta(1);
 
 		// Here we build the menus for the next frame. Feel free to pass more arguments to this function call
 		DrawImguiMenus(io, scene);

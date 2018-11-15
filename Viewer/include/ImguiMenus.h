@@ -1,4 +1,6 @@
 #pragma once
+
+#define _USE_MATH_DEFINES
 #include <imgui/imgui.h>
 #include "Scene.h"
 

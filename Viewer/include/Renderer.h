@@ -41,9 +41,9 @@ public:
 	void matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3& Color); //when slope less than -1
 	// Add more methods/functionality as needed...
 	void DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color);
-	void drawFaces(const Scene& scene);
+	void drawFaces(const Scene& scene, m4 matrix);
 	
 	const v3 applyTransformations(const v3& point,const Scene& scene);
 	//const v3 applyTransformations(const v4& point);
-
+	m4 getTransformationsMatrix(const Scene& scene);
 };

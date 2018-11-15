@@ -66,5 +66,7 @@ public:
 	void setRotationY(float a);
 	void setRotationZ(float a);
 
+	 glm::vec3 getTranslationVector() const;
+	void setTranslationVector(glm::vec3 v);
 	// Add more methods as needed...
 };

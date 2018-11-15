@@ -204,3 +204,16 @@ void Scene::setRotationZ(float a)
 	return models[index]->setRotationZ(a);
 }
 
+void Scene::setTranslationVector(glm::vec3 v)
+{
+	if (models.size() == 0) return;
+	int index = GetActiveModelIndex();
+	models[index]->setTranslationVector(v);
+}
+
+ glm::vec3 Scene::getTranslationVector() const
+{
+	if (models.size() == 0) return glm::vec3(1.0,1.0,1.0);
+	int index = GetActiveModelIndex();
+	return models[index]->getTranslationVector();
+}

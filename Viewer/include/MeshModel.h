@@ -26,7 +26,7 @@ private:
 	float rotationX = 0.0f;
 	float rotationY = 0.0f;
 	float rotationZ = 0.0f;
-
+	glm::vec3 translationCords = glm::vec3(220.0, 120.0, 100.0);
 
 public:
 	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
@@ -72,5 +72,7 @@ public:
 	void setRotationY(float a);
 	void setRotationZ(float a);
 
+	glm::vec3 getTranslationVector() const;
+	void setTranslationVector(glm::vec3 v);
 	// Add more methods/functionality as needed...
 };

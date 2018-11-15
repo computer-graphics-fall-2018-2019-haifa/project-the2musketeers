@@ -113,3 +113,6 @@ const float MeshModel::getRotationZ() const { return rotationZ; }
 void MeshModel::setRotationX(float a) { rotationX = a; }
 void MeshModel::setRotationY(float a) { rotationY = a; }
 void MeshModel::setRotationZ(float a) { rotationZ = a; }
+
+glm::vec3 MeshModel::getTranslationVector() const { return translationCords; }
+void MeshModel::setTranslationVector(glm::vec3 v) { translationCords = v; }

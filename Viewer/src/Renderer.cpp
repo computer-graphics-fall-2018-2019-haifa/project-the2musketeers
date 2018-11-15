@@ -75,7 +75,9 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 
 void Renderer::Render(const Scene& scene)
 {
-	drawFaces(scene);
+	m4 matrix = getTransformationsMatrix(scene);
+
+	drawFaces(scene, matrix);
 	//DrawTriangle(50, 50, 50, 200, 130, 200);
 	//Draw_Line_Bresenham(100, 1000, 300, 50, glm::vec3(1, 0, 0));
 	//#############################################
@@ -277,7 +279,6 @@ void Renderer::Draw_Line_Bresenham(int x1, int y1, int x2, int y2,glm::vec3& Col
 
 }
 
-
 void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3& Color) {
 	int dy = y1 - y2;
 	int dx = x2 - x1;
@@ -298,21 +299,14 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 {
 	int x1 = a.x, x2= b.x, x3= c.x,
 		y1= a.y, y2 = b.y, y3 = c.y;
-/*
-	x1 += 320;
-	x2 += 320;
-	x3 += 320;
-	y1 += 180;
-	y2 += 180;
-	y3 += 180;
-*/
+
 	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
 	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
 	Renderer::Draw_Line_Bresenham(x3, y3, x2, y2, color);
 
 }
 
-void Renderer::drawFaces(const Scene& scene)
+void Renderer::drawFaces(const Scene& scene,m4 matrix)
 {
 	if (scene.GetModelCount() == 0)
 		return;
@@ -320,6 +314,9 @@ void Renderer::drawFaces(const Scene& scene)
 
 	int modelIndex = scene.GetActiveModelIndex();
 	const std::shared_ptr<MeshModel>& model = scene.getModeli(modelIndex);
+
+	v4 c = scene.getColor();
+	v3 col = v3(c.x, c.y, c.z);
 
 //	const std::vector<Face>& faces = model->getFaces;
 	for (int i = 0; i < model->getFacesNumber(); i++)
@@ -332,14 +329,17 @@ void Renderer::drawFaces(const Scene& scene)
 		const v3& p2 = model->getVertixI(v2Index - 1);
 		const v3& p3 = model->getVertixI(v3Index - 1);
 
-		v3 tP1 = applyTransformations(p1,scene);
-		v3 tP2 = applyTransformations(p2,scene);
-		v3 tP3 = applyTransformations(p3,scene);
+		v4 hp1 = Utils::swtitch_to_hom(p1);
+		v4 hp2 = Utils::swtitch_to_hom(p2);
+		v4 hp3 = Utils::swtitch_to_hom(p3);
 
-		v4 c = scene.getColor();
-		v3 col = v3(c.x, c.y, c.z);
+		hp1 = matrix * hp1;
+		hp2 = matrix * hp2;
+		hp3 = matrix * hp3;
 
-		Renderer::DrawTriangleOnScreen(tP1, tP2, tP3, col);
+
+		Renderer::DrawTriangleOnScreen(Utils::back_from_hom(hp1) , Utils::back_from_hom(hp2)
+			, Utils::back_from_hom(hp3), col);
 	}
 
 }
@@ -374,3 +374,31 @@ const v3 Renderer::applyTransformations(const v4& point)
 	return Utils::getScaleMatrix(v3(2,2,2))*point;
 }
 */
+
+
+m4 Renderer::getTransformationsMatrix(const Scene& scene)
+{
+	m4 transformationsMatrix = m4(
+		1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+	);
+
+	transformationsMatrix *= Utils::getTranslateMatrix(scene.getTranslationVector());
+	if(scene.getReflextX())
+		transformationsMatrix *= Utils::ReflectAxis('x');
+	if (scene.getReflextY())
+		transformationsMatrix *= Utils::ReflectAxis('y');
+	if (scene.getReflextX())
+		transformationsMatrix *= Utils::ReflectAxis('z');
+
+
+	float scale = scene.getScale();
+	transformationsMatrix *= Utils::getScaleMatrix(v3(scale, scale, scale));
+
+	float angleY = scene.getRotationY();
+	float angleX = scene.getRotationX();
+	transformationsMatrix *= Utils::getRotateMatrixBy_y(angleY);
+	transformationsMatrix *= Utils::getRotateMatrixBy_x(angleX);
+
+	return transformationsMatrix;
+
+}
