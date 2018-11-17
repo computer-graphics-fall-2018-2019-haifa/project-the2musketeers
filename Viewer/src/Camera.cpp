@@ -17,7 +17,7 @@ Camera::~Camera() {}
 
 void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up)
 {
-	m4 LookAtMatrix = Camera::LookAt(eye, at, up);
+//	m4 LookAtMatrix = Camera::LookAt(eye, at, up);
 
 
 
@@ -46,7 +46,7 @@ void Camera::SetPerspectiveProjection(
 void Camera::SetZoom(const float zoom) { this->zoom = zoom; }
 
 
-
+/*
 m4 Camera::LookAt(const v3& eye, const v3& at, const v3& up)
 {
 	v3 z = Utils::normalize(eye - at);
@@ -61,3 +61,5 @@ m4 Camera::LookAt(const v3& eye, const v3& at, const v3& up)
 		0, 0, 0, 1);
 	return m * Utils::getTranslateMatrix(-eye);
 }
+
+*/

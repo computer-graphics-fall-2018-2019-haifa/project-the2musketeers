@@ -148,19 +148,29 @@ void Scene::changeReflextZ(bool a) {
 	models[index]->ChangeReflextZ(a);
 }
 
-const v4 Scene::getColor() const {
+const v4 Scene::getColor(int a) const {
 	if (models.size() == 0)
 		return v4(0,0,0,0);
 	int index = GetActiveModelIndex();
-	return models[index]->GetColor();
+	if(a==0)
+		return models[index]->GetColor();
+	if(a==1)
+		return models[index]->GetVertNormalColor();
+	if(a==2)
+		return models[index]->GetFaceNormalColor();
 }
 
-void Scene::setColor(v4 c) {
+void Scene::setColor(v4 c,int a) {
 	if (models.size() == 0) return;
 	int index = GetActiveModelIndex();
-	models[index]->SetColor(c);
+	if (a == 0)
+		models[index]->SetColor(c);
+	if (a == 1)
+		models[index]->SetVertNormalColor(c);
+	if (a == 2)
+		models[index]->SetFaceNormalColor(c);
 }
-/*
+
 const float Scene::getRotationX() const
 {
 	if (models.size() == 0) return 0;
@@ -225,4 +235,54 @@ void Scene::setTranslationVector(glm::vec3 v)
 	int index = GetActiveModelIndex();
 	return models[index]->getTranslationVector();
 }
-*/
+
+
+
+ void Scene::setBoundingBox(bool a)
+ {
+	 if (models.size() == 0) return;
+	 int index = GetActiveModelIndex();
+	 models[index]->setBoundingBox(a);
+ }
+
+bool Scene::GetBoundingBox()
+ {
+	 if (models.size() == 0) return 0;
+	 int index = GetActiveModelIndex();
+	 return models[index]->GetBoundingBox();
+ }
+///////////////////////////////////////////////////////////
+
+void Scene::setVertNormals(bool a)
+{
+	if (models.size() == 0) return;
+	int index = GetActiveModelIndex();
+	models[index]->setVertNormals(a);
+}
+
+bool Scene::GetVertNormals()
+{
+	if (models.size() == 0) return 0;
+	int index = GetActiveModelIndex();
+	return models[index]->GetVertNormals();
+}
+
+
+///////////////////////////////////////////////////
+
+
+void Scene::setFaceNormals(bool a)
+{
+	if (models.size() == 0) return;
+	int index = GetActiveModelIndex();
+	models[index]->setFaceNormals(a);
+}
+
+bool Scene::GetFaceNormals()
+{
+	if (models.size() == 0) return 0;
+	int index = GetActiveModelIndex();
+	return models[index]->GetFaceNormals();
+}
+
+

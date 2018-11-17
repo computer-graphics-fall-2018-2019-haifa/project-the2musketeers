@@ -57,8 +57,8 @@ public:
 	void changeReflextZ(bool a);
 
 
-	const v4 getColor() const;
-	void setColor(v4 c);
+	const v4 getColor(int a) const;
+	void setColor(v4 c,int a);
 
 	const float getRotationX() const;
 	const float getRotationY() const;
@@ -70,5 +70,16 @@ public:
 
 	 glm::vec3 getTranslationVector() const;
 	void setTranslationVector(glm::vec3 v);
+
+
+
+	void setBoundingBox(bool a);
+	bool GetBoundingBox();
+
+	void setVertNormals(bool a);
+	bool GetVertNormals();
+
+	void setFaceNormals(bool a);
+	bool GetFaceNormals();
 	// Add more methods as needed...
 };

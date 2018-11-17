@@ -123,3 +123,21 @@ void MeshModel::setRotationZ(float a) { rotationZ = a; }
 
 glm::vec3 MeshModel::getTranslationVector() const { return translationCords; }
 void MeshModel::setTranslationVector(glm::vec3 v) { translationCords = v; }
+
+
+
+const glm::vec4& MeshModel::GetVertNormalColor() const { return VertNormalsColor; }
+void MeshModel::SetVertNormalColor(const glm::vec4& color) { VertNormalsColor = color; }
+
+const glm::vec4& MeshModel::GetFaceNormalColor() const { return faceNormalsColor; }
+void MeshModel::SetFaceNormalColor(const glm::vec4& color) { faceNormalsColor = color; }
+
+void MeshModel::setBoundingBox(bool a) { DrawBoundingBox = a; }
+bool MeshModel::GetBoundingBox() { return DrawBoundingBox; }
+
+
+void MeshModel::setVertNormals(bool a) { DrawVertNormals = a; }
+bool MeshModel::GetVertNormals() { return DrawVertNormals; }
+
+void MeshModel::setFaceNormals(bool a) { DrawFaceNormals = a; }
+bool MeshModel::GetFaceNormals() { return DrawFaceNormals; }

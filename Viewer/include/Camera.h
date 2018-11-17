@@ -24,7 +24,7 @@ public:
 	~Camera();
 
 	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
-	m4 LookAt(const v3& eye, const v3& at, const v3& up);
+	//m4 LookAt(const v3& eye, const v3& at, const v3& up);
 
 	void SetOrthographicProjection(
 		const float height,

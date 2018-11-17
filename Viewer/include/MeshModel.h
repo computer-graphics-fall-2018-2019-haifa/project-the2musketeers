@@ -17,7 +17,14 @@ private:
 	std::vector<glm::vec3> normals;
 	glm::mat4x4 worldTransform;
 	glm::vec4 color;
+	glm::vec4 VertNormalsColor;
+	glm::vec4 faceNormalsColor;
 	std::string modelName;
+
+	bool DrawVertNormals = 0;
+	bool DrawFaceNormals = 0;
+	bool DrawBoundingBox = 0;
+
 
 	float Scale = 10.0f;
 	bool reflect_by_x = 0;
@@ -37,6 +44,21 @@ public:
 
 	const glm::vec4& GetColor() const;
 	void SetColor(const glm::vec4& color);
+
+	const glm::vec4& GetVertNormalColor() const;
+	void SetVertNormalColor(const glm::vec4& color);
+
+	const glm::vec4& GetFaceNormalColor() const;
+	void SetFaceNormalColor(const glm::vec4& color);
+
+	void setBoundingBox(bool a);
+	bool GetBoundingBox();
+
+	void setVertNormals(bool a);
+	bool GetVertNormals();
+
+	void setFaceNormals(bool a);
+	bool GetFaceNormals();
 
 	void MeshModel::MultiplyWorldTransformation(const glm::mat4x4& matrix);
 
