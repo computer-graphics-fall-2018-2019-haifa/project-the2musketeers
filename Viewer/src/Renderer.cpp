@@ -15,7 +15,7 @@ Renderer::Renderer(int viewportWidth, int viewportHeight, int viewportX, int vie
 	zBuffer(nullptr)
 {
 	initOpenGLRendering();
-	SetViewport(viewportWidth, viewportHeight, -viewportWidth/2, -viewportHeight/2);
+	SetViewport(viewportWidth, viewportHeight, viewportWidth/2, viewportHeight/2);
 }
 
 Renderer::~Renderer()
@@ -28,6 +28,8 @@ Renderer::~Renderer()
 
 void Renderer::putPixel(int i, int j, const glm::vec3& color)
 {
+	i += viewportX;
+	j += viewportY;
 	if (i < 0) return; if (i >= viewportWidth) return;
 	if (j < 0) return; if (j >= viewportHeight) return;
 	colorBuffer[INDEX(viewportWidth, i, j, 0)] = color.x;
@@ -43,9 +45,9 @@ void Renderer::createBuffers(int viewportWidth, int viewportHeight)
 	}
 
 	colorBuffer = new float[3* viewportWidth * viewportHeight];
-	for (int x = 0; x < viewportWidth; x++)
+	for (int x = -viewportX; x < viewportWidth; x++)
 	{
-		for (int y = 0; y < viewportHeight; y++)
+		for (int y = -viewportY; y < viewportHeight; y++)
 		{
 			putPixel(x, y, glm::vec3(0.0f, 0.0f, 0.0f));
 		}
@@ -54,9 +56,9 @@ void Renderer::createBuffers(int viewportWidth, int viewportHeight)
 
 void Renderer::ClearColorBuffer(const glm::vec3& color)
 {
-	for (int i = 0; i < viewportWidth; i++)
+	for (int i = -viewportX; i < viewportWidth; i++)
 	{
-		for (int j = 0; j < viewportHeight; j++)
+		for (int j = -viewportY; j < viewportHeight; j++)
 		{
 			putPixel(i, j, color);
 		}
@@ -76,7 +78,8 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 void Renderer::Render(const Scene& scene)
 {
 //	m4 matrix = getTransformationsMatrix(scene);
-	Draw_Line_Bresenham(0, 0, 100, 100, v3(1, 0, 0));
+//	Draw_Line_Bresenham(0, 0, 100, 100, v3(1, 0, 0));
+
 	const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
 	if (model == nullptr)
 		return;
@@ -110,7 +113,7 @@ void Renderer::Render(const Scene& scene)
 	//	model->MultiplyWorldTransformation(Utils::getTranslateMatrix(model->getTranslationVector()));
 //	model->setTranslationVector(v3(0, 0, 0));
 
-	m4 matrix = Utils::getTranslateMatrix(model->getTranslationVector()) *
+	m4 matrix = //Utils::getTranslateMatrix(model->getTranslationVector()) *
 		Utils::getScaleMatrix(v3(scale, scale, scale)) *
 		model->GetWorldTransformation();
 	drawFaces(scene, matrix);
@@ -325,7 +328,7 @@ void Renderer::drawFaces(const Scene& scene,m4 matrix)
 	int modelIndex = scene.GetActiveModelIndex();
 	const std::shared_ptr<MeshModel>& model = scene.getModeli(modelIndex);
 
-	v4 c = scene.getColor();
+	v4 c = scene.getColor(0);
 	v3 col = v3(c.x, c.y, c.z);
 
 //	const std::vector<Face>& faces = model->getFaces;
