@@ -17,7 +17,12 @@ class Camera
 private:
 	glm::mat4x4 viewTransformation;
 	glm::mat4x4 projectionTransformation;
-	float zoom;
+	float _fovy;
+	float _height;
+	float _near;
+	float _far;
+	float _aspectRatio;
+	float _zoom;
 
 public:
 	Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up);

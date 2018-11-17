@@ -60,7 +60,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		bool z = scene.getReflextZ();
 
 
-		ImGui::Begin("Sittings");                          // Create a window called "Hello, world!" and append into it.
+		ImGui::Begin("Sittings");              
 		ImGui::Checkbox("Camera Sittings", &showCameraSittings);
 		ImGui::Checkbox("Color Sittings", &showColorSittings);
 
@@ -74,13 +74,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 
-		if (ImGui::Button("Reflect by X"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		if (ImGui::Button("Reflect by X"))
 			x = !x;
 
-		if (ImGui::Button("Reflect by Y"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		if (ImGui::Button("Reflect by Y"))
 			y = !y;
 
-		if (ImGui::Button("Reflect by Z"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		if (ImGui::Button("Reflect by Z"))
 			z = !z;
 
 		scene.changeReflextX(x);

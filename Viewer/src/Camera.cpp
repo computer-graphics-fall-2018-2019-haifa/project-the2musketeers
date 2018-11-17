@@ -8,7 +8,7 @@
 
 
 Camera::Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) :
-	zoom(1.0)
+	_zoom(1.0)
 {
 	SetCameraLookAt(eye, at, up);
 }
@@ -43,23 +43,22 @@ void Camera::SetPerspectiveProjection(
 	projectionTransformation = m4(s,0,0,0,0,s,0,0,0,0,far/(near-far),-1,0,0,far*near/(near-far),0);
 }
 
-void Camera::SetZoom(const float zoom) { this->zoom = zoom; }
+void Camera::SetZoom(const float zoom) { this->_zoom = zoom; }
 
 
 /*
 m4 Camera::LookAt(const v3& eye, const v3& at, const v3& up)
 {
 	v3 z = Utils::normalize(eye - at);
-	v3 x = Utils::cross_product(up, z);
-	v3 y = Utils::cross_product(z, x);
-	x = Utils::normalize(x);
+	v3 x = Utils::normalize(Utils::cross_product(z,up));
+	v3 y = Utils::cross_product(x,z);
 	y = Utils::normalize(y);
 	m4 m= m4(
 		x.x, x.y, x.z, -Utils::dot_product(x, eye),
 		y.x, y.y, y.z, -Utils::dot_product(y, eye),
 		z.x, z.y, z.z, -Utils::dot_product(z, eye),
 		0, 0, 0, 1);
-	return m * Utils::getTranslateMatrix(-eye);
+	return Utils::getTranslateMatrix(-eye) * m ;
 }
 
 */
