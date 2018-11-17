@@ -15,7 +15,7 @@ Renderer::Renderer(int viewportWidth, int viewportHeight, int viewportX, int vie
 	zBuffer(nullptr)
 {
 	initOpenGLRendering();
-	SetViewport(viewportWidth, viewportHeight, viewportX, viewportY);
+	SetViewport(viewportWidth, viewportHeight, -viewportWidth/2, -viewportHeight/2);
 }
 
 Renderer::~Renderer()
@@ -76,7 +76,7 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 void Renderer::Render(const Scene& scene)
 {
 //	m4 matrix = getTransformationsMatrix(scene);
-
+	Draw_Line_Bresenham(0, 0, 100, 100, v3(1, 0, 0));
 	const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
 	if (model == nullptr)
 		return;

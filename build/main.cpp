@@ -58,7 +58,6 @@ int main(int argc, char ** argv)
 
 	float tester = 0;
 	// This is the main game loop..
-	ImVec2 drag= ImVec2(0,0);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -79,19 +78,12 @@ int main(int argc, char ** argv)
 				float recentAngleX = model->getRotationX();
 				model->setRotationY(recentAngleY + (d.x / 720)*M_PI);
 				model->setRotationX(recentAngleX + (d.y / 720)*M_PI);
-/*
-				if (tester != model->getRotationY())
-				{
-					std::cout << scene.getRotationY() << "\n";
-					tester = scene.getRotationY();
 
-				}
-*/
-				ImVec2 dr = ImGui::GetMouseDragDelta(1);
+				d = ImGui::GetMouseDragDelta(1);
 				int translationX = model->getTranslationVector().x;
 				int translationY = model->getTranslationVector().y;
 				int translationZ = model->getTranslationVector().z;
-				model->setTranslationVector(v3(translationX + dr.x, translationY - dr.y, translationZ));
+				model->setTranslationVector(v3(translationX + d.x, translationY - d.y, translationZ));
 			}
 
 		}

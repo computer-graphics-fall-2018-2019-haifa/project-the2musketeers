@@ -47,7 +47,7 @@ void Camera::SetZoom(const float zoom) { this->zoom = zoom; }
 
 
 
-m4 LookAt(const v3& eye, const v3& at, const v3& up)
+m4 Camera::LookAt(const v3& eye, const v3& at, const v3& up)
 {
 	v3 z = Utils::normalize(eye - at);
 	v3 x = Utils::cross_product(up, z);
