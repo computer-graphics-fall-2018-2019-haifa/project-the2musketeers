@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	Camera camera1 = Camera(v3(0, 0, -3), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera1 = Camera(v3(10, 10, -3), v3(0, 0, 0), v3(0, 1, 0));
 
 	scene.AddCamera(camera1);
 	scene.getActiveCamera().SetOrthographicProjection(1, 2, 5, 0);
@@ -83,8 +83,8 @@ int main(int argc, char ** argv)
 				ImVec2 d = ImGui::GetMouseDragDelta(0);
 				float recentAngleY = model->getRotationY();
 				float recentAngleX = model->getRotationX();
-				model->setRotationY(recentAngleY + (d.x / 720)*M_PI);
-				model->setRotationX(recentAngleX + (d.y / 720)*M_PI);
+				model->setRotationY(recentAngleY + (d.x / 1000)*M_PI);
+				model->setRotationX(recentAngleX + (d.y / 1000)*M_PI);
 
 				d = ImGui::GetMouseDragDelta(1);
 				int translationX = model->getTranslationVector().x;

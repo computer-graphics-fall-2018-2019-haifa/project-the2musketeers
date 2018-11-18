@@ -136,30 +136,11 @@ void Renderer::Render(Scene& scene)
 		projectionMatrix *
 		lookat *
 		matrix;
-	/*
-		m4 temp1 = matrix;
-		std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
-		std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
-		std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
-		std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
-		matrix =
-			glm::transpose(matrix);
-		matrix =
-			glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) *
-	//		glm::transpose(projectionMatrix) *
-			lookat *
-			matrix;
-	//	matrix = glm::transpose(matrix);
-
-		std::cout << std::endl;
-		temp1 = matrix;
-		std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
-		std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
-		std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
-		std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
-	*/
 
 	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
+	matrix = glm::transpose(Utils::getTranslateMatrix(model->getTranslationVector())) * matrix;
+//	model->setTranslationVector(v3(0, 0, 0));
+
 	drawFaces(scene, matrix);
 }
 
