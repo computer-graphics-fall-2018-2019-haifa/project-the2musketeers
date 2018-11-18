@@ -46,4 +46,9 @@ public:
 	const v3 applyTransformations(const v3& point,const Scene& scene);
 	//const v3 applyTransformations(const v4& point);
 	m4 getTransformationsMatrix(const Scene& scene);
+
+
+
+	float calc_min(float a, float b, float c, float d);
+	float calc_max(float a, float b, float c, float d);
 };
