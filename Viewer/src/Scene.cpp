@@ -10,6 +10,10 @@ Scene::Scene() :
 
 }
 
+ Camera& Scene::getActiveCamera()
+{
+	return cameras[activeCameraIndex];
+}
 void Scene::AddModel(const std::shared_ptr<MeshModel>& model)
 {
 	models.push_back(model);
@@ -197,10 +201,6 @@ void Scene::setRotationX(float a)
 
 	if (models.size() == 0) return;
 	int index = GetActiveModelIndex();
-	while (a > 2*M_PI)
-		a -= 2 * M_PI;
-	while (a < -2*M_PI)
-		a += 2 * M_PI;
 	return models[index]->setRotationX(a);
 }
 
@@ -208,10 +208,7 @@ void Scene::setRotationY(float a)
 {
 	if (models.size() == 0) return;
 	int index = GetActiveModelIndex();
-	while (a > M_PI)
-		a -= 2 * M_PI;
-	while (a < -M_PI)
-		a += 2 * M_PI;
+
 	return models[index]->setRotationY(a);
 }
 

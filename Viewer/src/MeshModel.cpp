@@ -63,7 +63,7 @@ const std::vector<glm::vec3>& MeshModel::getNormals() const
 
 void MeshModel::MultiplyWorldTransformation(const glm::mat4x4& matrix)
 {
-	this->worldTransform = matrix * worldTransform;
+	this->worldTransform = worldTransform *matrix;
 }
 
 

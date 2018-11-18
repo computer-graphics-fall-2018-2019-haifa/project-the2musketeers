@@ -40,7 +40,7 @@ public:
 
 	static v3 normalize(const v3& w);
 	
-
+	static m4 transpose(m4 mat);
 
 
 	// Add here more static utility functions...

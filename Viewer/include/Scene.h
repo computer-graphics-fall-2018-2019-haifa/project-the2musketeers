@@ -43,6 +43,8 @@ public:
 	const std::shared_ptr<MeshModel>& getActiveModel() const;
 
 	const std::shared_ptr<MeshModel>& getModeli(int index) const;
+
+	 Camera& getActiveCamera();
 	const Camera& getCamerai(int index) const;
 
 	const float getScale() const;

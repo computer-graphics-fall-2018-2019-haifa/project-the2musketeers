@@ -50,6 +50,13 @@ int main(int argc, char ** argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
+	Camera camera1 = Camera(v3(0, 0, 3), v3(0, 0, 0), v3(0, 1, 0));
+
+	scene.AddCamera(camera1);
+	scene.getActiveCamera().SetOrthographicProjection(1, 2, 5, 0);
+//	scene.getActiveCamera().SetPerspectiveProjection(150, 2, 10, 5);
+
+
 	// Setup ImGui
 	ImGuiIO& io = SetupDearImgui(window);
 

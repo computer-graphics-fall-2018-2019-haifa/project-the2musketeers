@@ -16,7 +16,8 @@ class Camera
 {
 private:
 	glm::mat4x4 viewTransformation;
-	glm::mat4x4 projectionTransformation;
+	glm::mat4x4 projectionTransformation = m4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+	glm::mat4x4 lookAtTransformation;
 	float _fovy;
 	float _height;
 	float _near;
@@ -25,18 +26,18 @@ private:
 	float _zoom;
 
 public:
-	Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up);
+	Camera(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
 	~Camera();
 
 	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
-	//m4 LookAt(const v3& eye, const v3& at, const v3& up);
+	m4 GetCameraLookAt() const;
 
 	void SetOrthographicProjection(
 		const float height,
 		const float aspectRatio,
 		const float near,
 		const float far);
-
+	m4 getProjectionTransformation() const;
 	void SetPerspectiveProjection(
 		const float fovy,
 		const float aspect,

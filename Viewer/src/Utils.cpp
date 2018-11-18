@@ -142,10 +142,10 @@ m4 Utils::getScaleMatrix(const float& x, const float& y, const float& z)
 
 m4 Utils::getTranslateMatrix(const v3 &v)
 {
-	return m4(	1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				v.x,v.y,v.z, 1 );
+	return m4(	1, 0, 0, v.x,
+				0, 1, 0, v.y,
+				0, 0, 1, v.z,
+				0,0,0, 1 );
 }
 
 m4 Utils::getTranslateMatrix(const float& x, const float& y, const float& z)
@@ -158,17 +158,17 @@ m4 Utils::getRotateMatrixBy_x(const float &a)
 {
 	return m4(
 		1, 0, 0, 0,
-		0, cosf(a), sinf(a), 0,
-		0, -sinf(a), cosf(a), 0,
+		0, cosf(a), -sinf(a), 0,
+		0, sinf(a), cosf(a), 0,
 		0, 0, 0, 1);
 }
 
 m4 Utils::getRotateMatrixBy_y(const float &a)
 {
 	return m4(
-		cosf(a), 0, -sinf(a), 0,
+		cosf(a), 0, sinf(a), 0,
 		0, 1, 0, 0,
-		sinf(a), 0, cosf(a), 0,
+		-sinf(a), 0, cosf(a), 0,
 		0, 0, 0, 1);
 }
 
@@ -230,5 +230,20 @@ m4 Utils::rotate_arbitrary_axis(const float& a, const v3& p, const v3& dir)
 v3 Utils::normalize(const v3& w)
 {
 	float normal = (w.x*w.x + w.y*w.y + w.z*w.z);
+	if (normal == 0)
+		return w;
 	return v3(w.x / normal, w.y / normal, w.z / normal);
+}
+
+m4 Utils::transpose(m4 mat)
+{
+	m4 newMatrix(1);
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			newMatrix[i][j] = mat[j][i];
+		}
+	}
+	return newMatrix;
 }

@@ -26,14 +26,14 @@ private:
 	bool DrawBoundingBox = 0;
 
 
-	float Scale = 10.0f;
+	float Scale = 120.0f;
 	bool reflect_by_x = 0;
 	bool reflect_by_y = 0;
 	bool reflect_by_z = 0;
 	float rotationX = 0.0f;
 	float rotationY = 0.0f;
 	float rotationZ = 0.0f;
-	glm::vec3 translationCords = glm::vec3(220.0, 120.0, 100.0);
+	glm::vec3 translationCords = glm::vec3(0, 0, 0);
 
 public:
 	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
