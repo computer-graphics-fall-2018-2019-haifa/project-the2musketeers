@@ -16,6 +16,8 @@
 bool showDemoWindow = false;
 bool showCameraSittings = false;
 bool showColorSittings = false;
+static bool mod_cont = 0;
+
 
 
 
@@ -51,43 +53,62 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 
 
-		float sc = scene.getScale();
-		
 
-		// 3 bool for reflecting axis
-		bool x = scene.getReflextX() ;
-		bool y = scene.getReflextY();
-		bool z = scene.getReflextZ();
 
 
 		ImGui::Begin("Sittings");              
 		ImGui::Checkbox("Camera Sittings", &showCameraSittings);
-		ImGui::Checkbox("Color Sittings", &showColorSittings);
+		ImGui::Checkbox("Color and drawing Sittings", &showColorSittings);
 
-		bool bnbox = scene.GetBoundingBox();
-		ImGui::Checkbox("Draw Bounding Box", &bnbox);
-		scene.setBoundingBox(bnbox);
-
-		ImGui::SliderFloat("Scale", &sc, 0.01f, 2000.0f);
-		scene.setScale(sc);
+	
 		
 
 
+		ImGui::Checkbox("Model Control", &mod_cont);
+		if (mod_cont  &&  scene.GetModelCount()) {
+			bool bnbox = scene.GetBoundingBox();
+			float sc = scene.getScale();
 
-		if (ImGui::Button("Reflect by X"))
-			x = !x;
 
-		if (ImGui::Button("Reflect by Y"))
-			y = !y;
+			// 3 bool for reflecting axis
+			bool x = scene.getReflextX();
+			bool y = scene.getReflextY();
+			bool z = scene.getReflextZ();
 
-		if (ImGui::Button("Reflect by Z"))
-			z = !z;
 
-		scene.changeReflextX(x);
-		scene.changeReflextY(y);
-		scene.changeReflextZ(z);
+			ImGui::SliderFloat("Scale", &sc, 0.001f, 3000.0f);
+			scene.setScale(sc);
 
-		
+			if (ImGui::Button("Reflect by X"))
+				x = !x;
+
+			if (ImGui::Button("Reflect by Y"))
+				y = !y;
+
+			if (ImGui::Button("Reflect by Z"))
+				z = !z;
+
+			scene.changeReflextX(x);
+			scene.changeReflextY(y);
+			scene.changeReflextZ(z);
+
+			const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
+
+			float x_rotate = 0;
+			float y_rotate = 0;
+			float z_rotate = 0;
+			
+			ImGui::Text("Rotating Axis:");
+			ImGui::SliderAngle("Rotate X", &x_rotate, -360, 360);
+			ImGui::SliderAngle("Rotate Y", &y_rotate, -360, 360);
+			ImGui::SliderAngle("Rotate Z", &z_rotate, -360, 360);
+			model->setRotationX(2 * x_rotate * M_PI / 180.0);
+			model->setRotationY(2 * y_rotate * M_PI / 180.0);
+			model->setRotationZ(2 * z_rotate * M_PI / 180.0);
+
+			ImGui::Checkbox("Draw Bounding Box", &bnbox);
+			scene.setBoundingBox(bnbox);
+		}
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
@@ -144,7 +165,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	if (showColorSittings)
 	{
-		ImGui::Begin("Color Sittings", &showColorSittings); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+		ImGui::Begin("Color and drawing Sittings", &showColorSittings); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 		bool ver = scene.GetVertNormals();
 		bool face = scene.GetFaceNormals();
 		v4 ModelColor = scene.getColor(0);
