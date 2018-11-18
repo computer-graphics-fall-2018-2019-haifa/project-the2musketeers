@@ -127,6 +127,7 @@ void Renderer::Render(Scene& scene)
 
 
 	lookat = glm::inverse(lookat);
+//	lookat = glm::transpose(lookat);
 
 	projectionMatrix = glm::transpose(projectionMatrix);
 	lookat = glm::transpose(lookat);

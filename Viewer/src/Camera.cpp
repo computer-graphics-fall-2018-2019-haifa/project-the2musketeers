@@ -26,7 +26,7 @@ void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const gl
 		y.x, y.y, y.z, 0,
 		z.x, z.y, z.z, 0,
 		0, 0, 0, 1);
-	lookAtTransformation =  glm::transpose(glm::inverse(m)) * Utils::getTranslateMatrix(-eye);
+	lookAtTransformation =  m * Utils::getTranslateMatrix(v3(-1,-1,-1)*eye);
 }
 
 
@@ -53,10 +53,18 @@ void Camera::SetPerspectiveProjection(
 {
 	float s =( 1 / ((float)tan((fovy*M_PI) / 360.0f)));
 	projectionTransformation = m4(
-		s,0,0,0,
+		(1/aspectRatio)*s,0,0,0,
 		0,s,0,0,
-		0,0,far/(near-far),-1,
-		0,0,far*near/(near-far),0);
+		0,0,-(near-far)/(near-far),(-2*near*far)/ (near - far),
+		0,0,1,0);
+
+	m4 temp1 = glm::transpose(projectionTransformation);
+
+	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
+	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
+	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
+	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
+
 }
 
 void Camera::SetZoom(const float zoom) { this->_zoom = zoom; }

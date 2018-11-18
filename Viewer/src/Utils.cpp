@@ -201,7 +201,7 @@ float Utils::dot_product(const v3 &w, const v3 &n)
 v3 Utils::cross_product(const v3 &w, const v3 &n)
 {
 	float x = w.y * n.z - w.z * n.y;
-	float y = (w.x * n.z - w.z * n.x)*(-1);
+	float y = (- w.x * n.z + w.z * n.x);
 	float z = w.x * n.y - w.y * n.x;
 	return v3(x, y, z);
 }
@@ -229,7 +229,7 @@ m4 Utils::rotate_arbitrary_axis(const float& a, const v3& p, const v3& dir)
 
 v3 Utils::normalize(const v3& w)
 {
-	float normal = (w.x*w.x + w.y*w.y + w.z*w.z);
+	float normal = sqrtf(w.x*w.x + w.y*w.y + w.z*w.z);
 	if (normal == 0)
 		return w;
 	return v3(w.x / normal, w.y / normal, w.z / normal);
