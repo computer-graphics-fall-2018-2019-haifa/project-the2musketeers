@@ -8,7 +8,7 @@
 
 
 Camera::Camera(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up) :
-	_zoom(1.0)
+	_zoom(1.0),_eye(eye),_at(at),_up(up)
 {
 	SetCameraLookAt(eye, at, up);
 }
@@ -17,7 +17,7 @@ Camera::~Camera() {}
 
 void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up)
 {
-	v3 z = Utils::normalize(eye -at);
+	v3 z = Utils::normalize(at-eye);
 	v3 x = Utils::normalize(Utils::cross_product(up,z));
 	v3 y = Utils::cross_product(z, x);
 	y = Utils::normalize(y);
@@ -28,7 +28,25 @@ void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const gl
 		0, 0, 0, 1);
 	lookAtTransformation =  m * Utils::getTranslateMatrix(v3(-1,-1,-1)*eye);
 }
+/*
+void Camera::setCameraEye(glm::vec3 newEye)
+{
+	_eye = newEye;
+	SetCameraLookAt(_eye, _at, _up);
+}
+*/
+void Camera::addToCameraEyeX(float x)
+{
+//	_eye.x += x;
 
+	glm::vec4 eye = Utils::swtitch_to_hom(_eye);
+	eye = Utils::transpose(Utils::getRotateMatrixBy_y(x)) * eye;
+	_eye = Utils::back_from_hom(eye);
+	SetCameraLookAt(_eye, _at, _up);
+	std::cout << x << " " << "(" << _eye.x << " " << _eye.y << " " << _eye.z << ")"
+		<< std::endl;
+
+}
 
 
 void Camera::SetOrthographicProjection (

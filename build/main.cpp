@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	Camera camera1 = Camera(v3(10, 10, -3), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera1 = Camera(v3(0, 0, 3), v3(0, 0, 0), v3(0, 1, 0));
 
 	scene.AddCamera(camera1);
 	scene.getActiveCamera().SetOrthographicProjection(1, 2, 5, 0);
@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
 
 	float tester = 0;
 	// This is the main game loop..
-
+	int counter = 1;
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -79,7 +79,22 @@ int main(int argc, char ** argv)
 			{
 				float currentScale = model->getscale();
 				model->setscale(currentScale += 30 * yOff);
+				std::cout << "#" << counter << ":" << std::endl;
+				counter++;
+				scene.getActiveCamera().addToCameraEyeX((M_PI / 360));
+/*
+				ImVec2 d = ImGui::GetMouseDragDelta(0);
+				int x = d.x;
+				x %= 360;
+				if (x >= 180)
+					x = 170;
+				else if (x <= -180)
+					x = -170;
+				if(x!=0)
+					scene.getActiveCamera().addToCameraEyeX((x/720.0)*M_PI);
+*/
 
+/*
 				ImVec2 d = ImGui::GetMouseDragDelta(0);
 				float recentAngleY = model->getRotationY();
 				float recentAngleX = model->getRotationX();
@@ -91,7 +106,8 @@ int main(int argc, char ** argv)
 				int translationY = model->getTranslationVector().y;
 				int translationZ = model->getTranslationVector().z;
 				model->setTranslationVector(v3(translationX + d.x, translationY - d.y, translationZ));
-			}
+*/
+				}
 
 		}
 		ImGui::ResetMouseDragDelta(0);

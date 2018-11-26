@@ -18,6 +18,10 @@ private:
 	glm::mat4x4 viewTransformation;
 	glm::mat4x4 projectionTransformation = m4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	glm::mat4x4 lookAtTransformation;
+	glm::vec3 _eye;
+	glm::vec3 _at;
+	glm::vec3 _up;
+
 	float _fovy;
 	float _height;
 	float _near;
@@ -45,6 +49,8 @@ public:
 		const float far);
 
 	void SetZoom(const float zoom);
+
+	void addToCameraEyeX(float x);
 
 	// Add more methods/functionality as needed...
 };

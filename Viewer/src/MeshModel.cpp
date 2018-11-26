@@ -103,7 +103,12 @@ int MeshModel::getNormalsNumber()
 
 
 const float MeshModel::getscale() const { return Scale; }
-void MeshModel::setscale(const float s) { Scale = s; }
+void MeshModel::setscale(const float s)
+{
+	if (s < 1.0)
+		Scale = 1;
+	Scale = s;
+}
 
 const bool MeshModel::getreflextX() const { return reflect_by_x; }
 const bool MeshModel::getreflextY() const { return reflect_by_y; }
