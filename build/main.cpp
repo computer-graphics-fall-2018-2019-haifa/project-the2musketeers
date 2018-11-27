@@ -53,8 +53,8 @@ int main(int argc, char ** argv)
 	Camera camera1 = Camera(v3(0, 0, 3), v3(0, 0, 0), v3(0, 1, 0));
 
 	scene.AddCamera(camera1);
-	scene.getActiveCamera().SetOrthographicProjection(1, 2, 5, 0);
-//	scene.getActiveCamera().SetPerspectiveProjection(150, 3, 10, 5);
+//	scene.getActiveCamera().SetOrthographicProjection(2, 1.0, 0, 1);
+	scene.getActiveCamera().SetPerspectiveProjection(27, 1, 1, 2.5);
 
 
 	// Setup ImGui
@@ -78,10 +78,14 @@ int main(int argc, char ** argv)
 			if (!io.WantCaptureMouse)
 			{
 				float currentScale = model->getscale();
-				model->setscale(currentScale += 30 * yOff);
-				std::cout << "#" << counter << ":" << std::endl;
+				model->setscale(currentScale + 2 * yOff);
+//				std::cout << model->getscale() << std::endl;
+//				std::cout << "#" << counter << ":" << std::endl;
 				counter++;
-				scene.getActiveCamera().addToCameraEyeX((M_PI / 360));
+//				if(counter%20 == 0)
+//					model->setRotationY((M_PI * 1/ 180.0));
+//				scene.getActiveCamera().addToCameraEyeX((M_PI / 180));
+
 /*
 				ImVec2 d = ImGui::GetMouseDragDelta(0);
 				int x = d.x;
@@ -94,14 +98,16 @@ int main(int argc, char ** argv)
 					scene.getActiveCamera().addToCameraEyeX((x/720.0)*M_PI);
 */
 
-/*
-				ImVec2 d = ImGui::GetMouseDragDelta(0);
-				float recentAngleY = model->getRotationY();
-				float recentAngleX = model->getRotationX();
-				model->setRotationY(recentAngleY + (d.x / 1000)*M_PI);
-				model->setRotationX(recentAngleX + (d.y / 1000)*M_PI);
 
-				d = ImGui::GetMouseDragDelta(1);
+				ImVec2 d = ImGui::GetMouseDragDelta(0);
+				scene.getActiveCamera().RotateCameraY((d.x / 500)*M_PI);
+
+//				float recentAngleY = model->getRotationY();
+//				float recentAngleX = model->getRotationX();
+//				model->setRotationY(recentAngleY + (d.x / 1000)*M_PI);
+//				model->setRotationX(recentAngleX + (d.y / 1000)*M_PI);
+
+/*				d = ImGui::GetMouseDragDelta(1);
 				int translationX = model->getTranslationVector().x;
 				int translationY = model->getTranslationVector().y;
 				int translationZ = model->getTranslationVector().z;

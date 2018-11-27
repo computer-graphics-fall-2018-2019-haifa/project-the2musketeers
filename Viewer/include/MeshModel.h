@@ -25,8 +25,7 @@ private:
 	bool DrawFaceNormals = 0;
 	bool DrawBoundingBox = 0;
 
-
-	float Scale = 120.0f;
+	float Scale = 360.0f;
 	bool reflect_by_x = 0;
 	bool reflect_by_y = 0;
 	bool reflect_by_z = 0;

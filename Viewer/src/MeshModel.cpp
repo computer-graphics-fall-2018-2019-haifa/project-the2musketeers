@@ -105,8 +105,6 @@ int MeshModel::getNormalsNumber()
 const float MeshModel::getscale() const { return Scale; }
 void MeshModel::setscale(const float s)
 {
-	if (s < 1.0)
-		Scale = 1;
 	Scale = s;
 }
 

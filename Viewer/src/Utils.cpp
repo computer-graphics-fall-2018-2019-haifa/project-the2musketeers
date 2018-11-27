@@ -28,6 +28,9 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 	std::vector<glm::vec3> normals;
 	std::ifstream ifile(filePath.c_str());
 
+	bool isFirstVertex = true;
+	glm::vec3 mx, mn;
+
 	// while not end of file
 	while (!ifile.eof())
 	{
@@ -44,7 +47,32 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 		// based on the type parse data
 		if (lineType == "v")
 		{
-			vertices.push_back(Utils::Vec3fFromStream(issLine));
+			glm::vec3 newVertex = Utils::Vec3fFromStream(issLine);
+			vertices.push_back(newVertex);
+			if (isFirstVertex == true)
+			{
+				mn.x = newVertex.x;
+				mx.x = newVertex.x;
+				mn.y = newVertex.y;
+				mx.y = newVertex.y;
+				mn.z = newVertex.z;
+				mx.z = newVertex.z;
+				isFirstVertex = false;
+			}
+			if (newVertex.x > mx.x)
+				mx.x = newVertex.x;
+			if (newVertex.x < mn.x)
+				mn.x = newVertex.x;
+
+			if (newVertex.x > mx.y)
+				mx.y = newVertex.y;
+			if (newVertex.y < mn.y)
+				mn.y = newVertex.y;
+
+			if (newVertex.z > mx.z)
+				mx.z = newVertex.z;
+			if (newVertex.z < mn.z)
+				mn.z = newVertex.z;
 		}
 		else if (lineType == "vn")
 		{
@@ -68,7 +96,28 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 		}
 	}
 
-	return MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
+	MeshModel model =  MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
+	float scale = 1.0;
+	float dx = mx.x - mn.x;
+	float dy = mx.y - mn.y;
+	float dz = mx.z - mn.z;
+
+	if (dx > dy && dx > dz)
+	{
+		scale = 1.0 / dx;
+	}
+	else if (dy > dx && dy > dz)
+	{
+		scale = 1.0 / dy;
+	}
+	else
+	{
+		scale = 1.0 / dz;
+	}
+
+//	model.setscale(scale);
+	model.setscale(200);
+	return model;
 }
 
 std::string Utils::GetFileName(const std::string& filePath)

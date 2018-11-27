@@ -130,12 +130,37 @@ void Renderer::Render(Scene& scene)
 //	lookat = glm::transpose(lookat);
 
 	projectionMatrix = glm::transpose(projectionMatrix);
+
+
 	lookat = glm::transpose(lookat);
 	matrix = glm::transpose(matrix);
+
+	m4 temp1 = matrix;
+	std::cout << std::endl << "Matrix: " << std::endl;
+	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
+	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
+	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
+	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
+
+
 	matrix =
 		projectionMatrix *
-		lookat *
-		matrix;
+		lookat
+		* matrix;
+
+	temp1 = projectionMatrix * lookat;
+	std::cout << std::endl << "Projection * Look At: " << std::endl;
+	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
+	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
+	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
+	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
+
+	temp1 = matrix;
+	std::cout << std::endl << "Final: " << std::endl;
+	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
+	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
+	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
+	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
 
 	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 	matrix = glm::transpose(Utils::getTranslateMatrix(model->getTranslationVector())) * matrix;
@@ -334,9 +359,15 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 
 void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
 {
+	float scale = 0;
 	int x1 = a.x, x2= b.x, x3= c.x,
 		y1= a.y, y2 = b.y, y3 = c.y;
-
+	if (a.z < -scale)
+		return;
+	if ( b.z < -scale)
+		return;
+	if (c.z < -scale)
+		return;
 	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
 	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
 	Renderer::Draw_Line_Bresenham(x3, y3, x2, y2, color);

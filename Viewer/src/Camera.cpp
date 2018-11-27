@@ -35,17 +35,27 @@ void Camera::setCameraEye(glm::vec3 newEye)
 	SetCameraLookAt(_eye, _at, _up);
 }
 */
-void Camera::addToCameraEyeX(float x)
+void Camera::RotateCameraX(float x)
 {
-//	_eye.x += x;
-
 	glm::vec4 eye = Utils::swtitch_to_hom(_eye);
-	eye = Utils::transpose(Utils::getRotateMatrixBy_y(x)) * eye;
+	eye = glm::transpose(Utils::getRotateMatrixBy_y(x)) * eye;
 	_eye = Utils::back_from_hom(eye);
 	SetCameraLookAt(_eye, _at, _up);
-	std::cout << x << " " << "(" << _eye.x << " " << _eye.y << " " << _eye.z << ")"
-		<< std::endl;
+}
 
+void Camera::RotateCameraY(float y)
+{
+	glm::vec4 eye = Utils::swtitch_to_hom(_eye);
+	glm::vec4 up = Utils::swtitch_to_hom(_up);
+	glm::mat4 rotate = Utils::getRotateMatrixBy_x(y);
+
+	eye = rotate * eye;
+	up = rotate * up;
+
+	_eye = Utils::back_from_hom(eye);
+	_up = Utils::back_from_hom(up);
+
+	SetCameraLookAt(_eye, _at, _up);
 }
 
 
@@ -60,6 +70,14 @@ void Camera::SetOrthographicProjection (
 		0, 2.0/height, 0, 0,
 		0, 0, 2.0/(near-far), 0,
 		0, 0, 0, 1.0); 
+
+	m4 temp1 = glm::transpose(projectionTransformation);
+
+	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
+	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
+	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
+	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
+
 }
 
 
@@ -69,14 +87,17 @@ void Camera::SetPerspectiveProjection(
 	const float near,
 	const float far)
 {
-	float s =( 1 / ((float)tan((fovy*M_PI) / 360.0f)));
+	float y = near * tanf(fovy*M_PI / 360.0);
+	float x = y * aspectRatio;
+	
 	projectionTransformation = m4(
-		(1/aspectRatio)*s,0,0,0,
-		0,s,0,0,
-		0,0,-(near-far)/(near-far),(-2*near*far)/ (near - far),
-		0,0,1,0);
+		near/x,0,0,0,
+		0,near/y,0,0,
+		0,0,(near+far)/(near-far),-1,
+		0,0, (2 * near * far) / (near - far),0);
 
-	m4 temp1 = glm::transpose(projectionTransformation);
+
+	m4 temp1 = projectionTransformation;
 
 	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
 	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;

@@ -50,7 +50,8 @@ public:
 
 	void SetZoom(const float zoom);
 
-	void addToCameraEyeX(float x);
+	void RotateCameraX(float x);
+	void RotateCameraY(float y);
 
 	// Add more methods/functionality as needed...
 };
