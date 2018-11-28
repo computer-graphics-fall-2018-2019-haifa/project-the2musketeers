@@ -17,6 +17,7 @@
  */
 class Scene {
 private:
+	MeshModel cameraModel;
 	std::vector<std::shared_ptr<MeshModel>> models;
 	std::vector<Camera> cameras;
 

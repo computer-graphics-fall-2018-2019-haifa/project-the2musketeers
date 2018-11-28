@@ -19,62 +19,34 @@ bool showColorSittings = false;
 static bool mod_cont = 0;
 
 
-
-
 glm::vec4 clearColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
 const glm::vec4& GetClearColor() {return clearColor;}
 
-
-
-
-
-
-
-
-
 glm::vec4 VertNormalsColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.00f);
-
 const glm::vec4& GetVertNormalsColor() {return VertNormalsColor;}
-
-
 glm::vec4 FaceNormalsColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.00f);
-
 const glm::vec4& GetFaceNormalsColor() { return FaceNormalsColor; }
-
-
-
-
 
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
-
 	// Main window
 	{
 
-
-
-
-
-		ImGui::Begin("Sittings");              
-		ImGui::Checkbox("Camera Sittings", &showCameraSittings);
+		ImGui::Begin("Sittings");
+		ImGui::Checkbox("Camera Settings", &showCameraSittings);
 		ImGui::Checkbox("Color and drawing Sittings", &showColorSittings);
-
-	
-		
-
-
 		ImGui::Checkbox("Model Control", &mod_cont);
+
+
 		if (mod_cont  &&  scene.GetModelCount()) {
 			bool bnbox = scene.GetBoundingBox();
 			float sc = scene.getScale();
-
 
 			// 3 bool for reflecting axis
 			bool x = scene.getReflextX();
 			bool y = scene.getReflextY();
 			bool z = scene.getReflextZ();
-
 
 			ImGui::SliderFloat("Scale", &sc, 0.001f, 3000.0f);
 			scene.setScale(sc);
@@ -113,14 +85,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
-
-
-
-
-
-
-
-
 
 	// 3. Show another simple window.
 	if (showCameraSittings)
@@ -162,7 +126,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 
 
-
 	if (showColorSittings)
 	{
 		ImGui::Begin("Color and drawing Sittings", &showColorSittings); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
@@ -183,17 +146,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		scene.setFaceNormals(face);
 		scene.setVertNormals(ver);
 
-
-
 		if (ImGui::Button("Close Me"))
 		{
 			showColorSittings = false;
 		}
 		ImGui::End();
 	}
-
-
-
 
 	// 4. Demonstrate creating a fullscreen menu bar and populating it.
 	{

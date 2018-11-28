@@ -112,7 +112,10 @@ m4 Camera::getProjectionTransformation() const
 {
 	return projectionTransformation;
 }
+
 m4 Camera::GetCameraLookAt() const
 {
 	return lookAtTransformation;
 }
+
+glm::vec3 Camera::getCameraPosition(){return _eye;}

@@ -35,6 +35,7 @@ private:
 	glm::vec3 translationCords = glm::vec3(0, 0, 0);
 
 public:
+	MeshModel();
 	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
 	virtual ~MeshModel();
 

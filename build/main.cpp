@@ -51,8 +51,16 @@ int main(int argc, char ** argv)
 	Scene scene = Scene();
 
 	Camera camera1 = Camera(v3(0, 0, 3), v3(0, 0, 0), v3(0, 1, 0));
-
 	scene.AddCamera(camera1);
+
+	Camera camera2 = Camera(v3(0, 0, -3), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera3 = Camera(v3(1, 0, 1), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera4 = Camera(v3(-1, 0, -1), v3(0, 0, 0), v3(0, 1, 0));
+	scene.AddCamera(camera2);
+	scene.AddCamera(camera3);
+	scene.AddCamera(camera4);
+
+
 //	scene.getActiveCamera().SetOrthographicProjection(2, 1.0, 0, 1);
 	scene.getActiveCamera().SetPerspectiveProjection(27, 1, 1, 2.5);
 

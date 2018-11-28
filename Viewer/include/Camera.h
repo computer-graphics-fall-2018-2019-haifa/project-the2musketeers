@@ -52,6 +52,7 @@ public:
 
 	void RotateCameraX(float x);
 	void RotateCameraY(float y);
+	glm::vec3 getCameraPosition();
 
 	// Add more methods/functionality as needed...
 };

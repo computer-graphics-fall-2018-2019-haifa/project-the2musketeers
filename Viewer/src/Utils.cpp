@@ -21,12 +21,16 @@ glm::vec2 Utils::Vec2fFromStream(std::istream& issLine)
 	return glm::vec2(x, y);
 }
 
+
+
 MeshModel Utils::LoadMeshModel(const std::string& filePath)
 {
 	std::vector<Face> faces;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::ifstream ifile(filePath.c_str());
+
+	std::cout << filePath << std::endl;
 
 	bool isFirstVertex = true;
 	glm::vec3 mx, mn;
