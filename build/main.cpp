@@ -50,19 +50,22 @@ int main(int argc, char ** argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	Camera camera1 = Camera(v3(0, 0, 3), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera1 = Camera(v3(0, 0, 20), v3(0, 0, 0), v3(0, 1, 0));
 	scene.AddCamera(camera1);
 
-	Camera camera2 = Camera(v3(0, 0, -3), v3(0, 0, 0), v3(0, 1, 0));
-	Camera camera3 = Camera(v3(1, 0, 1), v3(0, 0, 0), v3(0, 1, 0));
-	Camera camera4 = Camera(v3(-1, 0, -1), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera2 = Camera(v3(10, 0, 0), v3(0, 0, 0), v3(0, 1, 0));
 	scene.AddCamera(camera2);
-	scene.AddCamera(camera3);
-	scene.AddCamera(camera4);
+
+//	Camera camera2 = Camera(v3(0, 0, -3), v3(0, 0, 0), v3(0, 1, 0));
+//	Camera camera3 = Camera(v3(1, 0, 1), v3(0, 0, 0), v3(0, 1, 0));
+//	Camera camera4 = Camera(v3(-1, 0, -1), v3(0, 0, 0), v3(0, 1, 0));
+//	scene.AddCamera(camera2);
+//	scene.AddCamera(camera3);
+//	scene.AddCamera(camera4);
 
 
-//	scene.getActiveCamera().SetOrthographicProjection(2, 1.0, 0, 1);
-	scene.getActiveCamera().SetPerspectiveProjection(27, 1, 1, 2.5);
+	scene.getActiveCamera().SetOrthographicProjection(2, 1.0, 0, 1);
+//	scene.getActiveCamera().SetPerspectiveProjection(27, 1, 1, 2.5);
 
 
 	// Setup ImGui
@@ -85,11 +88,14 @@ int main(int argc, char ** argv)
 		{
 			if (!io.WantCaptureMouse)
 			{
-				float currentScale = model->getscale();
-				model->setscale(currentScale + 2 * yOff);
+				float currentScale = scene.getWorldScale();
+//				if (yOff > 0.0)
+					scene.setWorldScale(currentScale + 5 * yOff);
+
+//				model->setscale(currentScale + 2 * yOff);
 //				std::cout << model->getscale() << std::endl;
 //				std::cout << "#" << counter << ":" << std::endl;
-				counter++;
+//				counter++;
 //				if(counter%20 == 0)
 //					model->setRotationY((M_PI * 1/ 180.0));
 //				scene.getActiveCamera().addToCameraEyeX((M_PI / 180));
@@ -108,7 +114,8 @@ int main(int argc, char ** argv)
 
 
 				ImVec2 d = ImGui::GetMouseDragDelta(0);
-				scene.getActiveCamera().RotateCameraY((d.x / 500)*M_PI);
+				scene.getActiveCamera().RotateCameraY((d.y / 500)*M_PI);
+				scene.getActiveCamera().RotateCameraX((d.x / 500)*M_PI);
 
 //				float recentAngleY = model->getRotationY();
 //				float recentAngleX = model->getRotationX();

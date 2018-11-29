@@ -82,6 +82,7 @@ void Renderer::Render(Scene& scene)
 	const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
 	if (model == nullptr)
 		return;
+	float worldScale = scene.getWorldScale();
 //	model->MultiplyWorldTransformation(Utils::getTranslateMatrix(model->getTranslationVector()));
 //	model->setTranslationVector(v3(0, 0, 0));
 	if (model->getreflextX())
@@ -114,6 +115,7 @@ void Renderer::Render(Scene& scene)
 
 	m4 matrix = //Utils::getTranslateMatrix(model->getTranslationVector()) *
 		glm::transpose(Utils::getScaleMatrix(v3(scale, scale, scale))) *
+		glm::transpose(Utils::getScaleMatrix(v3(worldScale, worldScale, worldScale))) *
 		model->GetWorldTransformation();
 
 	//	Camera camera = Camera(v3(0, 0, 2),v3(0, 0, 0), v3(0, 1, 0));
@@ -145,8 +147,8 @@ void Renderer::Render(Scene& scene)
 
 	matrix =
 		projectionMatrix *
-		lookat
-		* matrix;
+		lookat *
+		matrix;
 
 	temp1 = projectionMatrix * lookat;
 	std::cout << std::endl << "Projection * Look At: " << std::endl;
@@ -167,6 +169,27 @@ void Renderer::Render(Scene& scene)
 //	model->setTranslationVector(v3(0, 0, 0));
 
 	drawFaces(scene, matrix);
+	float cameraScale = scene.getCameraModel().getscale();
+
+	glm::mat4 mat =
+		matrix =
+		glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0)))
+
+		* projectionMatrix
+
+		* lookat
+
+
+
+		* glm::transpose(Utils::getScaleMatrix(v3(worldScale, worldScale, worldScale)))
+
+//		* glm::transpose(glm::inverse(scene.getCamerai(1).GetCameraLookAt()))
+		* glm::transpose(Utils::getTranslateMatrix(scene.getCamerai(1).getCameraPosition()))
+		* glm::transpose(Utils::getRotateMatrixBy_y(-M_PI / 2.0))
+		* glm::transpose(Utils::getScaleMatrix(v3(cameraScale, cameraScale, cameraScale)))
+
+		;
+	drawCamera(scene, scene.getCamerai(1),mat);
 }
 
 //##############################
@@ -362,12 +385,14 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 	float scale = 0;
 	int x1 = a.x, x2= b.x, x3= c.x,
 		y1= a.y, y2 = b.y, y3 = c.y;
+/*
 	if (a.z < -scale)
 		return;
 	if ( b.z < -scale)
 		return;
 	if (c.z < -scale)
 		return;
+*/
 	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
 	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
 	Renderer::Draw_Line_Bresenham(x3, y3, x2, y2, color);
@@ -467,12 +492,6 @@ void Renderer::drawFaces(const Scene& scene, m4 matrix)
 		v3 c = v3(col.x, col.y, col.z);
 		Renderer::DrawTriangleOnScreen(Utils::back_from_hom(hp1), Utils::back_from_hom(hp2)
 			, Utils::back_from_hom(hp3), c);
-
-
-
-		
-
-
 	}
 
 
@@ -566,6 +585,39 @@ float Renderer::calc_max(float a, float b, float c, float d)
 }
 
 
+
+void Renderer::drawCamera(Scene& scene, Camera camera, glm::mat4 matrix)
+{
+	MeshModel model = scene.getCameraModel();
+	for (int i = 0; i < model.getFacesNumber(); i++)
+	{
+		const Face& face = model.getFaceI(i);
+		int v1Index = face.GetVertexIndex(0);
+		int v2Index = face.GetVertexIndex(1);
+		int v3Index = face.GetVertexIndex(2);
+		const v3& p1 = model.getVertixI(v1Index - 1);
+		const v3& p2 = model.getVertixI(v2Index - 1);
+		const v3& p3 = model.getVertixI(v3Index - 1);
+		v4 hp1 = Utils::swtitch_to_hom(p1);
+		v4 hp2 = Utils::swtitch_to_hom(p2);
+		v4 hp3 = Utils::swtitch_to_hom(p3);
+		hp1 = matrix * hp1;
+		hp2 = matrix * hp2;
+		hp3 = matrix * hp3;
+
+
+		//		glm::mat4 z = glm::transpose(Utils::ReflectAxis('y'));
+//		hp1 = z * hp1;
+//		hp2 = z * hp2;
+//		hp3 = z * hp3;
+
+		glm::vec4 col = scene.getColor(0);
+		v3 c = v3(col.x, col.y, col.z);
+
+		Renderer::DrawTriangleOnScreen(Utils::back_from_hom(hp1), Utils::back_from_hom(hp2)
+			, Utils::back_from_hom(hp3), c);
+	}
+}
 /*
 const v3 Renderer::applyTransformations(const v3& point, const Scene& scene)
 {

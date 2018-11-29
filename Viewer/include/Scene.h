@@ -24,11 +24,13 @@ private:
 	int activeCameraIndex;
 	int activeModelIndex;
 
+	float worldScale = 1.0f;
+
 
 
 public:
 	Scene();
-
+	MeshModel getCameraModel();
 	void AddModel(const std::shared_ptr<MeshModel>& model);
 	const int GetModelCount() const;
 
@@ -46,7 +48,7 @@ public:
 	const std::shared_ptr<MeshModel>& getModeli(int index) const;
 
 	 Camera& getActiveCamera();
-	const Camera& getCamerai(int index) const;
+	Camera getCamerai(int index) const;
 
 	const float getScale() const;
 	void setScale(const float s);
@@ -84,5 +86,8 @@ public:
 
 	void setFaceNormals(bool a);
 	bool GetFaceNormals();
+
+	void setWorldScale(float s);
+	float getWorldScale();
 	// Add more methods as needed...
 };

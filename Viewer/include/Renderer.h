@@ -48,6 +48,7 @@ public:
 	m4 getTransformationsMatrix(const Scene& scene);
 
 
+	void drawCamera(Scene& scene, Camera camera, glm::mat4 matrix);
 
 	float calc_min(float a, float b, float c, float d);
 	float calc_max(float a, float b, float c, float d);

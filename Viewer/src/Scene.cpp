@@ -11,7 +11,10 @@ Scene::Scene() :
 	std::string path("C:\\Users\\user\\Documents\\GitHub\\project-the2musketeers\\data\\Camera.obj");
 	cameraModel = Utils::LoadMeshModel(path);
 }
-
+MeshModel Scene::getCameraModel()
+{
+	return cameraModel;
+}
  Camera& Scene::getActiveCamera()
 {
 	return cameras[activeCameraIndex];
@@ -74,9 +77,9 @@ const std::shared_ptr<MeshModel>& Scene::getActiveModel() const
 	return getModeli(index);
 }
 
-const Camera& Scene::getCamerai(int index) const
+Camera Scene::getCamerai(int index) const
 {
-	if (index >= 0 && index < models.size())
+	if (index >= 0 && index < cameras.size())
 		return cameras[index];
 }
 
@@ -284,4 +287,16 @@ bool Scene::GetFaceNormals()
 	return models[index]->GetFaceNormals();
 }
 
+
+void Scene::setWorldScale(float s)
+{
+	if (s < 1.0)
+		worldScale = 1.0;
+	else
+	worldScale = s;
+}
+float Scene::getWorldScale()
+{
+	return worldScale;
+}
 

@@ -17,7 +17,7 @@ Camera::~Camera() {}
 
 void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up)
 {
-	v3 z = Utils::normalize(at-eye);
+	v3 z = Utils::normalize(eye - at);
 	v3 x = Utils::normalize(Utils::cross_product(up,z));
 	v3 y = Utils::cross_product(z, x);
 	y = Utils::normalize(y);
@@ -68,7 +68,7 @@ void Camera::SetOrthographicProjection (
 	projectionTransformation = m4(
 		2.0/(aspectRatio * height), 0, 0, 0,
 		0, 2.0/height, 0, 0,
-		0, 0, 2.0/(near-far), 0,
+		0, 0, -2.0/(near-far), 0,
 		0, 0, 0, 1.0); 
 
 	m4 temp1 = glm::transpose(projectionTransformation);
