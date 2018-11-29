@@ -284,6 +284,12 @@ v3 Utils::normalize(const v3& w)
 	return v3(w.x / normal, w.y / normal, w.z / normal);
 }
 
+float Utils::getVectorNormal(const v3& w)
+{
+	float normal = sqrtf(w.x*w.x + w.y*w.y + w.z*w.z);
+	return normal;
+}
+
 m4 Utils::transpose(m4 mat)
 {
 	m4 newMatrix(1);

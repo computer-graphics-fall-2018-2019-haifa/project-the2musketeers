@@ -41,6 +41,7 @@ public:
 	static v3 normalize(const v3& w);
 	
 	static m4 transpose(m4 mat);
+	static float Utils::getVectorNormal(const v3& w);
 
 
 	// Add here more static utility functions...

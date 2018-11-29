@@ -53,7 +53,7 @@ int main(int argc, char ** argv)
 	Camera camera1 = Camera(v3(0, 0, 20), v3(0, 0, 0), v3(0, 1, 0));
 	scene.AddCamera(camera1);
 
-	Camera camera2 = Camera(v3(10, 0, 0), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera2 = Camera(v3(10, 5, 0), v3(0, 0, 0), v3(0, 1, 0));
 	scene.AddCamera(camera2);
 
 //	Camera camera2 = Camera(v3(0, 0, -3), v3(0, 0, 0), v3(0, 1, 0));
@@ -91,16 +91,21 @@ int main(int argc, char ** argv)
 				float currentScale = scene.getWorldScale();
 //				if (yOff > 0.0)
 					scene.setWorldScale(currentScale + 5 * yOff);
-
-//				model->setscale(currentScale + 2 * yOff);
-//				std::cout << model->getscale() << std::endl;
-//				std::cout << "#" << counter << ":" << std::endl;
-//				counter++;
-//				if(counter%20 == 0)
-//					model->setRotationY((M_PI * 1/ 180.0));
-//				scene.getActiveCamera().addToCameraEyeX((M_PI / 180));
-
 /*
+				model->setscale(currentScale + 2 * yOff);
+				std::cout << model->getscale() << std::endl;
+				std::cout << "#" << counter << ":" << std::endl;
+				counter++;
+				if (counter % 100== 0)
+				{
+					scene.SetActiveCameraIndex(1 - scene.GetActiveCameraIndex());
+					glm::vec3 v = scene.getActiveCamera().getCameraPosition();
+					std::cout << v.x << "," << v.y << "," << v.z << std::endl;
+				}
+					model->setRotationY((M_PI * 1/ 180.0));
+				scene.getActiveCamera().addToCameraEyeX((M_PI / 180));
+
+
 				ImVec2 d = ImGui::GetMouseDragDelta(0);
 				int x = d.x;
 				x %= 360;

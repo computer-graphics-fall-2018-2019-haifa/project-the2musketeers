@@ -137,59 +137,57 @@ void Renderer::Render(Scene& scene)
 	lookat = glm::transpose(lookat);
 	matrix = glm::transpose(matrix);
 
-	m4 temp1 = matrix;
-	std::cout << std::endl << "Matrix: " << std::endl;
-	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
-	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
-	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
-	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
-
 
 	matrix =
 		projectionMatrix *
 		lookat *
 		matrix;
 
-	temp1 = projectionMatrix * lookat;
-	std::cout << std::endl << "Projection * Look At: " << std::endl;
-	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
-	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
-	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
-	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
-
-	temp1 = matrix;
-	std::cout << std::endl << "Final: " << std::endl;
-	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
-	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
-	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
-	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
 
 	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 	matrix = glm::transpose(Utils::getTranslateMatrix(model->getTranslationVector())) * matrix;
 //	model->setTranslationVector(v3(0, 0, 0));
 
 	drawFaces(scene, matrix);
-	float cameraScale = scene.getCameraModel().getscale();
 
-	glm::mat4 mat =
-		matrix =
-		glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0)))
+	for (int k = 0; k < scene.GetCameraCount(); k++)
+	{
+		if (k == scene.GetActiveCameraIndex())
+			continue;
+		int index = 1 - scene.GetActiveCameraIndex();
+		float cameraScale = scene.getCameraModel().getscale();
+		Camera c = scene.getCamerai(index);
+		glm::vec4 fw = Utils::swtitch_to_hom(c.getCameraUp());
+		fw = Utils::getRotateMatrixBy_x(-M_PI / 2.0) * fw;
+		glm::vec3 forward = Utils::back_from_hom(fw);
 
-		* projectionMatrix
+		forward = glm::vec3(0, 1, 0);
 
-		* lookat
+		float rotateY = Utils::getVectorNormal(Utils::cross_product(c.getCameraPosition(), forward));
+		rotateY = rotateY / (Utils::getVectorNormal(c.getCameraPosition())* Utils::getVectorNormal(forward));
+		rotateY = 2* M_PI - asinf(c.getCameraPosition().x / Utils::getVectorNormal(c.getCameraPosition()));
+		std::cout << "Y:" << rotateY << std::endl;
+
+		float rotateX = Utils::getVectorNormal(Utils::cross_product(glm::vec3(0, 0, 0) - c.getCameraPosition(), c.getCameraUp()));
+		rotateX = rotateX / (Utils::getVectorNormal(glm::vec3(0, 0, 0) - c.getCameraPosition())* Utils::getVectorNormal(c.getCameraUp()));
+		rotateX = asinf(c.getCameraPosition().y / Utils::getVectorNormal(c.getCameraPosition()));
+		std::cout << "X:" << rotateX << std::endl;
 
 
+		glm::mat4 mat =
+			matrix =
+			glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0)))
+			* projectionMatrix
+			* lookat
+			* glm::transpose(Utils::getScaleMatrix(v3(worldScale, worldScale, worldScale)))
+			* glm::transpose(Utils::getTranslateMatrix(scene.getCamerai(index).getCameraPosition()))
+			* glm::transpose(Utils::getScaleMatrix(v3(cameraScale, cameraScale, cameraScale)))
+			* glm::transpose(Utils::getRotateMatrixBy_x(rotateX))
+			* glm::transpose(Utils::getRotateMatrixBy_y(rotateY))
 
-		* glm::transpose(Utils::getScaleMatrix(v3(worldScale, worldScale, worldScale)))
-
-//		* glm::transpose(glm::inverse(scene.getCamerai(1).GetCameraLookAt()))
-		* glm::transpose(Utils::getTranslateMatrix(scene.getCamerai(1).getCameraPosition()))
-		* glm::transpose(Utils::getRotateMatrixBy_y(-M_PI / 2.0))
-		* glm::transpose(Utils::getScaleMatrix(v3(cameraScale, cameraScale, cameraScale)))
-
-		;
-	drawCamera(scene, scene.getCamerai(1),mat);
+			;
+		drawCamera(scene, scene.getCamerai(index), mat);
+	}
 }
 
 //##############################

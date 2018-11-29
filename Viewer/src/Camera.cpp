@@ -68,7 +68,7 @@ void Camera::SetOrthographicProjection (
 	projectionTransformation = m4(
 		2.0/(aspectRatio * height), 0, 0, 0,
 		0, 2.0/height, 0, 0,
-		0, 0, -2.0/(near-far), 0,
+		0, 0, abs(2.0/(near-far)), 0,
 		0, 0, 0, 1.0); 
 
 	m4 temp1 = glm::transpose(projectionTransformation);
@@ -119,3 +119,4 @@ m4 Camera::GetCameraLookAt() const
 }
 
 glm::vec3 Camera::getCameraPosition(){return _eye;}
+glm::vec3 Camera::getCameraUp() { return _up; }
