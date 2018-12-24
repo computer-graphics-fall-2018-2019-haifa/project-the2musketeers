@@ -95,13 +95,15 @@ int main(int argc, char ** argv)
 				model->setscale(currentScale + 2 * yOff);
 				std::cout << model->getscale() << std::endl;
 				std::cout << "#" << counter << ":" << std::endl;
+				
 				counter++;
-				if (counter % 100== 0)
+				if (counter % 50== 0)
 				{
 					scene.SetActiveCameraIndex(1 - scene.GetActiveCameraIndex());
 					glm::vec3 v = scene.getActiveCamera().getCameraPosition();
 					std::cout << v.x << "," << v.y << "," << v.z << std::endl;
 				}
+				
 					model->setRotationY((M_PI * 1/ 180.0));
 				scene.getActiveCamera().addToCameraEyeX((M_PI / 180));
 
@@ -127,12 +129,12 @@ int main(int argc, char ** argv)
 //				model->setRotationY(recentAngleY + (d.x / 1000)*M_PI);
 //				model->setRotationX(recentAngleX + (d.y / 1000)*M_PI);
 
-/*				d = ImGui::GetMouseDragDelta(1);
+			d = ImGui::GetMouseDragDelta(1);
 				int translationX = model->getTranslationVector().x;
 				int translationY = model->getTranslationVector().y;
 				int translationZ = model->getTranslationVector().z;
 				model->setTranslationVector(v3(translationX + d.x, translationY - d.y, translationZ));
-*/
+
 				}
 
 		}
