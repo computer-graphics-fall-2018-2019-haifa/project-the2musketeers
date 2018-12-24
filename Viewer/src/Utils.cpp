@@ -30,6 +30,7 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 	std::vector<glm::vec3> normals;
 	std::ifstream ifile(filePath.c_str());
 
+	
 	std::cout << filePath << std::endl;
 
 	bool isFirstVertex = true;
