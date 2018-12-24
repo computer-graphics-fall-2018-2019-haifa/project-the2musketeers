@@ -20,6 +20,7 @@ private:
 	glm::vec4 VertNormalsColor;
 	glm::vec4 faceNormalsColor;
 	std::string modelName;
+	
 
 	bool DrawVertNormals = 0;
 	bool DrawFaceNormals = 0;

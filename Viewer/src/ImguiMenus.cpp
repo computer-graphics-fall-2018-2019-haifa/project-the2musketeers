@@ -34,35 +34,84 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 
 		ImGui::Begin("Sittings");
-		ImGui::Checkbox("Camera Settings", &showCameraSittings);
-		ImGui::Checkbox("Color and drawing Sittings", &showColorSittings);
-		ImGui::Checkbox("Model Control", &mod_cont);
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		ImGui::Text("*****************************************************");
+		ImGui::Text("Color and drawing sittings");
+		bool ver = scene.GetVertNormals();
+		bool face = scene.GetFaceNormals();
+		v4 ModelColor = scene.getColor(0);
+		v4 vertNormColor = scene.getColor(1);
+		v4 faceNormColor = scene.getColor(2);
+		ImGui::ColorEdit3("clear color", (float*)&clearColor);
+		if (scene.GetModelCount()) {
+			ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
+			ImGui::Checkbox("Draw Vertix Normals", &ver);
+			ImGui::ColorEdit3("Vertix Normal color", (float*)&vertNormColor);
+			ImGui::Checkbox("Draw Face Normals", &face);
+			ImGui::ColorEdit3("Face Normal color", (float*)&faceNormColor);
+			scene.setColor(ModelColor, 0);
+			scene.setColor(vertNormColor, 1);
+			scene.setColor(faceNormColor, 2);
+			scene.setFaceNormals(face);
+			scene.setVertNormals(ver);
+		}
+		ImGui::Text("*****************************************************");
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		ImGui::Text("Camera Settings");
+
+		if (scene.GetCameraCount()) {
+			if (ImGui::Button("Change Active Camera")) {
+				scene.SetActiveCameraIndex((scene.GetActiveCameraIndex() + 1) % scene.GetCameraCount());
+			}
+			static float Far = 10.0f;
+			static float Near = 1.0f;
+			static float fov_angle_rad = 0.0f;
+			static float height = 0.0f;
+			static bool projection = 0;
 
 
-		if (mod_cont  &&  scene.GetModelCount()) {
+			if (ImGui::Button("change projection"))
+				projection = !projection;
+			if (projection) {
+				ImGui::Text("Orthographic:\n\n");
+				ImGui::SliderFloat("Height", &height, 0.0f, 200.0f);
+			}
+			else {
+				ImGui::Text("prespective:\n\n");
+				ImGui::SliderAngle("Fovy", &fov_angle_rad, 0, 180);
+			}
+			ImGui::SliderFloat("Near", &Near, 1.0f, 10.0f);
+			ImGui::SliderFloat("Far", &Far, 1.0f, 10.0f);
+			static float l = 2;
+		
+				ImGui::InputFloat("KK", &l, 2.0f, 0.01f);
+
+
+		}
+		ImGui::Text("*****************************************************");
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		ImGui::Text("Model Control");
+
+		if (scene.GetModelCount()) {
+			if (ImGui::Button("Change Active Model")) {
+				scene.SetActiveModelIndex((scene.GetActiveModelIndex() + 1) % scene.GetModelCount());
+			}
 			bool bnbox = scene.GetBoundingBox();
-			float sc = scene.getScale();
+			/*float sc = scene.getScale();
 
 			// 3 bool for reflecting axis
 			bool x = scene.getReflextX();
 			bool y = scene.getReflextY();
 			bool z = scene.getReflextZ();
 
-			ImGui::SliderFloat("Scale", &sc, 0.001f, 3000.0f);
+			ImGui::SliderFloat("Scale", &sc, 0.01f, 30.0f);
 			scene.setScale(sc);
 
-			if (ImGui::Button("Reflect by X"))
-				x = !x;
-
-			if (ImGui::Button("Reflect by Y"))
-				y = !y;
-
-			if (ImGui::Button("Reflect by Z"))
-				z = !z;
-
-			scene.changeReflextX(x);
-			scene.changeReflextY(y);
-			scene.changeReflextZ(z);
+		
 
 			const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
 
@@ -77,45 +126,54 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			model->setRotationX(2 * x_rotate * M_PI / 180.0);
 			model->setRotationY(2 * y_rotate * M_PI / 180.0);
 			model->setRotationZ(2 * z_rotate * M_PI / 180.0);
+			*/
+
 
 			ImGui::Checkbox("Draw Bounding Box", &bnbox);
 			scene.setBoundingBox(bnbox);
 		}
 
+
+		ImGui::Text("*****************************************************");
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		ImGui::Text("World Control");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		ImGui::Text("*****************************************************");
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
 
-	// 3. Show another simple window.
-	if (showCameraSittings)
+/*	help for openning another window:
+
+	bool show_another_window;
+	ImGui::Checkbox("open new window", &show_another_window);
+	if (show_another window)
 	{
-		ImGui::Begin("Camera Sittings", &showCameraSittings); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		
-		static float Far = 10.0f;
-		static float Near = 1.0f;
-		static float fov_angle_rad = 0.0f;
-		static float height = 0.0f;
-		static bool projection = 0;
-
-		ImGui::Text("Here you can change camera sittings \n \n");
-
-		//ImGui::Checkbox("Orthographic Projection", &Ortho_projection);
-		//ImGui::Checkbox("Prespective Projection", !(&Ortho_projection));
-
-		if (ImGui::Button("change projection"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			projection = !projection;
-		if (projection) {
-			ImGui::Text("Orthographic:\n\n");
-			ImGui::SliderFloat("Height", &height, 0.0f, 200.0f);
-		}
-		else {
-			ImGui::Text("prespective:\n\n");
-			ImGui::SliderAngle("Fovy", &fov_angle_rad, 0, 180);
+		{
+		all
+		the
+		work
+		should
+		be
+		here
 		}
 
-
-		ImGui::SliderFloat("Near", &Near, 1.0f, 10.0f);  // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Far", &Far, 1.0f, 10.0f);
 
 
 		if (ImGui::Button("Close Me"))
@@ -124,34 +182,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 		ImGui::End();
 	}
+*/
 
 
-	if (showColorSittings)
-	{
-		ImGui::Begin("Color and drawing Sittings", &showColorSittings); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		bool ver = scene.GetVertNormals();
-		bool face = scene.GetFaceNormals();
-		v4 ModelColor = scene.getColor(0);
-		v4 vertNormColor = scene.getColor(1);
-		v4 faceNormColor = scene.getColor(2);
-		ImGui::ColorEdit3("clear color", (float*)&clearColor);
-		ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
-		ImGui::Checkbox("Draw Vertix Normals", &ver);
-		ImGui::ColorEdit3("Vertix Normal color", (float*)&vertNormColor);
-		ImGui::Checkbox("Draw Face Normals", &face);
-		ImGui::ColorEdit3("Face Normal color", (float*)&faceNormColor);
-		scene.setColor(ModelColor,0);
-		scene.setColor(vertNormColor,1);
-		scene.setColor(faceNormColor,2);
-		scene.setFaceNormals(face);
-		scene.setVertNormals(ver);
-
-		if (ImGui::Button("Close Me"))
-		{
-			showColorSittings = false;
-		}
-		ImGui::End();
-	}
 
 	// 4. Demonstrate creating a fullscreen menu bar and populating it.
 	{
