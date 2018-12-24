@@ -102,20 +102,13 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 
 	MeshModel model =  MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
 	float scale = 1.0;
-	float x = mn.x, y = mn.y, z = mn.z;
-	if (abs(mx.x) > abs(mn.x))
-		x = abs(mx.x);
-	if (abs(mx.y) > abs(mn.y))
-		y = abs(mx.y);
-	if (abs(mx.z) > abs(mn.z))
-		z = abs(mx.z);
-	scale = x;
-	if (y > scale)
-		scale = y;
+	float x = mx.x-mn.x , y = mx.y - mn.y, z = mx.z - mn.z;
+	scale = (y > x) ? y : x;
 	if (z > scale)
 		scale = z;
 
-	model.setscale(1.0/scale);
+	model.setscale(2.0/scale);
+
 //	model.setscale(200);
 	return model;
 }

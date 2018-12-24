@@ -149,6 +149,19 @@ void Renderer::Render(Scene& scene)
 //	model->setTranslationVector(v3(0, 0, 0));
 
 	drawFaces(scene, matrix);
+	v3 zz = v3(0, 0, 1);
+	v3 yy = v3(0, 1, 0);
+	v3 xx = v3(1, 0, 0);
+	v3 zero = v3(0, 0, 0);
+	zz = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(zz));
+	yy = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(yy));
+	xx = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(xx));
+	zero = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(zero));
+	Draw_Line_Bresenham(zero.x, zero.y, zz.x, zz.y, v3(0.2f, 0.2f, 0.2f));
+	Draw_Line_Bresenham(zero.x, zero.y, yy.x, yy.y, v3(0.2f, 0.2f, 0.2f));
+	Draw_Line_Bresenham(zero.x, zero.y, xx.x, xx.y, v3(0.2f, 0.2f, 0.2f));
+	
+	
 
 	for (int k = 0; k < scene.GetCameraCount(); k++)
 	{

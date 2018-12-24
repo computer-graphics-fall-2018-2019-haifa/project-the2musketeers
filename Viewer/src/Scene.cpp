@@ -8,8 +8,8 @@ Scene::Scene() :
 	activeModelIndex(0),
 	cameraModel()
 {
-	std::string path("C:\\Users\\user\\Documents\\GitHub\\project-the2musketeers\\data\\Camera.obj");
-	cameraModel = Utils::LoadMeshModel(path);
+	//std::string path("C:\\Users\\user\\Documents\\GitHub\\project-the2musketeers\\data\\Camera.obj");
+	//cameraModel = Utils::LoadMeshModel(path);
 }
 MeshModel Scene::getCameraModel()
 {
