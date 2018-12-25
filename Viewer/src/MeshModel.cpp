@@ -11,6 +11,7 @@ MeshModel::MeshModel() {};
 MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName) :
 	modelName(modelName),
 	worldTransform(glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)),
+	objectTransform(glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)),
 	faces(faces),
 	vertices(vertices),
 	normals(normals),
@@ -105,32 +106,6 @@ int MeshModel::getNormalsNumber()
 
 
 
-const float MeshModel::getscale() const { return Scale; }
-void MeshModel::setscale(const float s)
-{
-	Scale = s;
-}
-
-const bool MeshModel::getreflextX() const { return reflect_by_x; }
-const bool MeshModel::getreflextY() const { return reflect_by_y; }
-const bool MeshModel::getreflextZ() const { return reflect_by_z; }
-
-void MeshModel::ChangeReflextX(bool a) { reflect_by_x = a; }
-void MeshModel::ChangeReflextY(bool a) { reflect_by_y = a; }
-void MeshModel::ChangeReflextZ(bool a) { reflect_by_z = a; }
-
-const float MeshModel::getRotationX() const { return rotationX; }
-const float MeshModel::getRotationY() const { return rotationY; }
-const float MeshModel::getRotationZ() const { return rotationZ; }
-
-void MeshModel::setRotationX(float a) { rotationX = a; }
-void MeshModel::setRotationY(float a) { rotationY = a; }
-void MeshModel::setRotationZ(float a) { rotationZ = a; }
-
-glm::vec3 MeshModel::getTranslationVector() const { return translationCords; }
-void MeshModel::setTranslationVector(glm::vec3 v) { translationCords = v; }
-
-
 
 const glm::vec4& MeshModel::GetVertNormalColor() const { return VertNormalsColor; }
 void MeshModel::SetVertNormalColor(const glm::vec4& color) { VertNormalsColor = color; }
@@ -147,3 +122,10 @@ bool MeshModel::GetVertNormals() { return DrawVertNormals; }
 
 void MeshModel::setFaceNormals(bool a) { DrawFaceNormals = a; }
 bool MeshModel::GetFaceNormals() { return DrawFaceNormals; }
+
+
+void MeshModel::objectchange(glm::mat4x4 k) { objectTransform = objectTransform * k; }
+void MeshModel::worldchange(glm::mat4x4 k) { worldTransform = worldTransform * k; }
+
+glm::mat4x4 MeshModel::objectMat() { return objectTransform; }
+glm::mat4x4 MeshModel::worldMat() { return worldTransform; }

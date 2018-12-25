@@ -94,51 +94,90 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-		ImGui::Text("Model Control");
+		ImGui::Text("Model sittings");
 
 		if (scene.GetModelCount()) {
-			if (ImGui::Button("Change Active Model")) {
+			if (ImGui::Button("Change Active Model")) 
 				scene.SetActiveModelIndex((scene.GetActiveModelIndex() + 1) % scene.GetModelCount());
-			}
+
+
 			bool bnbox = scene.GetBoundingBox();
-			/*float sc = scene.getScale();
-
-			// 3 bool for reflecting axis
-			bool x = scene.getReflextX();
-			bool y = scene.getReflextY();
-			bool z = scene.getReflextZ();
-
-			ImGui::SliderFloat("Scale", &sc, 0.01f, 30.0f);
-			scene.setScale(sc);
-
-		
+			ImGui::Checkbox("Draw Bounding Box", &bnbox);
+			scene.setBoundingBox(bnbox);
 
 			const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
+
+
+			float scx = 1;
+			float scy = 1;
+			float scz = 1;
+			float scall = 1;
+			ImGui::SliderFloat("Scale by x", &scx, 0.01f, 30.0f);
+			ImGui::SliderFloat("Scale by y", &scy, 0.01f, 30.0f);
+			ImGui::SliderFloat("Scale by z", &scz, 0.01f, 30.0f);
+			ImGui::SliderFloat("Scale by all axis", &scall, 0.01f, 30.0f);
+
+			model->objectchange(Utils::getScaleMatrix(scx,1,1));
+			model->objectchange(Utils::getScaleMatrix(1, scy, 1));
+			model->objectchange(Utils::getScaleMatrix(1, 1, scz));
+			model->objectchange(Utils::getScaleMatrix(scall, scall, scall));
+			
+
+	
 
 			float x_rotate = 0;
 			float y_rotate = 0;
 			float z_rotate = 0;
 			
-			ImGui::Text("Rotating Axis:");
+
+			ImGui::Text("Local Rotations");
 			ImGui::SliderAngle("Rotate X", &x_rotate, -360, 360);
 			ImGui::SliderAngle("Rotate Y", &y_rotate, -360, 360);
 			ImGui::SliderAngle("Rotate Z", &z_rotate, -360, 360);
-			model->setRotationX(2 * x_rotate * M_PI / 180.0);
-			model->setRotationY(2 * y_rotate * M_PI / 180.0);
-			model->setRotationZ(2 * z_rotate * M_PI / 180.0);
-			*/
+			glm::mat4x4 xMat,yMat,zMat;
+			xMat = Utils::getRotateMatrixBy_x(x_rotate);
+			yMat = Utils::getRotateMatrixBy_y(y_rotate);
+			zMat = Utils::getRotateMatrixBy_z(z_rotate);
+
+			model->objectchange(xMat);
+			model->objectchange(yMat);
+			model->objectchange(zMat);
 
 
-			ImGui::Checkbox("Draw Bounding Box", &bnbox);
-			scene.setBoundingBox(bnbox);
+
+			x_rotate = 0;
+			y_rotate = 0;
+			z_rotate = 0;
+
+
+			ImGui::Text("World Rotations");
+			ImGui::SliderAngle("Rotate X", &x_rotate, -360, 360);
+			ImGui::SliderAngle("Rotate Y", &y_rotate, -360, 360);
+			ImGui::SliderAngle("Rotate Z", &z_rotate, -360, 360);
+			xMat = Utils::getRotateMatrixBy_x(x_rotate);
+			yMat = Utils::getRotateMatrixBy_y(y_rotate);
+			zMat = Utils::getRotateMatrixBy_z(z_rotate);
+
+			model->worldchange(xMat);
+			model->worldchange(yMat);
+			model->worldchange(zMat);
+
+
+
+			float tx = 0;
+			float ty = 0;
+			float tz = 0;
+			ImGui::Text("Translations");
+			ImGui::SliderFloat("Translate by x", &tx, -2.000f, 2.000f);
+			ImGui::SliderFloat("Translate by y", &ty, -2.000f, 2.000f);
+			ImGui::SliderFloat("Translate by z", &tz, -2.000f, 2.000f);
+
+			model->worldchange(Utils::getTranslateMatrix(glm::vec3(tx,ty,tz)));
+
+
 		}
 
 
-		ImGui::Text("*****************************************************");
-		///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-		ImGui::Text("World Control");
 
 
 

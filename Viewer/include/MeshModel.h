@@ -16,6 +16,7 @@ private:
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	glm::mat4x4 worldTransform;
+	glm::mat4x4 objectTransform;
 	glm::vec4 color;
 	glm::vec4 VertNormalsColor;
 	glm::vec4 faceNormalsColor;
@@ -79,26 +80,11 @@ public:
 	int getNormalsNumber();
 
 
-	const float getscale() const;
-	void setscale(const float s);
+	void objectchange(glm::mat4x4 k);
+	void worldchange(glm::mat4x4 k);
 
-	const bool getreflextX() const;
-	const bool getreflextY() const;
-	const bool getreflextZ() const;
+	glm::mat4x4 objectMat();
+	glm::mat4x4 worldMat();
 
-	void ChangeReflextX(bool a);
-	void ChangeReflextY(bool a);
-	void ChangeReflextZ(bool a);
-
-	const float getRotationX() const;
-	const float getRotationY() const;
-	const float getRotationZ() const;
-
-	void setRotationX(float a);
-	void setRotationY(float a);
-	void setRotationZ(float a);
-
-	glm::vec3 getTranslationVector() const;
-	void setTranslationVector(glm::vec3 v);
 	// Add more methods/functionality as needed...
 };

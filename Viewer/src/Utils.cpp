@@ -108,9 +108,10 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 	if (z > scale)
 		scale = z;
 
-	model.setscale(2.0/scale);
+	model.objectchange(Utils::getTranslateMatrix(glm::vec3(-(mn.x + mx.x) / 2.0f, -(mn.y + mx.y) / 2.0f, -(mn.z + mx.z) / 2.0f)));
+	model.objectchange(Utils::getScaleMatrix(2.0f/scale, 2.0f / scale, 2.0f / scale));
 
-//	model.setscale(200);
+	
 	return model;
 }
 
