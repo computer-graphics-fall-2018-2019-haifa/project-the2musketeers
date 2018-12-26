@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	Camera camera1 = Camera(v3(0, 0, 20), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera1 = Camera(v3(0, 0, 50), v3(0, 0, 0), v3(0, 1, 0));
 	scene.AddCamera(camera1);
 
 	Camera camera2 = Camera(v3(10, 5, 0), v3(0, 0, 0), v3(0, 1, 0));
@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
 
 
 	scene.getActiveCamera().SetOrthographicProjection(2, 1.0, 0, 1);
-//	scene.getActiveCamera().SetPerspectiveProjection(27, 1, 1, 2.5);
+//	scene.getActiveCamera().SetPerspectiveProjection(0.01,1280.0/720.0,5,1);
 
 
 	// Setup ImGui
@@ -130,11 +130,6 @@ int main(int argc, char ** argv)
 //				model->setRotationX(recentAngleX + (d.y / 1000)*M_PI);
 
 			d = ImGui::GetMouseDragDelta(1);
-				int translationX = model->getTranslationVector().x;
-				int translationY = model->getTranslationVector().y;
-				int translationZ = model->getTranslationVector().z;
-				model->setTranslationVector(v3(translationX + d.x, translationY - d.y, translationZ));
-
 				}
 
 		}

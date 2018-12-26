@@ -83,8 +83,8 @@ public:
 	void objectchange(glm::mat4x4 k);
 	void worldchange(glm::mat4x4 k);
 
-	glm::mat4x4 objectMat();
-	glm::mat4x4 worldMat();
+	glm::mat4x4 getLocalTransformation();
+	glm::mat4x4 getWorldTransformation();
 
 	// Add more methods/functionality as needed...
 };

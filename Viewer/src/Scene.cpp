@@ -90,73 +90,6 @@ const std::shared_ptr<MeshModel>& Scene::getModeli (int index) const
 	return nullptr;
 }
 
-
-
-
-const float Scene::getScale() const {
-	if (models.size() < 1)
-		return 1.0;
-	int index = GetActiveModelIndex();
-	return models[index]->getscale();
-}
-
-
-const bool Scene::getReflextX() const {
-	if (models.size() == 0)
-		return 0;
-	int index = GetActiveModelIndex();
-	return models[index]->getreflextX();
-}
-
-const bool Scene::getReflextY() const { 
-	if (models.size() == 0)
-		return 0;
-	int index = GetActiveModelIndex();
-	return models[index]->getreflextY();
-}
-
-const bool Scene::getReflextZ() const {
-	if (models.size() == 0)
-		return 0;
-	int index = GetActiveModelIndex();
-	return models[index]->getreflextZ();
-}
-
-void Scene::setScale(const float s) 
-{
-	if (models.size() == 0)
-		return;
-	int index = GetActiveModelIndex();
-	if (s < 0.001)
-		models[index]->setscale(0.001f);
-	else if (s > 2000.0f)
-		models[index]->setscale(2000.0f);
-	else
-		models[index]->setscale(s);
-
-}
-
-void Scene::changeReflextX(bool a) {
-	if (models.size() == 0)
-		return ;
-	int index = GetActiveModelIndex();
-	models[index]->ChangeReflextX(a);
-}
-
-void Scene::changeReflextY(bool a) {
-	if (models.size() == 0)
-		return ;
-	int index = GetActiveModelIndex();
-	models[index]->ChangeReflextY(a);
-}
-
-void Scene::changeReflextZ(bool a) { 
-	if (models.size() == 0)
-		return ;
-	int index = GetActiveModelIndex();
-	models[index]->ChangeReflextZ(a);
-}
-
 const v4 Scene::getColor(int a) const {
 	if (models.size() == 0)
 		return v4(0,0,0,0);
@@ -180,63 +113,7 @@ void Scene::setColor(v4 c,int a) {
 		models[index]->SetFaceNormalColor(c);
 }
 
-const float Scene::getRotationX() const
-{
-	if (models.size() == 0) return 0;
-	int index = GetActiveModelIndex();
-	return models[index]->getRotationX();
-}
-const float Scene::getRotationY() const
-{
-	if (models.size() == 0) return 0;
-	int index = GetActiveModelIndex();
-	return models[index]->getRotationY();
-}
 
-const float Scene::getRotationZ() const
-{
-	if (models.size() == 0) return 0;
-	int index = GetActiveModelIndex();
-	return models[index]->getRotationZ();
-}
-
-void Scene::setRotationX(float a)
-{
-	if (1) return;
-
-	if (models.size() == 0) return;
-	int index = GetActiveModelIndex();
-	return models[index]->setRotationX(a);
-}
-
-void Scene::setRotationY(float a)
-{
-	if (models.size() == 0) return;
-	int index = GetActiveModelIndex();
-
-	return models[index]->setRotationY(a);
-}
-
-void Scene::setRotationZ(float a)
-{
-	if (models.size() == 0) return;
-	int index = GetActiveModelIndex();
-	return models[index]->setRotationZ(a);
-}
-
-void Scene::setTranslationVector(glm::vec3 v)
-{
-	if (models.size() == 0) return;
-	int index = GetActiveModelIndex();
-	models[index]->setTranslationVector(v);
-}
-
- glm::vec3 Scene::getTranslationVector() const
-{
-	if (models.size() == 0) return glm::vec3(1.0,1.0,1.0);
-	int index = GetActiveModelIndex();
-	return models[index]->getTranslationVector();
-}
 
 
 

@@ -127,5 +127,7 @@ bool MeshModel::GetFaceNormals() { return DrawFaceNormals; }
 void MeshModel::objectchange(glm::mat4x4 k) { objectTransform = objectTransform * k; }
 void MeshModel::worldchange(glm::mat4x4 k) { worldTransform = worldTransform * k; }
 
-glm::mat4x4 MeshModel::objectMat() { return objectTransform; }
-glm::mat4x4 MeshModel::worldMat() { return worldTransform; }
+glm::mat4x4 MeshModel::getLocalTransformation() { return objectTransform; }
+glm::mat4x4 MeshModel::getWorldTransformation() { return worldTransform; }
+
+

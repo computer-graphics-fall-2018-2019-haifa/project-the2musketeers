@@ -112,10 +112,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			float scy = 1;
 			float scz = 1;
 			float scall = 1;
-			ImGui::SliderFloat("Scale by x", &scx, 0.01f, 30.0f);
+			ImGui::SliderFloat("Scale by x", &scx, 0.900f, 1.100f);
 			ImGui::SliderFloat("Scale by y", &scy, 0.01f, 30.0f);
 			ImGui::SliderFloat("Scale by z", &scz, 0.01f, 30.0f);
-			ImGui::SliderFloat("Scale by all axis", &scall, 0.01f, 30.0f);
+			ImGui::SliderFloat("Scale by all axis", &scall, 0.900f, 1.100f);
 
 			model->objectchange(Utils::getScaleMatrix(scx,1,1));
 			model->objectchange(Utils::getScaleMatrix(1, scy, 1));
@@ -131,7 +131,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			
 
 			ImGui::Text("Local Rotations");
-			ImGui::SliderAngle("Rotate X", &x_rotate, -360, 360);
+			ImGui::SliderAngle("Rotate X", &x_rotate, -10, 10);
 			ImGui::SliderAngle("Rotate Y", &y_rotate, -360, 360);
 			ImGui::SliderAngle("Rotate Z", &z_rotate, -360, 360);
 			glm::mat4x4 xMat,yMat,zMat;
@@ -145,22 +145,19 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 
-			x_rotate = 0;
-			y_rotate = 0;
-			z_rotate = 0;
-
+			float x_rotate2 = 0;
+			float y_rotate2 = 0;
+			float z_rotate2 = 0;
 
 			ImGui::Text("World Rotations");
-			ImGui::SliderAngle("Rotate X", &x_rotate, -360, 360);
-			ImGui::SliderAngle("Rotate Y", &y_rotate, -360, 360);
-			ImGui::SliderAngle("Rotate Z", &z_rotate, -360, 360);
-			xMat = Utils::getRotateMatrixBy_x(x_rotate);
-			yMat = Utils::getRotateMatrixBy_y(y_rotate);
-			zMat = Utils::getRotateMatrixBy_z(z_rotate);
+			ImGui::SliderAngle("Rotate X2", &x_rotate2, -360, 360);
+			ImGui::SliderAngle("Rotate Y2", &y_rotate2, -360, 360);
+			ImGui::SliderAngle("Rotate Z2", &z_rotate2, -360, 360);
+			model->worldchange(Utils::getRotateMatrixBy_x(x_rotate2));
+			model->worldchange(Utils::getRotateMatrixBy_y(y_rotate2));
+			model->worldchange(Utils::getRotateMatrixBy_z(z_rotate2));
 
-			model->worldchange(xMat);
-			model->worldchange(yMat);
-			model->worldchange(zMat);
+			
 
 
 

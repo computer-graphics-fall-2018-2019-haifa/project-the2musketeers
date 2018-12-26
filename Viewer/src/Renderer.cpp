@@ -83,70 +83,26 @@ void Renderer::Render(Scene& scene)
 	if (model == nullptr)
 		return;
 	float worldScale = scene.getWorldScale();
-//	model->MultiplyWorldTransformation(Utils::getTranslateMatrix(model->getTranslationVector()));
-//	model->setTranslationVector(v3(0, 0, 0));
-	if (model->getreflextX())
-		model->MultiplyWorldTransformation(Utils::ReflectAxis('x'));
-	if (model->getreflextY())
-		model->MultiplyWorldTransformation(Utils::ReflectAxis('y'));
-	if (model->getreflextZ())
-		model->MultiplyWorldTransformation(Utils::ReflectAxis('z'));
-
-	model->ChangeReflextX(false);
-	model->ChangeReflextY(false);
-	model->ChangeReflextZ(false);
-
-//	float scale = model->getscale();
-//	model->MultiplyWorldTransformation(Utils::getScaleMatrix(v3(scale, scale, scale)));
-//	model->setscale(1.0);
-
-	float angleY = model->getRotationY();
-	float angleX = model->getRotationX();
-	model->MultiplyWorldTransformation(glm::transpose(Utils::getRotateMatrixBy_x(angleX)));
-
-	model->MultiplyWorldTransformation(glm::transpose(Utils::getRotateMatrixBy_y(angleY)));
-
-	model->setRotationX(0.0);
-	model->setRotationY(0.0);
-	float scale = model->getscale();
-	//	model->MultiplyWorldTransformation(Utils::getScaleMatrix(v3(scale, scale, scale)));
-	//	model->MultiplyWorldTransformation(Utils::getTranslateMatrix(model->getTranslationVector()));
-//	model->setTranslationVector(v3(0, 0, 0));
-
-	m4 matrix = //Utils::getTranslateMatrix(model->getTranslationVector()) *
-		glm::transpose(Utils::getScaleMatrix(v3(scale, scale, scale))) *
-		glm::transpose(Utils::getScaleMatrix(v3(worldScale, worldScale, worldScale))) *
-		model->GetWorldTransformation();
-
-	//	Camera camera = Camera(v3(0, 0, 2),v3(0, 0, 0), v3(0, 1, 0));
-//	scene.AddCamera(camera);
-//	Camera activeCamera = scene.getActiveCamera();
-//	scene.getActiveCamera().SetOrthographicProjection(3.5,1280/720.0,5,1);
-
 
 	m4 lookat = scene.getActiveCamera().GetCameraLookAt();
 	m4 projectionMatrix = scene.getActiveCamera().getProjectionTransformation();
 
-
 	lookat = glm::inverse(lookat);
-//	lookat = glm::transpose(lookat);
-
 	projectionMatrix = glm::transpose(projectionMatrix);
 
 
 	lookat = glm::transpose(lookat);
-	matrix = glm::transpose(matrix);
+	m4 localTransformation = model->getLocalTransformation();
+	m4 worldTransformation = model->getWorldTransformation();
 
-
-	matrix =
+	m4 matrix =
 		projectionMatrix *
 		lookat *
-		matrix;
+		glm::transpose(worldTransformation) *
+		glm::transpose(localTransformation);
 
 
 	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
-	matrix = glm::transpose(Utils::getTranslateMatrix(model->getTranslationVector())) * matrix;
-//	model->setTranslationVector(v3(0, 0, 0));
 
 	drawFaces(scene, matrix);
 	v3 zz = v3(0, 0, 1);
@@ -162,7 +118,7 @@ void Renderer::Render(Scene& scene)
 	Draw_Line_Bresenham(zero.x, zero.y, xx.x, xx.y, v3(0.2f, 0.2f, 0.2f));
 	
 	
-
+	/*
 	for (int k = 0; k < scene.GetCameraCount(); k++)
 	{
 		if (k == scene.GetActiveCameraIndex())
@@ -179,12 +135,12 @@ void Renderer::Render(Scene& scene)
 		float rotateY = Utils::getVectorNormal(Utils::cross_product(c.getCameraPosition(), forward));
 		rotateY = rotateY / (Utils::getVectorNormal(c.getCameraPosition())* Utils::getVectorNormal(forward));
 		rotateY = 2* M_PI - asinf(c.getCameraPosition().x / Utils::getVectorNormal(c.getCameraPosition()));
-		std::cout << "Y:" << rotateY << std::endl;
+//		std::cout << "Y:" << rotateY << std::endl;
 
 		float rotateX = Utils::getVectorNormal(Utils::cross_product(glm::vec3(0, 0, 0) - c.getCameraPosition(), c.getCameraUp()));
 		rotateX = rotateX / (Utils::getVectorNormal(glm::vec3(0, 0, 0) - c.getCameraPosition())* Utils::getVectorNormal(c.getCameraUp()));
 		rotateX = asinf(c.getCameraPosition().y / Utils::getVectorNormal(c.getCameraPosition()));
-		std::cout << "X:" << rotateX << std::endl;
+//		std::cout << "X:" << rotateX << std::endl;
 
 
 		glm::mat4 mat =
@@ -201,6 +157,7 @@ void Renderer::Render(Scene& scene)
 			;
 		drawCamera(scene, scene.getCamerai(index), mat);
 	}
+	*/
 }
 
 //##############################
