@@ -55,5 +55,12 @@ public:
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraUp();
 
+	float getFovy();
+	void setFovy(float newFovy);
+	float getNear();
+	void setNear(float newNear);
+	float getFar();
+	void setFar(float newFar);
+
 	// Add more methods/functionality as needed...
 };

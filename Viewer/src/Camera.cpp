@@ -10,6 +10,10 @@
 Camera::Camera(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up) :
 	_zoom(1.0),_eye(eye),_at(at),_up(up)
 {
+	_fovy = 0.7;
+	_near = 1;
+	_far = 10;
+
 	SetCameraLookAt(eye, at, up);
 }
 
@@ -89,26 +93,29 @@ void Camera::SetPerspectiveProjection(
 	const float near,
 	const float far)
 {
-	std::cout << "Fovy: " << fovy << " AR: " << aspectRatio <<
-		" Near: " << near << " Far: " << far << std::endl;
+//	std::cout << "Fovy: " << fovy << " AR: " << aspectRatio <<
+//		" Near: " << near << " Far: " << far << std::endl;
 
-	float y = near * tanf(fovy);
-	float x = y * aspectRatio;
+	//	float y = near * tanf(fovy);
+//	float x = y * aspectRatio;
+	float angle = fovy * M_PI;
+	angle = angle / 360;
+
 	
 	projectionTransformation = m4(
-		near/y,0,0,0,
-		0,near/x,0,0,
+		1/(aspectRatio*(angle/2)),0,0,0,
+		0, 1 / (angle / 2),0,0,
 		0,0,(near+far)/(near-far), (2 * near * far) / (near - far),
 		0,0,-1,0);
 
-
+	/*
 	m4 temp1 = projectionTransformation;
 
 	std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
 	std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
 	std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
 	std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
-
+	*/
 }
 
 void Camera::SetZoom(const float zoom) { this->_zoom = zoom; }
@@ -125,3 +132,12 @@ m4 Camera::GetCameraLookAt() const
 
 glm::vec3 Camera::getCameraPosition(){return _eye;}
 glm::vec3 Camera::getCameraUp() { return _up; }
+
+
+float Camera::getFovy() { return _fovy; }
+void Camera::setFovy(float newFovy) { _fovy = newFovy; }
+float Camera::getNear() { return _near; }
+void Camera::setNear(float newNear) { _near = newNear; }
+float Camera::getFar() { return _far; }
+void Camera::setFar(float newFar) { _far = newFar; }
+

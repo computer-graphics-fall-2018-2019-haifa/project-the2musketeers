@@ -65,9 +65,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::Button("Change Active Camera")) {
 				scene.SetActiveCameraIndex((scene.GetActiveCameraIndex() + 1) % scene.GetCameraCount());
 			}
-			static float Far = 10.0f;
-			static float Near = 1.0f;
-			static float fov_angle_rad = 0.0f;
+			Camera& c = scene.getActiveCamera();
+			static float Far = c.getFar();
+			static float Near = c.getNear();
+			static float fov_angle_rad = c.getFovy();
 			static float height = 0.0f;
 			static bool projection = 0;
 
@@ -80,15 +81,17 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			}
 			else {
 				ImGui::Text("prespective:\n\n");
-				ImGui::SliderAngle("Fovy", &fov_angle_rad, 0, 180);
+				ImGui::SliderAngle("Fovy", &fov_angle_rad, 1.0f, 110.0f);
 			}
-			ImGui::SliderFloat("Near", &Near, 1.0f, 10.0f);
-			ImGui::SliderFloat("Far", &Far, 1.0f, 10.0f);
+			ImGui::SliderFloat("Near", &Near, -100.0f, 100.0f);
+			ImGui::SliderFloat("Far", &Far, -100.0f, 100.0f);
 			static float l = 2;
 		
-				ImGui::InputFloat("KK", &l, 2.0f, 0.01f);
-
-
+			ImGui::InputFloat("KK", &l, 2.0f, 0.01f);
+			c.setFar(Far);
+			c.setNear(Near);
+			c.setFovy(fov_angle_rad);
+			c.SetPerspectiveProjection(fov_angle_rad, 1280.0 / 720.0, Near, Far);
 		}
 		ImGui::Text("*****************************************************");
 		///////////////////////////////////////////////////////////////////////////////////////////////////
