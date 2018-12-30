@@ -297,3 +297,7 @@ m4 Utils::transpose(m4 mat)
 	}
 	return newMatrix;
 }
+
+
+
+float Utils::triangle_area(v3 a,v3 b,v3 c){ return fabsf((a.x*(b.y - c.y) + b.x*(c.y - a.y) + c.x*(a.y - b.y)) / 2.0f); }

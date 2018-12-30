@@ -16,7 +16,7 @@ Renderer::Renderer(int viewportWidth, int viewportHeight, int viewportX, int vie
 	zBuffer(nullptr)
 {
 	initOpenGLRendering();
-	SetViewport(viewportWidth, viewportHeight, viewportWidth/2, viewportHeight/2);
+	SetViewport(viewportWidth, viewportHeight, 0, 0);
 }
 
 Renderer::~Renderer()
@@ -41,6 +41,7 @@ void Renderer::createBuffers(int viewportWidth, int viewportHeight)
 	if (colorBuffer)
 	{
 		delete[] colorBuffer;
+		delete[] zBuffer;
 	}
 
 	colorBuffer = new float[3* viewportWidth * viewportHeight];
@@ -49,6 +50,15 @@ void Renderer::createBuffers(int viewportWidth, int viewportHeight)
 		for (int y = 0; y < viewportHeight; y++)
 		{
 			putPixel(x, y, glm::vec3(0.0f, 0.0f, 0.0f));
+		}
+	}
+
+	zBuffer = new float[viewportWidth * viewportHeight];
+	for (int x = 0; x < viewportWidth; x++)
+	{
+		for (int y = 0; y < viewportHeight; y++)
+		{
+			zBuffer[y*viewportWidth + x] = -50000.0f;
 		}
 	}
 }
@@ -60,6 +70,7 @@ void Renderer::ClearColorBuffer(const glm::vec3& color)
 		for (int j = 0; j < viewportHeight; j++)
 		{
 			putPixel(i, j, color);
+			zBuffer[j*viewportWidth + i] = -50000.0f;
 		}
 	}
 }
@@ -101,21 +112,25 @@ void Renderer::Render(Scene& scene)
 		glm::transpose(worldTransformation) *
 		glm::transpose(localTransformation);
 
+	m4 mat =
+		projectionMatrix *
+		lookat;
+
 
 	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 
 	drawFaces(scene, matrix);
-	v3 zz = v3(0, 0, 1);
-	v3 yy = v3(0, 1, 0);
-	v3 xx = v3(1, 0, 0);
+	v3 zz = v3(0, 0, 200);
+	v3 yy = v3(0, 200, 0);
+	v3 xx = v3(200, 0, 0);
 	v3 zero = v3(0, 0, 0);
-	zz = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(zz));
-	yy = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(yy));
-	xx = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(xx));
-	zero = Utils::back_from_hom(matrix * Utils::swtitch_to_hom(zero));
-	Draw_Line_Bresenham(zero.x, zero.y, zz.x, zz.y, v3(0.2f, 0.2f, 0.2f));
-	Draw_Line_Bresenham(zero.x, zero.y, yy.x, yy.y, v3(0.2f, 0.2f, 0.2f));
-	Draw_Line_Bresenham(zero.x, zero.y, xx.x, xx.y, v3(0.2f, 0.2f, 0.2f));
+	zz = Utils::back_from_hom(mat * Utils::swtitch_to_hom(zz));
+	yy = Utils::back_from_hom(mat * Utils::swtitch_to_hom(yy));
+	xx = Utils::back_from_hom(mat * Utils::swtitch_to_hom(xx));
+	zero = Utils::back_from_hom(mat * Utils::swtitch_to_hom(zero));
+	Draw_Line_Bresenham(500+zero.x, 300+zero.y, 500+zz.x, 300+zz.y, v3(0.2f, 0.2f, 0.2f));
+	Draw_Line_Bresenham(500+zero.x, 300+zero.y, 500+yy.x, 300+yy.y, v3(0.2f, 0.2f, 0.2f));
+	Draw_Line_Bresenham(500+zero.x, 300+zero.y, 500+xx.x, 300+xx.y, v3(0.2f, 0.2f, 0.2f));
 	
 	
 	/*
@@ -350,17 +365,69 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 
 void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
 {
-	float scale = 0;
 	int x1 = a.x, x2= b.x, x3= c.x,
 		y1= a.y, y2 = b.y, y3 = c.y;
-/*
-	if (a.z < -scale)
-		return;
-	if ( b.z < -scale)
-		return;
-	if (c.z < -scale)
-		return;
-*/
+
+	
+	v3  v = Utils::cross_product(b-a, c-a);
+	float d = -((v.x*x1) + (v.y*y1) + (v.z*a.z));
+
+
+
+	float min_x = x1;
+	float max_x = x1;
+	float min_y = y1;
+	float max_y = y1;
+
+	if (x2 > max_x || x3 > max_x)
+		max_x = (x3 > x2 ? x3 : x2);
+
+	if (x2 < min_x || x3 < min_x)
+		min_x = (x3 < x2 ? x3 : x2);
+
+	if (y2 > max_y || y3 > max_y)
+		max_y = (y3 > y2 ? y3 : y2);
+
+	if (y2 < min_y || y3 < min_y)
+		min_y = (y3 < y2 ? y3 : y2);
+
+
+	float tmp_area;
+	float area = Utils::triangle_area(a, b, c);
+	int x, y;
+	float z;
+	for (x = min_x; x < max_x; x++)
+	{
+		//if (x < 0  || x >= viewportWidth) continue;
+		for (y = min_y; y < max_y; y++)
+		{
+
+			//if (y < 0   || y >= viewportHeight) continue;
+
+			tmp_area = 
+				Utils::triangle_area(v3((float)x, (float)y, 1.0f), b, c)
+				+ Utils::triangle_area(a, v3((float)x, (float)y, 1.0f), c)
+				+ Utils::triangle_area(a, b, v3((float)x, (float)y, 1.0f));
+			
+			tmp_area = fabsf(tmp_area - area);
+			if (tmp_area < 1)
+			{
+				/*z = -(v.x*x + v.y*y + d) / v.z;
+				if (z > zBuffer[y*viewportWidth + x])
+				{
+					zBuffer[y*viewportWidth + x] = z;
+					putPixel(x, y, color);
+				}
+				*/
+				putPixel(x, y, color);
+
+			}
+		}
+
+	}
+
+	
+
 	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
 	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
 	Renderer::Draw_Line_Bresenham(x3, y3, x2, y2, color);
@@ -423,6 +490,7 @@ void Renderer::drawFaces(const Scene& scene, m4 matrix)
 		int n1Index = face.GetNormalIndex(0);
 		int n2Index = face.GetNormalIndex(1);
 		int n3Index = face.GetNormalIndex(2);
+		
 		if (draw_vert_normals) {
 			vert1[v1Index-1]+= model->getNormalI(n1Index-1);
 			vert2[v1Index-1]++;
@@ -432,13 +500,17 @@ void Renderer::drawFaces(const Scene& scene, m4 matrix)
 			vert2[v3Index-1]++;
 		}
 
+
+
 		
+		v3 face_n = (model->getNormalI(n1Index - 1) + model->getNormalI(n2Index - 1) + model->getNormalI(n3Index - 1)) / 3.0f;
+		v3 center_of_face = (p1 + p2 + p3) / 3.0f;
+		face_n += center_of_face;
+		center_of_face = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(center_of_face));
+		face_n = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(face_n));
+
+
 		if (draw_face_normals) {
-			v3 face_n = (model->getNormalI(n1Index - 1) + model->getNormalI(n2Index - 1) + model->getNormalI(n3Index - 1)) / 3.0f;
-			v3 center_of_face = (p1 + p2 + p3) / 3.0f;
-			face_n += center_of_face;
-			center_of_face = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(center_of_face));
-			face_n= Utils::back_from_hom(matrix*Utils::swtitch_to_hom(face_n));
 			col = scene.getColor(2);
 			v3 c= v3(col.x, col.y, col.z);
 			Renderer::Draw_Line_Bresenham(center_of_face.x, center_of_face.y, face_n.x, face_n.y, c);

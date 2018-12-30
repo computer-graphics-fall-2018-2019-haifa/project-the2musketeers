@@ -43,6 +43,8 @@ public:
 	static m4 transpose(m4 mat);
 	static float Utils::getVectorNormal(const v3& w);
 
+	static float triangle_area(v3 a, v3 b, v3 c);
+
 
 	// Add here more static utility functions...
 	// For example:
