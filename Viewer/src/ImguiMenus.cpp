@@ -55,6 +55,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			scene.setColor(faceNormColor, 2);
 			scene.setFaceNormals(face);
 			scene.setVertNormals(ver);
+
+
+			bool bnbox = scene.GetBoundingBox();
+			ImGui::Checkbox("Draw Bounding Box", &bnbox);
+			scene.setBoundingBox(bnbox);
 		}
 		ImGui::Text("*****************************************************");
 
@@ -85,9 +90,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			}
 			ImGui::SliderFloat("Near", &Near, -100.0f, 100.0f);
 			ImGui::SliderFloat("Far", &Far, -100.0f, 100.0f);
-			static float l = 2;
-		
-			ImGui::InputFloat("KK", &l, 2.0f, 0.01f);
+			
+
 			c.setFar(Far);
 			c.setNear(Near);
 			c.setFovy(fov_angle_rad);
@@ -104,9 +108,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				scene.SetActiveModelIndex((scene.GetActiveModelIndex() + 1) % scene.GetModelCount());
 
 
-			bool bnbox = scene.GetBoundingBox();
-			ImGui::Checkbox("Draw Bounding Box", &bnbox);
-			scene.setBoundingBox(bnbox);
 
 			const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
 
@@ -116,13 +117,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			float scz = 1;
 			float scall = 1;
 			ImGui::SliderFloat("Scale by x", &scx, 0.900f, 1.100f);
-			ImGui::SliderFloat("Scale by y", &scy, 0.01f, 30.0f);
-			ImGui::SliderFloat("Scale by z", &scz, 0.01f, 30.0f);
+			ImGui::SliderFloat("Scale by y", &scy, 0.900f, 1.100f);
+			ImGui::SliderFloat("Scale by z", &scz, 0.900f, 1.100f);
 			ImGui::SliderFloat("Scale by all axis", &scall, 0.900f, 1.100f);
 
-			model->objectchange(Utils::getScaleMatrix(scx,1,1));
-			model->objectchange(Utils::getScaleMatrix(1, scy, 1));
-			model->objectchange(Utils::getScaleMatrix(1, 1, scz));
+			model->objectchange(Utils::getScaleMatrix(scx,1.0f,1.0f));
+			model->objectchange(Utils::getScaleMatrix(1.0f, scy, 1.0f));
+			model->objectchange(Utils::getScaleMatrix(1.0f, 1.0f, scz));
 			model->objectchange(Utils::getScaleMatrix(scall, scall, scall));
 			
 
@@ -135,8 +136,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 			ImGui::Text("Local Rotations");
 			ImGui::SliderAngle("Rotate X", &x_rotate, -10, 10);
-			ImGui::SliderAngle("Rotate Y", &y_rotate, -360, 360);
-			ImGui::SliderAngle("Rotate Z", &z_rotate, -360, 360);
+			ImGui::SliderAngle("Rotate Y", &y_rotate, -10, 10);
+			ImGui::SliderAngle("Rotate Z", &z_rotate, -10, 10);
 			glm::mat4x4 xMat,yMat,zMat;
 			xMat = Utils::getRotateMatrixBy_x(x_rotate);
 			yMat = Utils::getRotateMatrixBy_y(y_rotate);
@@ -153,9 +154,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			float z_rotate2 = 0;
 
 			ImGui::Text("World Rotations");
-			ImGui::SliderAngle("Rotate X2", &x_rotate2, -360, 360);
-			ImGui::SliderAngle("Rotate Y2", &y_rotate2, -360, 360);
-			ImGui::SliderAngle("Rotate Z2", &z_rotate2, -360, 360);
+			ImGui::SliderAngle("Rotate X2", &x_rotate2, -10, 10);
+			ImGui::SliderAngle("Rotate Y2", &y_rotate2, -10, 10);
+			ImGui::SliderAngle("Rotate Z2", &z_rotate2, -10, 10);
 			model->worldchange(Utils::getRotateMatrixBy_x(x_rotate2));
 			model->worldchange(Utils::getRotateMatrixBy_y(y_rotate2));
 			model->worldchange(Utils::getRotateMatrixBy_z(z_rotate2));
