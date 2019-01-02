@@ -95,7 +95,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			c.setFar(Far);
 			c.setNear(Near);
 			c.setFovy(fov_angle_rad);
-			//c.SetPerspectiveProjection(fov_angle_rad, 1280.0 / 720.0, Near, Far);
+			c.SetPerspectiveProjection(fov_angle_rad, 1280.0 / 720.0, Near, Far);
 		}
 		ImGui::Text("*****************************************************");
 		///////////////////////////////////////////////////////////////////////////////////////////////////
