@@ -33,28 +33,28 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// Main window
 	{
 
-		ImGui::Begin("Sittings");
+		ImGui::Begin("Settings");
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		ImGui::Text("*****************************************************");
 		ImGui::Text("Color and drawing sittings");
-		bool ver = scene.GetVertNormals();
-		bool face = scene.GetFaceNormals();
+//		bool ver = scene.GetVertNormals();
+//		bool face = scene.GetFaceNormals();
 		v4 ModelColor = scene.getColor(0);
-		v4 vertNormColor = scene.getColor(1);
-		v4 faceNormColor = scene.getColor(2);
+//		v4 vertNormColor = scene.getColor(1);
+//		v4 faceNormColor = scene.getColor(2);
 		ImGui::ColorEdit3("clear color", (float*)&clearColor);
 		if (scene.GetModelCount()) {
 			ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
-			ImGui::Checkbox("Draw Vertix Normals", &ver);
-			ImGui::ColorEdit3("Vertix Normal color", (float*)&vertNormColor);
-			ImGui::Checkbox("Draw Face Normals", &face);
-			ImGui::ColorEdit3("Face Normal color", (float*)&faceNormColor);
+//			ImGui::Checkbox("Draw Vertix Normals", &ver);
+//			ImGui::ColorEdit3("Vertix Normal color", (float*)&vertNormColor);
+//			ImGui::Checkbox("Draw Face Normals", &face);
+//			ImGui::ColorEdit3("Face Normal color", (float*)&faceNormColor);
 			scene.setColor(ModelColor, 0);
-			scene.setColor(vertNormColor, 1);
-			scene.setColor(faceNormColor, 2);
-			scene.setFaceNormals(face);
-			scene.setVertNormals(ver);
+//			scene.setColor(vertNormColor, 1);
+//			scene.setColor(faceNormColor, 2);
+//			scene.setFaceNormals(face);
+//			scene.setVertNormals(ver);
 
 
 			bool bnbox = scene.GetBoundingBox();
@@ -95,7 +95,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			c.setFar(Far);
 			c.setNear(Near);
 			c.setFovy(fov_angle_rad);
-			c.SetPerspectiveProjection(fov_angle_rad, 1280.0 / 720.0, Near, Far);
+			//c.SetPerspectiveProjection(fov_angle_rad, 1280.0 / 720.0, Near, Far);
 		}
 		ImGui::Text("*****************************************************");
 		///////////////////////////////////////////////////////////////////////////////////////////////////

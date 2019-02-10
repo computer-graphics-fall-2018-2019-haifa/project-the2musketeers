@@ -5,8 +5,10 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
+#include <map>
 
-
+typedef std::multimap<int, int> MyMap;
+ 
 /*
  * Renderer class.
  */
@@ -37,17 +39,17 @@ public:
 	void SwapBuffers();
 	void ClearColorBuffer(const glm::vec3& color);
 	void SetViewport(int viewportWidth, int viewportHeight, int viewportX = 0, int viewportY = 0);
-	void Draw_Line_Bresenham(int x1, int y1, int x2, int y2, glm::vec3& Color,bool flip=0);
-	void matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3& Color); //when slope less than -1
+	void Draw_Line_Bresenham(int x1, int y1, int x2, int y2, MyMap& lineMap,bool flip=0);
+	void matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, MyMap& lineMap); //when slope less than -1
 	// Add more methods/functionality as needed...
 	void DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color);
-	void drawFaces(const Scene& scene, m4 matrix);
+	void drawFaces(const Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix);
 	
 	const v3 applyTransformations(const v3& point,const Scene& scene);
 	//const v3 applyTransformations(const v4& point);
 	m4 getTransformationsMatrix(const Scene& scene);
 
-
+	void drawLine(const v3&a, const v3& b, glm::vec3& Color);
 	void drawCamera(Scene& scene, Camera camera, glm::mat4 matrix);
 
 	float calc_min(float a, float b, float c, float d);

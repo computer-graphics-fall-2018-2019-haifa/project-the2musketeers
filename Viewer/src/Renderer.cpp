@@ -89,37 +89,35 @@ void Renderer::Render(Scene& scene)
 {
 //	m4 matrix = getTransformationsMatrix(scene);
 //	Draw_Line_Bresenham(0, 0, 100, 100, v3(1, 0, 0));
-
-	const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
-	if (model == nullptr)
-		return;
-	float worldScale = scene.getWorldScale();
-
 	m4 lookat = scene.getActiveCamera().GetCameraLookAt();
 	m4 projectionMatrix = scene.getActiveCamera().getProjectionTransformation();
 
 	lookat = glm::inverse(lookat);
 	projectionMatrix = glm::transpose(projectionMatrix);
 
-
 	lookat = glm::transpose(lookat);
-	m4 localTransformation = model->getLocalTransformation();
-	m4 worldTransformation = model->getWorldTransformation();
+	float worldScale = scene.getWorldScale();
+	int N = scene.GetModelCount();
 
-	m4 matrix =
-		projectionMatrix *
-		lookat *
-		glm::transpose(worldTransformation) *
-		glm::transpose(localTransformation);
+	for (int ind = 0; ind < N; ind++)
+	{
+		const std::shared_ptr<MeshModel>& model = scene.getModeli(ind);
+			if (model == nullptr)
+				return;
+			m4 localTransformation = model->getLocalTransformation();
+			m4 worldTransformation = model->getWorldTransformation();
 
-	m4 mat =
-		projectionMatrix *
-		lookat;
+			m4 matrix =
+				projectionMatrix *
+				lookat *
+				glm::transpose(worldTransformation) *
+				glm::transpose(localTransformation);
 
+			matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
+			drawFaces(scene,model, matrix);
+	}
 
-	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
-
-	drawFaces(scene, matrix);
+	/*
 	v3 zz = v3(0, 0, 200);
 	v3 yy = v3(0, 200, 0);
 	v3 xx = v3(200, 0, 0);
@@ -131,7 +129,7 @@ void Renderer::Render(Scene& scene)
 	Draw_Line_Bresenham(500+zero.x, 300+zero.y, 500+zz.x, 300+zz.y, v3(0.2f, 0.2f, 0.2f));
 	Draw_Line_Bresenham(500+zero.x, 300+zero.y, 500+yy.x, 300+yy.y, v3(0.2f, 0.2f, 0.2f));
 	Draw_Line_Bresenham(500+zero.x, 300+zero.y, 500+xx.x, 300+xx.y, v3(0.2f, 0.2f, 0.2f));
-	
+	*/
 	
 	/*
 	for (int k = 0; k < scene.GetCameraCount(); k++)
@@ -289,40 +287,42 @@ void Renderer::SwapBuffers()
 }
 
 
-void Renderer::Draw_Line_Bresenham(int x1, int y1, int x2, int y2,glm::vec3& Color,bool flip)
+void Renderer::Draw_Line_Bresenham(int x1, int y1, int x2, int y2, MyMap& lineMap, bool flip)
 {
-	
+
 	if (x1 > x2) {
-		Draw_Line_Bresenham(x2, y2, x1, y1, Color);
+		Draw_Line_Bresenham(x2, y2, x1, y1,lineMap);
 		return;
 	}
 	if (x1 == x2) {
-		int yMin=(y2>y1?y1:y2),yMax=(y2>y1?y2:y1);
+		int yMin = (y2 > y1 ? y1 : y2), yMax = (y2 > y1 ? y2 : y1);
 		while (yMin <= yMax) {
-			putPixel(x1, yMin, Color);
+//			putPixel(x1, yMin, Color);
+			lineMap.emplace(yMin,x1);
 			yMin++;
 		}
 		return;
 	}
 
-	int dx=(x2 - x1);
+	int dx = (x2 - x1);
 	int dy = abs(y2 - y1);
-	float a = ((float)dy/(float)dx);
+	float a = ((float)dy / (float)dx);
 	int x = x1, y = y1;
 
 	if (a == 0.0f) {
 		while (x <= x2) {
-			putPixel(x, y1, Color);
+//			putPixel(x, y1, Color);
+			lineMap.emplace(y1,x);
 			x++;
 		}
 		return;
 	}
 	if ((a > 1.0f)) {
 		if (y2 < y1) {
-			matsav_zevel_Bresenham(x1, y1, x2, y2, Color);
+			matsav_zevel_Bresenham(x1, y1, x2, y2,lineMap);
 			return;
 		}
-		Draw_Line_Bresenham(y1, x1, y2, x2, Color,1);
+		Draw_Line_Bresenham(y1, x1, y2, x2,lineMap, 1);
 		return;
 	}
 	int e = -dx;
@@ -333,21 +333,28 @@ void Renderer::Draw_Line_Bresenham(int x1, int y1, int x2, int y2,glm::vec3& Col
 		}
 		if (y2 > y1) {
 			if (flip)
-				putPixel(y, x, Color);
+			{
+//				putPixel(y, x, Color);
+				lineMap.emplace(x, y);
+			}
 			else
-				putPixel(x, y, Color);
+			{
+//				putPixel(x, y, Color);
+				lineMap.emplace(y, x);
+			}
 		}
 		else {
-			putPixel(x, y1 - (y - y1), Color);
+//			putPixel(x, y1 - (y - y1), Color);
+			lineMap.emplace(y1 - (y-y1),x);
 		}
 		x++;
 		e += (2 * dy);
-		
+
 	}return;
 
 }
 
-void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3& Color) {
+void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, MyMap& lineMap) {
 	int dy = y1 - y2;
 	int dx = x2 - x1;
 	int x = x1, y = y1;
@@ -357,18 +364,139 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, glm::vec3&
 			x++;
 			e -= (2 * dy);
 		}
-		putPixel(x, y, Color);
+//		putPixel(x, y, Color);
+		lineMap.emplace(y, x);
 		y--;
 		e += (2 * dx);
 	}return;
 }
+void Renderer::drawLine(const v3&a, const v3& b, glm::vec3& Color)
+{
+	int x1 = a.x, x2 = b.x,
+		y1 = a.y, y2 = b.y,
+		z1 = a.z, z2 = b.z;
+	MyMap lineMap = MyMap();
+	Draw_Line_Bresenham(x1, y1, x2, y2, lineMap);
+	for (auto const& x : lineMap)
+	{
+		putPixel(x.second, x.first, Color);
+	}
 
+}
 void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
 {
-	int x1 = a.x, x2= b.x, x3= c.x,
-		y1= a.y, y2 = b.y, y3 = c.y;
+	int x1 = a.x, x2 = b.x, x3 = c.x,
+		y1 = a.y, y2 = b.y, y3 = c.y,
+		z1 = a.z, z2 = b.z, z3 = c.z;
 
-	
+
+	v3 ab = a - b;
+	v3 cb = c - b;
+	v3 abxcb = Utils::cross_product(ab, cb);
+	float d = abxcb.x * b.x + abxcb.y * b.y + abxcb.z * b.z;
+
+	MyMap map1 = MyMap();
+	MyMap map2 = MyMap();
+	MyMap map3 = MyMap();
+	Draw_Line_Bresenham(x1, y1, x2, y2, map1);
+	Draw_Line_Bresenham(x1, y1, x3, y3, map2);
+	Draw_Line_Bresenham(x2, y2, x3, y3, map3);
+
+	int min_y = 500000, max_y = -500000;
+
+	for (auto const& x : map1)
+	{
+		if (x.first < min_y)
+			min_y = x.first;
+		if (x.first > max_y)
+			max_y = x.first;
+	}
+	for (auto const& x : map2)
+	{
+		if (x.first < min_y)
+			min_y = x.first;
+		if (x.first > max_y)
+			max_y = x.first;
+	}
+	for (auto const& x : map3)
+	{
+		if (x.first < min_y)
+			min_y = x.first;
+		if (x.first > max_y)
+			max_y = x.first;
+	}
+
+
+	for(int y=min_y;y<=max_y;y++)
+	{
+		MyMap::iterator it = map1.find(y);
+
+		int x1 = 500000;
+		int x2 = -500000;
+
+		for (int i = 0; i < map1.count(y); i++)
+		{
+			it = map1.find(y);
+			if (x1 > it->second)
+				x1 = it->second;
+			if (x2 < it->second)
+				x2 = it->second;
+			map1.erase(it);
+		}
+		for (int i = 0; i < map2.count(y); i++)
+		{
+			it = map2.find(y);
+			if (x1 > it->second)
+				x1 = it->second;
+			if (x2 < it->second)
+				x2 = it->second;
+			map2.erase(it);
+		}
+		for (int i = 0; i < map3.count(y); i++)
+		{
+			it = map3.find(y);
+			if (x1 > it->second)
+				x1 = it->second;
+			if (x2 < it->second)
+				x2 = it->second;
+			map3.erase(it);
+		}
+
+		for (int x = x1; x <= x2; x++)
+		{
+			int z = -(abxcb.x * x + abxcb.y * y - d) / abxcb.z;
+//				float d = abxcb.x * b.x + abxcb.y * b.y + abxcb.z * b.z;
+			if ((y*viewportWidth + x) >= viewportHeight*viewportWidth)
+				continue;
+			if(((y*viewportWidth + x) < 0))
+				continue;
+			if (z > zBuffer[y*viewportWidth + x])
+			{
+				zBuffer[y*viewportWidth + x] = z;
+				putPixel(x, y, color);
+			}
+//			putPixel(x, y, color);
+		}
+		
+	}
+
+	/*
+
+//	lineMap.clear();
+
+	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2, v3(0, 0, 0));
+	MyMap line1 = MyMap();
+//	line1.insert(lineMap.begin(), lineMap.end());
+//	lineMap.clear();
+	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, v3(0, 0, 0));
+//	MyMap line2 = MyMap(lineMap);
+//	lineMap.clear();
+	Renderer::Draw_Line_Bresenham(x2, y2, x3, y3, v3(0, 0, 0));
+//	MyMap line3 = MyMap(lineMap);
+//	lineMap.clear();
+
+//	std::cout << line1.size() << std::endl;
+
 	v3  v = Utils::cross_product(b-a, c-a);
 	float d = -((v.x*x1) + (v.y*y1) + (v.z*a.z));
 
@@ -419,21 +547,43 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 					putPixel(x, y, color);
 				}
 				*/
+	/*
 				putPixel(x, y, color);
 
 			}
 		}
 
 	}
-
+	*/
 	
-
-	Renderer::Draw_Line_Bresenham(x1, y1, x2, y2,color);
-	Renderer::Draw_Line_Bresenham(x1, y1, x3, y3, color);
-	Renderer::Draw_Line_Bresenham(x3, y3, x2, y2, color);
 
 }
 
+void Renderer::drawFaces(const Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix)
+{
+	for (int i = 0; i < model->getFacesNumber(); i++)
+	{
+		const Face& face = model->getFaceI(i);
+		int v1Index = face.GetVertexIndex(0);
+		int v2Index = face.GetVertexIndex(1);
+		int v3Index = face.GetVertexIndex(2);
+		const v3& p1 = model->getVertixI(v1Index - 1);
+		const v3& p2 = model->getVertixI(v2Index - 1);
+		const v3& p3 = model->getVertixI(v3Index - 1);
+		v4 hp1 = Utils::swtitch_to_hom(p1);
+		v4 hp2 = Utils::swtitch_to_hom(p2);
+		v4 hp3 = Utils::swtitch_to_hom(p3);
+		hp1 = matrix * hp1;
+		hp2 = matrix * hp2;
+		hp3 = matrix * hp3;
+
+		v4 col = model->GetColor();
+		v3 c = Utils::back_from_hom(col);
+		Renderer::DrawTriangleOnScreen(Utils::back_from_hom(hp1), Utils::back_from_hom(hp2)
+			, Utils::back_from_hom(hp3), c);
+	}
+}
+/*
 void Renderer::drawFaces(const Scene& scene, m4 matrix)
 {
 	if (scene.GetModelCount() == 0)
@@ -513,7 +663,7 @@ void Renderer::drawFaces(const Scene& scene, m4 matrix)
 		if (draw_face_normals) {
 			col = scene.getColor(2);
 			v3 c= v3(col.x, col.y, col.z);
-			Renderer::Draw_Line_Bresenham(center_of_face.x, center_of_face.y, face_n.x, face_n.y, c);
+//			Renderer::Draw_Line_Bresenham(center_of_face.x, center_of_face.y, face_n.x, face_n.y, c);
 
 		}
 
@@ -545,7 +695,7 @@ void Renderer::drawFaces(const Scene& scene, m4 matrix)
 			vert1[i] += p;
 			vert1[i] =Utils::back_from_hom(matrix*Utils::swtitch_to_hom(vert1[i]));
 			p= Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p));
-			Renderer::Draw_Line_Bresenham(p.x, p.y, vert1[i].x, vert1[i].y, c);
+//			Renderer::Draw_Line_Bresenham(p.x, p.y, vert1[i].x, vert1[i].y, c);
 		}
 	}
 
@@ -583,7 +733,7 @@ void Renderer::drawFaces(const Scene& scene, m4 matrix)
 		v3 bhp8 = Utils::back_from_hom(p8);
 		col = scene.getColor(0);
 		v3 coll = v3(col.x, col.y, col.z);
-
+		/*
 		Renderer::Draw_Line_Bresenham(bhp1.x, bhp1.y, bhp2.x, bhp2.y, coll);
 		Renderer::Draw_Line_Bresenham(bhp1.x, bhp1.y, bhp3.x, bhp3.y, coll);
 		Renderer::Draw_Line_Bresenham(bhp4.x, bhp4.y, bhp2.x, bhp2.y, coll);
@@ -598,10 +748,12 @@ void Renderer::drawFaces(const Scene& scene, m4 matrix)
 		Renderer::Draw_Line_Bresenham(bhp2.x, bhp2.y, bhp6.x, bhp6.y, coll);
 		Renderer::Draw_Line_Bresenham(bhp3.x, bhp3.y, bhp7.x, bhp7.y, coll);
 		Renderer::Draw_Line_Bresenham(bhp4.x, bhp4.y, bhp8.x, bhp8.y, coll);
+		*/
+/*
 	}
 }
 
-
+*/
 float Renderer::calc_min(float a, float b, float c, float d)
 {
 	if (b < a)
