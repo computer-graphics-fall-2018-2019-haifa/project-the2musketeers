@@ -24,6 +24,7 @@ Renderer::~Renderer()
 	if (colorBuffer)
 	{
 		delete[] colorBuffer;
+		delete[] zBuffer;
 	}
 }
 
@@ -41,6 +42,9 @@ void Renderer::createBuffers(int viewportWidth, int viewportHeight)
 	if (colorBuffer)
 	{
 		delete[] colorBuffer;
+	}
+	if (zBuffer)
+	{
 		delete[] zBuffer;
 	}
 
