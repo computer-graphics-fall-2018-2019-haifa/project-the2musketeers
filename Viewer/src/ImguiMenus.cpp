@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <nfd.h>
 #include <random>
+#include <iostream>
+
 
 bool showDemoWindow = false;
 bool showCameraSittings = false;
@@ -28,6 +30,8 @@ const glm::vec4& GetVertNormalsColor() {return VertNormalsColor;}
 glm::vec4 FaceNormalsColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.00f);
 const glm::vec4& GetFaceNormalsColor() { return FaceNormalsColor; }
 
+v4 mColor = v4(0, 0, 0, 0);
+
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
 	// Main window
@@ -40,27 +44,28 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Color and drawing sittings");
 //		bool ver = scene.GetVertNormals();
 //		bool face = scene.GetFaceNormals();
-		v4 ModelColor = scene.getColor(0);
+		//v4 ModelColor = scene.getColor(0);
 //		v4 vertNormColor = scene.getColor(1);
 //		v4 faceNormColor = scene.getColor(2);
 		ImGui::ColorEdit3("clear color", (float*)&clearColor);
-		if (scene.GetModelCount()) {
-			ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
+	//	if (scene.GetModelCount()) {
+			//ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
 //			ImGui::Checkbox("Draw Vertix Normals", &ver);
 //			ImGui::ColorEdit3("Vertix Normal color", (float*)&vertNormColor);
 //			ImGui::Checkbox("Draw Face Normals", &face);
 //			ImGui::ColorEdit3("Face Normal color", (float*)&faceNormColor);
-			scene.setColor(ModelColor, 0);
+//			scene.setColor(ModelColor, 0);
 //			scene.setColor(vertNormColor, 1);
 //			scene.setColor(faceNormColor, 2);
 //			scene.setFaceNormals(face);
 //			scene.setVertNormals(ver);
 
-
+/*
 			bool bnbox = scene.GetBoundingBox();
 			ImGui::Checkbox("Draw Bounding Box", &bnbox);
 			scene.setBoundingBox(bnbox);
-		}
+			*/
+//		}
 		ImGui::Text("*****************************************************");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +115,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 			const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
+
+			mColor = model->GetColor();
+//			std::cout << mColor.x << " " << mColor.y << " " << mColor.z << " " << mColor.w << std::endl;
+			ImGui::ColorEdit3("MeshModel Color", (float*)&mColor);
+			model->SetColor(mColor);
 
 
 			float scx = 1;

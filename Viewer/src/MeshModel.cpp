@@ -15,7 +15,7 @@ MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3
 	faces(faces),
 	vertices(vertices),
 	normals(normals),
-	color(v4(0,0,0,0))
+	color(v4(0,0,0,1.00f))
 {
 
 }

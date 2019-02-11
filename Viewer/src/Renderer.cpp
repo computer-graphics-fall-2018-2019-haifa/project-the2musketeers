@@ -402,8 +402,16 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 	Draw_Line_Bresenham(x1, y1, x3, y3, map2);
 	Draw_Line_Bresenham(x2, y2, x3, y3, map3);
 
-	int min_y = 500000, max_y = -500000;
-
+	int min_y = a.y, max_y = a.y;
+	if (b.y < min_y)
+		min_y = b.y;
+	if (c.y < min_y)
+		min_y = c.y;
+	if (b.y > max_y)
+		max_y = b.y;
+	if (c.y > max_y)
+		max_y = c.y;
+	/*
 	for (auto const& x : map1)
 	{
 		if (x.first < min_y)
@@ -425,7 +433,7 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 		if (x.first > max_y)
 			max_y = x.first;
 	}
-
+	*/
 
 	for(int y=min_y;y<=max_y;y++)
 	{
@@ -433,8 +441,9 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 
 		int x1 = 500000;
 		int x2 = -500000;
+		int n = map1.count(y);
 
-		for (int i = 0; i < map1.count(y); i++)
+		for (int i = 0; i < n; i++)
 		{
 			it = map1.find(y);
 			if (x1 > it->second)
@@ -443,7 +452,8 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 				x2 = it->second;
 			map1.erase(it);
 		}
-		for (int i = 0; i < map2.count(y); i++)
+		n = map2.count(y);
+		for (int i = 0; i < n; i++)
 		{
 			it = map2.find(y);
 			if (x1 > it->second)
@@ -452,7 +462,8 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 				x2 = it->second;
 			map2.erase(it);
 		}
-		for (int i = 0; i < map3.count(y); i++)
+		n = map3.count(y);
+		for (int i = 0; i < n; i++)
 		{
 			it = map3.find(y);
 			if (x1 > it->second)
@@ -579,6 +590,15 @@ void Renderer::drawFaces(const Scene& scene, const std::shared_ptr<MeshModel>& m
 
 		v4 col = model->GetColor();
 		v3 c = Utils::back_from_hom(col);
+
+		c = v3(
+			c.x * 0.50f * (43.00f / 256.00f),
+			c.y * 0.50f * (176.00f / 256.00f),
+			c.z * 0.50f * (216.00f / 256.00f));
+/*
+		v3 mColor = c;
+		std::cout << mColor.x << " " << mColor.y << " " << mColor.z << std::endl;
+*/
 		Renderer::DrawTriangleOnScreen(Utils::back_from_hom(hp1), Utils::back_from_hom(hp2)
 			, Utils::back_from_hom(hp3), c);
 	}
