@@ -588,17 +588,24 @@ void Renderer::drawFaces(const Scene& scene, const std::shared_ptr<MeshModel>& m
 		hp2 = matrix * hp2;
 		hp3 = matrix * hp3;
 
+		glm::vec3 cof = face.getFaceCenter();
+		glm::vec3 fn = face.getFaceNormal();
+
+		glm::vec3 lightPos = v3(50, 50, 50);
+		float tmp = Utils::dot_product(Utils::normalize(lightPos - cof), fn);
+
 		v4 col = model->GetColor();
 		v3 c = Utils::back_from_hom(col);
-
+		float I = 0.50f * 0.50f + 0.70f * 0.70f * tmp;
 		c = v3(
-			c.x * 0.50f * (43.00f / 256.00f),
-			c.y * 0.50f * (176.00f / 256.00f),
-			c.z * 0.50f * (216.00f / 256.00f));
+			c.x * I * (43.00f / 256.00f),
+			c.y * I * (176.00f / 256.00f),
+			c.z * I * (216.00f / 256.00f));
 /*
 		v3 mColor = c;
 		std::cout << mColor.x << " " << mColor.y << " " << mColor.z << std::endl;
 */
+
 		Renderer::DrawTriangleOnScreen(Utils::back_from_hom(hp1), Utils::back_from_hom(hp2)
 			, Utils::back_from_hom(hp3), c);
 	}

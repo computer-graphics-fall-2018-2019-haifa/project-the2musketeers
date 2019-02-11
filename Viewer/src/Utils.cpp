@@ -78,6 +78,7 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 				mx.z = newVertex.z;
 			if (newVertex.z < mn.z)
 				mn.z = newVertex.z;
+
 		}
 		else if (lineType == "vn")
 		{
@@ -101,6 +102,19 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 		}
 	}
 
+	int facesNumer = faces.size();
+	for (int i = 0; i < facesNumer; i++)
+	{
+		glm::vec3 v1 = vertices[faces[i].GetVertexIndex(0) - 1];
+		glm::vec3 v2 = vertices[faces[i].GetVertexIndex(1) - 1];
+		glm::vec3 v3 = vertices[faces[i].GetVertexIndex(2) - 1];
+
+		glm::vec3 vn1 = normals[faces[i].GetNormalIndex(0) - 1];
+		glm::vec3 vn2 = normals[faces[i].GetNormalIndex(1) - 1];
+		glm::vec3 vn3 = normals[faces[i].GetNormalIndex(2) - 1];
+		faces[i].setFaceCenter(v1, v2, v3);
+		faces[i].setFaceNormal(vn1, vn2, vn3);
+	}
 	MeshModel model =  MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
 	float scale = 1.0;
 	float x = mx.x-mn.x , y = mx.y - mn.y, z = mx.z - mn.z;

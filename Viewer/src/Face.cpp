@@ -56,3 +56,25 @@ int Face::GetTextureIndex(int index)
 {
 	return textureIndices[index];
 }
+
+
+void Face::setFaceNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+{
+	faceNormal = (p1 + p2 + p3) / 3.0f;
+
+}
+void Face::setFaceCenter(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+{
+	faceCenter = (p1 + p2 + p3) / 3.0f;
+}
+
+glm::vec3 Face::getFaceCenter() const
+{
+	return faceCenter;
+}
+
+glm::vec3 Face::getFaceNormal() const
+{
+	return faceNormal;
+}
+
