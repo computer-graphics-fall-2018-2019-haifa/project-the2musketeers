@@ -7,6 +7,10 @@
 
 
 
+#define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
+
+
+
 glm::vec3 Utils::Vec3fFromStream(std::istream& issLine)
 {
 	float x, y, z;
@@ -315,3 +319,182 @@ m4 Utils::transpose(m4 mat)
 
 
 float Utils::triangle_area(v3 a,v3 b,v3 c){ return fabsf((a.x*(b.y - c.y) + b.x*(c.y - a.y) + c.x*(a.y - b.y)) / 2.0f); }
+
+
+
+
+
+
+
+
+void Utils::blur(float* buf, int n, int m)
+{
+	float* tmp = new float[3 * n*m];
+	int i, j;
+
+
+	for (i = 0; i < (n*m * 3 - 1); i++)
+		tmp[i] = buf[i];
+
+	for (i = 0; i < n - 1; i++)
+	{
+		for (j = 0; j < m - 1; j++)
+		{
+			buf[INDEX(n, i, j, 0)] = calc_blur(tmp, n, m, i, j, 0);
+			buf[INDEX(n, i, j, 1)] = calc_blur(tmp, n, m, i, j, 1);
+			buf[INDEX(n, i, j, 2)] = calc_blur(tmp, n, m, i, j, 2);
+		}
+	}
+	delete[] tmp;
+	return;
+}
+
+
+float Utils::calc_blur(float* buf, int n, int m, int i, int j, int rgb)
+{
+	float res = 0.1621*buf[INDEX(n, i, j, rgb)];
+	if (i > 0 && j > 0)
+	{
+		res += 0.0596*buf[INDEX(n, i - 1, j - 1, rgb)]; //(i-1,j-1)
+		if (i > 1 && j > 1)
+			res += 0.0030*buf[INDEX(n, i - 2, j - 2, rgb)]; //(i-2,j-2)
+	}
+
+	if (i < n-1 && j < m-1)
+	{
+		res += 0.0596*buf[INDEX(n, i + 1, j + 1, rgb)];//(i+1,j+1)
+		if (i< n-2 && j <m-2)
+			res += 0.0030*buf[INDEX(n, i + 2, j + 2, rgb)];//(i+2,j+2)
+	}
+
+	if (i > 0)
+	{
+		res += 0.0983*buf[INDEX(n, i -1, j, rgb)];//(i-1,j)
+		if(j>1)
+			res += 0.0133*buf[INDEX(n, i - 1, j-2, rgb)];//(i-1,j-2)
+		if (j < m-2)
+			res += 0.0133*buf[INDEX(n, i - 1, j + 2, rgb)];//(i-1,j+2)
+		if (i > 1) {
+			res += 0.0216*buf[INDEX(n, i - 2, j, rgb)];//(i-2,j)
+			if(j>0)
+				res += 0.0133*buf[INDEX(n, i - 2, j - 1, rgb)];//(i-2,j-1)
+			if(j<m-1)
+				res += 0.0133*buf[INDEX(n, i - 2, j + 1, rgb)];//(i-2,j+1)
+		}
+	}
+
+
+	if (j < m - 1)
+	{
+		res += 0.0983*buf[INDEX(n, i, j + 1, rgb)];//(i,j+1)
+		if (j < m - 2)
+			res += 0.0216*buf[INDEX(n, i, j + 2, rgb)];//(i,j+2)
+	}
+
+	if (j > 0 )
+	{
+		res += 0.0983*buf[INDEX(n, i, j - 1, rgb)];//(i,j-1)
+		if (j > 1)
+			res += 0.0216*buf[INDEX(n, i, j - 2, rgb)];//(i,j-2)
+	}
+
+	if (i > 0 && j < m - 1)
+	{
+		res += 0.0596*buf[INDEX(n, i - 1, j + 1, rgb)];//(i-1,j+1)
+		if (i > 1 && j < m - 2)
+			res += 0.0030*buf[INDEX(n, i-2, j + 2, rgb)];//(i-2,j+2)
+	}
+
+	if (i < n-1 && j > 0)
+	{
+		res += 0.0596*buf[INDEX(n, i + 1, j - 1, rgb)];//(i+1,j-1)
+		if (i < n-2 && j > 1)
+			res += 0.0030*buf[INDEX(n, i + 2, j - 2, rgb)];//(i+2,j-2)
+	}
+
+
+	if (i < n-1)
+	{
+		res += 0.0983*buf[INDEX(n, i + 1, j, rgb)];//(i+1,j)
+		if (j > 1)
+			res += 0.0133*buf[INDEX(n, i + 1, j - 2, rgb)];//(i+1,j-2)
+		if (j < m - 2)
+			res += 0.0133*buf[INDEX(n, i + 1, j + 2, rgb)];//(i+1,j+2)
+		if (i < n-2) {
+			res += 0.0216*buf[INDEX(n, i + 2, j, rgb)];//(i+2,j)
+			if (j > 0)
+				res += 0.0133*buf[INDEX(n, i + 2, j - 1, rgb)];//(i+2,j-1)
+			if (j < m - 1)
+				res += 0.0133*buf[INDEX(n, i + 2, j + 1, rgb)];//(i+2,j+1)
+		}
+	}
+
+	return res;
+}
+
+
+
+void Utils::bloom_combine(float* original, float* blured_lights, int n, int m)
+{
+	int i, j;
+	float t;
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++)
+		{
+			t = blured_lights[INDEX(n, i, j, 0)] + blured_lights[INDEX(n, i, j, 1)] + blured_lights[INDEX(n, i, j, 2)];
+			if (t != 0.000f)
+			{
+				original[INDEX(n, i, j, 0)] += blured_lights[INDEX(n, i, j, 0)];
+				original[INDEX(n, i, j, 1)] += blured_lights[INDEX(n, i, j, 1)];
+				original[INDEX(n, i, j, 2)] += blured_lights[INDEX(n, i, j, 2)];
+
+				original[INDEX(n, i, j, 0)] *= 0.50000f;
+				original[INDEX(n, i, j, 1)] *= 0.50000f;
+				original[INDEX(n, i, j, 2)] *= 0.50000f;
+			}
+		}
+	}
+	return;
+}
+
+
+
+ float* Utils::bloom_threshold(float* original, int n, int m)
+{
+	 float* t = new float[3 * n*m];
+	 int i, j;
+	 for (i = 0; i < n; i++)
+	 {
+		 for (j = 0; j < m; j++)
+		 {
+			 t[INDEX(n, i, j, 0)] = 0.00f;
+			 t[INDEX(n, i, j, 1)] = 0.00f;
+			 t[INDEX(n, i, j, 2)] = 0.00f;
+		 }
+	 }
+
+
+	 for (i = 0; i < n; i++)
+	 {
+		 for (j = 0; j < m; j++)
+		 {
+			 if (original[INDEX(n, i, j, 0)] > 0.9 || original[INDEX(n, i, j, 1)] > 0.9 || original[INDEX(n, i, j, 2)] > 0.9)
+			 {
+				 t[INDEX(n, i, j, 0)] = original[INDEX(n, i, j, 0)];
+				 t[INDEX(n, i, j, 1)] = original[INDEX(n, i, j, 1)];
+				 t[INDEX(n, i, j, 2)] = original[INDEX(n, i, j, 2)];
+			 }
+		 }
+	 }
+	 return t;
+}
+
+
+ void Utils::bloom(float* buf, int n, int m)
+{
+	 float* lights = Utils::bloom_threshold(buf, n, m);
+	 Utils::blur(lights, n, m);
+	 Utils::bloom_combine(buf, lights, n, m);
+	 delete[] lights;
+	 return;
+}

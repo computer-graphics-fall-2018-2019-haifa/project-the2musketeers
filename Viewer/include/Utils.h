@@ -46,6 +46,13 @@ public:
 	static float triangle_area(v3 a, v3 b, v3 c);
 
 
+	static void blur(float* buf, int n, int m);
+	static float calc_blur(float* buf, int n, int m, int i, int j, int rgb);
+
+	static void bloom(float* buf, int n, int m);
+	static void bloom_combine(float* original, float* blured_lights, int n, int m);
+	static float* bloom_threshold(float* original, int n, int m);
+
 	// Add here more static utility functions...
 	// For example:
 	//	1. function that gets an angle, and returns a rotation matrix around a certian axis
