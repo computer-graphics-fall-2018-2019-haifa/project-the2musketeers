@@ -576,6 +576,7 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 
 void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix)
 {
+	matrix *= v4(100, 100, 100, 1);
 	for (int i = 0; i < model->getFacesNumber(); i++)
 	{
 
@@ -606,11 +607,11 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		fn = Utils::back_from_hom(homFN);
 	
 		
-		fn = glm::normalize(fn - fc);
-		float d = glm::dot((fc - v3(0, 0, 0)), fn);
+		//fn = glm::normalize(fn - fc);
+		float d = glm::dot(glm::normalize(fc - v3(0, 0, 1000)), fn);
 		
-		if(d >= 0.00f)
-//		if (fn.z > fc.z)
+//		if(d >= 0.00f)
+		if ((fn.z-fc.z)>=0)
 			return;
 //		fc = Utils::normalize(fc);
 //		fn = Utils::normalize(fn);
