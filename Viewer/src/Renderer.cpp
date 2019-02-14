@@ -117,7 +117,7 @@ void Renderer::Render(Scene& scene)
 				glm::transpose(worldTransformation) *
 				glm::transpose(localTransformation);
 
-			matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
+//			matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 			drawFaces(scene,model, matrix);
 	}
 
@@ -574,10 +574,11 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 
 }
 
-void Renderer::drawFaces(const Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix)
+void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix)
 {
 	for (int i = 0; i < model->getFacesNumber(); i++)
 	{
+
 		const Face& face = model->getFaceI(i);
 		int v1Index = face.GetVertexIndex(0);
 		int v2Index = face.GetVertexIndex(1);
@@ -592,19 +593,73 @@ void Renderer::drawFaces(const Scene& scene, const std::shared_ptr<MeshModel>& m
 		hp2 = matrix * hp2;
 		hp3 = matrix * hp3;
 
-		glm::vec3 cof = face.getFaceCenter();
+		glm::vec3 fc  = face.getFaceCenter();
 		glm::vec3 fn = face.getFaceNormal();
 
-		glm::vec3 lightPos = v3(50, 50, 50);
-		float tmp = Utils::dot_product(Utils::normalize(lightPos - cof), fn);
+		glm::vec4 homFC = Utils::swtitch_to_hom(fc);
+		glm::vec4 homFN = Utils::swtitch_to_hom(fn);
+
+		homFC = matrix * homFC;
+		homFN = matrix * homFN;
+
+		fc = Utils::back_from_hom(homFC);
+		fn = Utils::back_from_hom(homFN);
+	
+		
+		fn = glm::normalize(fn - fc);
+		float d = glm::dot((fc - v3(0, 0, 0)), fn);
+		
+		if(d >= 0.00f)
+//		if (fn.z > fc.z)
+			return;
+//		fc = Utils::normalize(fc);
+//		fn = Utils::normalize(fn);
+		
+		glm::vec3 lightPosition = v3(600, 400, 1000);
+		glm::vec3 lightDirection = glm::normalize(-(lightPosition - fc));
+
+		fn = glm::normalize(fn - fc);
+		float tmp = glm::dot(fn, lightDirection);
+		if (tmp < 0.00f)
+			tmp = 0.00f;
+		
+		glm::vec3 reflectDirection = glm::reflect(-lightDirection, fn);
+		glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
+
+		glm::vec3 v = glm::normalize(centerOfProjection - fc);
+		glm::vec3
+			kAmbient = glm::vec3(0.30f, 0.30f, 0.30f),
+			kDiffuse = glm::vec3(0.50f, 0.50f, 0.50f),
+			kSpecular = glm::vec3(0.50f, 0.50f, 0.50f),
+			iAmbient = glm::vec3(0.30f, 0.30f, 0.30f);
+		glm::vec3 lightIntensity = glm::vec3(0.80f, 0.80f, 0.80f);
 
 		v4 col = model->GetColor();
 		v3 c = Utils::back_from_hom(col);
-		float I = 0.50f * 0.50f + 0.70f * 0.70f * tmp;
+
+		glm::vec3 lightColor = glm::vec3((43.00f / 256.00f), (176.00f / 256.00f), (216.00f / 256.00f));
+		lightColor = glm::vec3(255, 132, 56);
+		lightColor = lightColor * (1 / 256.00f);
+		/*
+		float I = 0.50f * 0.50f + 0.30f *( 0.70f * tmp );
 		c = v3(
 			c.x * I * (43.00f / 256.00f),
 			c.y * I * (176.00f / 256.00f),
 			c.z * I * (216.00f / 256.00f));
+			*/
+
+		float refTheta = glm::dot(reflectDirection, v);
+		refTheta = refTheta
+			* refTheta *refTheta *refTheta
+			;
+		glm::vec3 I = 
+			kAmbient * c
+			+ 
+			lightColor * (
+				kDiffuse * tmp
+//				+ kSpecular * refTheta
+				);
+		c = I;
 /*
 		v3 mColor = c;
 		std::cout << mColor.x << " " << mColor.y << " " << mColor.z << std::endl;

@@ -64,7 +64,7 @@ int main(int argc, char ** argv)
 //	scene.AddCamera(camera4);
 
 
-	scene.getActiveCamera().SetOrthographicProjection(2, 1.0, 0, 1);
+	scene.getActiveCamera().SetOrthographicProjection(1, 1.0, 0, 1);
 //	scene.getActiveCamera().SetPerspectiveProjection(0.01,1280.0/720.0,5,1);
 
 
