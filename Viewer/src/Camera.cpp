@@ -30,7 +30,7 @@ void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const gl
 		y.x, y.y, y.z, 0,
 		z.x, z.y, z.z, 0,
 		0, 0, 0, 1);
-	lookAtTransformation =  m * Utils::getTranslateMatrix(v3(-1,-1,-1)*eye);
+	lookAtTransformation =  Utils::getTranslateMatrix(v3(-1,-1,-1)*eye) * m;
 }
 /*
 void Camera::setCameraEye(glm::vec3 newEye)
@@ -71,6 +71,9 @@ void Camera::SetOrthographicProjection (
 	const float near,
 	const float far)
 {	
+	m4 S = m4(
+
+	);
 	projectionTransformation = m4(
 		2.0/(aspectRatio * height), 0, 0, 0,
 		0, 2.0/height, 0, 0,
@@ -107,12 +110,13 @@ void Camera::SetPerspectiveProjection(
 	float angle = fovy * M_PI;
 	angle = angle / 360;
 
+	angle = tanf(angle/2);
 	
 	projectionTransformation = m4(
-		1/(aspectRatio*(angle/2)),0,0,0,
-		0, 1 / (angle / 2),0,0,
-		0,0,(near+far)/(near-far), (2 * near * far) / (near - far),
-		0,0,-1,0);
+		1.00f/(aspectRatio*(angle)),0,0,0,
+		0, 1.00f / (angle),0,0,
+		0,0,-(near-far)/(near-far), (2 * near * far) / (near - far),
+		0,0,1,0);
 
 	/*
 	m4 temp1 = projectionTransformation;

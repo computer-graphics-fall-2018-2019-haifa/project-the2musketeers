@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
 
 
 	scene.getActiveCamera().SetOrthographicProjection(1, 1.0, 0, 1);
-//	scene.getActiveCamera().SetPerspectiveProjection(0.01,1280.0/720.0,5,1);
+//	scene.getActiveCamera().SetPerspectiveProjection(20,1.2,5,1);
 
 
 	// Setup ImGui

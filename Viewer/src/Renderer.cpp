@@ -116,7 +116,14 @@ void Renderer::Render(Scene& scene)
 				lookat *
 				glm::transpose(worldTransformation) *
 				glm::transpose(localTransformation);
+			/*
+			m4 temp1 = matrix;
 
+			std::cout << temp1[0][0] << " " << temp1[0][1] << " " << temp1[0][2] << " " << temp1[0][3] << std::endl;
+			std::cout << temp1[1][0] << " " << temp1[1][1] << " " << temp1[1][2] << " " << temp1[1][3] << std::endl;
+			std::cout << temp1[2][0] << " " << temp1[2][1] << " " << temp1[2][2] << " " << temp1[2][3] << std::endl;
+			std::cout << temp1[3][0] << " " << temp1[3][1] << " " << temp1[3][2] << " " << temp1[3][3] << std::endl;
+			*/
 //			matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 			drawFaces(scene,model, matrix);
 	}
@@ -577,13 +584,21 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix)
 {
 	matrix *= v4(100, 100, 100, 1);
+
+	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
+
 	for (int i = 0; i < model->getFacesNumber(); i++)
 	{
 
 		const Face& face = model->getFaceI(i);
+
 		int v1Index = face.GetVertexIndex(0);
 		int v2Index = face.GetVertexIndex(1);
 		int v3Index = face.GetVertexIndex(2);
+		int n1Index = face.GetNormalIndex(0);
+		int n2Index = face.GetNormalIndex(1);
+		int n3Index = face.GetNormalIndex(2);
+
 		const v3& p1 = model->getVertixI(v1Index - 1);
 		const v3& p2 = model->getVertixI(v2Index - 1);
 		const v3& p3 = model->getVertixI(v3Index - 1);
@@ -594,53 +609,53 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		hp2 = matrix * hp2;
 		hp3 = matrix * hp3;
 
-		glm::vec3 fc  = face.getFaceCenter();
-		glm::vec3 fn = face.getFaceNormal();
+		v3 pp1 = Utils::back_from_hom(hp1);
+		v3 pp2 = Utils::back_from_hom(hp2);
+		v3 pp3 = Utils::back_from_hom(hp3);
 
-		glm::vec4 homFC = Utils::swtitch_to_hom(fc);
-		glm::vec4 homFN = Utils::swtitch_to_hom(fn);
+		glm::vec3 fc = (pp1 + pp2 + pp3) / 3.000f;
 
-		homFC = matrix * homFC;
-		homFN = matrix * homFN;
-
-		fc = Utils::back_from_hom(homFC);
-		fn = Utils::back_from_hom(homFN);
-	
+		glm::vec3 fn = (
+			model->getNormalI(n1Index - 1) + 
+			model->getNormalI(n2Index - 1) + 
+			model->getNormalI(n3Index - 1)) / 3.0f;
 		
-		//fn = glm::normalize(fn - fc);
-		float d = glm::dot(glm::normalize(fc - v3(0, 0, 1000)), fn);
-		
-//		if(d >= 0.00f)
-		if ((fn.z-fc.z)>=0)
-			return;
-//		fc = Utils::normalize(fc);
-//		fn = Utils::normalize(fn);
-		
-		glm::vec3 lightPosition = v3(600, 400, 1000);
-		glm::vec3 lightDirection = glm::normalize(-(lightPosition - fc));
+		//fc = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fc));
+		fn = fn + ((p1 + p2 + p3) / 3.00f);
+		fn = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fn));
+//		fn = fc + fn;
 
-		fn = glm::normalize(fn - fc);
-		float tmp = glm::dot(fn, lightDirection);
-		if (tmp < 0.00f)
-			tmp = 0.00f;
+		std::cout << "Face" << i << ": " << pp1.z << "||" << pp2.x << "||" << pp3.x << std::endl;
+		drawLine(fn, fc, v3(0.95f, 0.00f, 0.40f));
+
+
+		
+		glm::vec3 lightPosition = v3(500.0f, 400.0f, 1000.0f);
+		glm::vec3 lightDirection = Utils::normalize(-(lightPosition - fc));
+
+		fn = Utils::normalize( fc-fn);
+		float tmp = Utils::dot_product(fn, lightDirection);
+//		if (tmp <= 0.00f)
+//			return;
+//			tmp = 0.00f;
 		
 		glm::vec3 reflectDirection = glm::reflect(-lightDirection, fn);
 		glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
 
 		glm::vec3 v = glm::normalize(centerOfProjection - fc);
 		glm::vec3
-			kAmbient = glm::vec3(0.30f, 0.30f, 0.30f),
+			kAmbient = glm::vec3(0.60f, 0.60f, 0.60f),
 			kDiffuse = glm::vec3(0.50f, 0.50f, 0.50f),
 			kSpecular = glm::vec3(0.50f, 0.50f, 0.50f),
 			iAmbient = glm::vec3(0.30f, 0.30f, 0.30f);
-		glm::vec3 lightIntensity = glm::vec3(0.80f, 0.80f, 0.80f);
+		glm::vec3 lightIntensity = glm::vec3(0.8f, 0.8f, 0.8f);
 
 		v4 col = model->GetColor();
 		v3 c = Utils::back_from_hom(col);
 
-		glm::vec3 lightColor = glm::vec3((43.00f / 256.00f), (176.00f / 256.00f), (216.00f / 256.00f));
-		lightColor = glm::vec3(255, 132, 56);
-		lightColor = lightColor * (1 / 256.00f);
+//		glm::vec3 lightColor = glm::vec3((43.00f / 256.00f), (176.00f / 256.00f), (216.00f / 256.00f));
+//		lightColor = glm::vec3(255.00f, 132.00f, 56.00f);
+//		lightColor = lightColor * (1 / 256.00f);
 		/*
 		float I = 0.50f * 0.50f + 0.30f *( 0.70f * tmp );
 		c = v3(
@@ -654,20 +669,22 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 			* refTheta *refTheta *refTheta
 			;
 		glm::vec3 I = 
-			kAmbient * c
-			+ 
-			lightColor * (
+			kAmbient * c + 
+			lightIntensity * (
 				kDiffuse * tmp
-//				+ kSpecular * refTheta
-				);
+				+ kSpecular * refTheta
+				)
+			;
+//		I.x = fabsf(I.x); if (I.x > 1.0f) I.x = 1.0f; I.x = 1.0f - I.x;
+//		I.y = fabsf(I.y); if (I.y > 1.0f) I.y = 1.0f; I.y = 1.0f - I.y;
+//		I.z = fabsf(I.z); if (I.z > 1.0f) I.z = 1.0f; I.z = 1.0f - I.z;
 		c = I;
 /*
 		v3 mColor = c;
 		std::cout << mColor.x << " " << mColor.y << " " << mColor.z << std::endl;
 */
 
-		Renderer::DrawTriangleOnScreen(Utils::back_from_hom(hp1), Utils::back_from_hom(hp2)
-			, Utils::back_from_hom(hp3), c);
+		Renderer::DrawTriangleOnScreen(pp1,pp2,pp3, c);
 	}
 }
 /*
