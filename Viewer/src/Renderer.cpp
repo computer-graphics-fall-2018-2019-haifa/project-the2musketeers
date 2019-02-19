@@ -625,19 +625,18 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		fn = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fn));
 //		fn = fc + fn;
 
-		std::cout << "Face" << i << ": " << pp1.z << "||" << pp2.x << "||" << pp3.x << std::endl;
-		drawLine(fn, fc, v3(0.95f, 0.00f, 0.40f));
+//		std::cout << "Face" << i << ": " << pp1.z << "||" << pp2.x << "||" << pp3.x << std::endl;
+//		drawLine(fn, fc, v3(0.95f, 0.00f, 0.40f));
 
-
+		if (fn.z <= fc.z)
+			continue;
 		
-		glm::vec3 lightPosition = v3(500.0f, 400.0f, 1000.0f);
+		glm::vec3 lightPosition = v3(500.0f, 400.0f, 15000.0f);
 		glm::vec3 lightDirection = Utils::normalize(-(lightPosition - fc));
 
 		fn = Utils::normalize( fc-fn);
 		float tmp = Utils::dot_product(fn, lightDirection);
-//		if (tmp <= 0.00f)
-//			return;
-//			tmp = 0.00f;
+
 		
 		glm::vec3 reflectDirection = glm::reflect(-lightDirection, fn);
 		glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
@@ -675,9 +674,7 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 				+ kSpecular * refTheta
 				)
 			;
-//		I.x = fabsf(I.x); if (I.x > 1.0f) I.x = 1.0f; I.x = 1.0f - I.x;
-//		I.y = fabsf(I.y); if (I.y > 1.0f) I.y = 1.0f; I.y = 1.0f - I.y;
-//		I.z = fabsf(I.z); if (I.z > 1.0f) I.z = 1.0f; I.z = 1.0f - I.z;
+
 		c = I;
 /*
 		v3 mColor = c;
