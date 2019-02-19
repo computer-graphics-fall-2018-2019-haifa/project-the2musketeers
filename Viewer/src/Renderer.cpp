@@ -636,7 +636,7 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 
 		fn = Utils::normalize( fc-fn);
 		float tmp = Utils::dot_product(fn, lightDirection);
-
+		if (tmp < 0.00f) tmp = 0.00f;
 		
 		glm::vec3 reflectDirection = glm::reflect(-lightDirection, fn);
 		glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
@@ -664,9 +664,11 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 			*/
 
 		float refTheta = glm::dot(reflectDirection, v);
-		refTheta = refTheta
-			* refTheta *refTheta *refTheta
-			;
+		if (refTheta < 0.00f)  refTheta = 0.00f;
+
+		refTheta *= refTheta;
+		refTheta *= refTheta; //refTheta^4
+
 		glm::vec3 I = 
 			kAmbient * c + 
 			lightIntensity * (
