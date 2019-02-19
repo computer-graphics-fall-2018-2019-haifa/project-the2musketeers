@@ -442,15 +442,15 @@ void Utils::bloom_combine(float* original, float* blured_lights, int n, int m)
 		for (j = 0; j < m; j++)
 		{
 			t = blured_lights[INDEX(n, i, j, 0)] + blured_lights[INDEX(n, i, j, 1)] + blured_lights[INDEX(n, i, j, 2)];
-			if (t != 0.000f)
+			if (t != 0.00f)
 			{
 				original[INDEX(n, i, j, 0)] += blured_lights[INDEX(n, i, j, 0)];
 				original[INDEX(n, i, j, 1)] += blured_lights[INDEX(n, i, j, 1)];
 				original[INDEX(n, i, j, 2)] += blured_lights[INDEX(n, i, j, 2)];
 
-				original[INDEX(n, i, j, 0)] *= 0.50000f;
-				original[INDEX(n, i, j, 1)] *= 0.50000f;
-				original[INDEX(n, i, j, 2)] *= 0.50000f;
+				original[INDEX(n, i, j, 0)] *= 0.50f;
+				original[INDEX(n, i, j, 1)] *= 0.50f;
+				original[INDEX(n, i, j, 2)] *= 0.50f;
 			}
 		}
 	}
