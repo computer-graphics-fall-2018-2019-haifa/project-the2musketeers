@@ -126,6 +126,7 @@ void Renderer::Render(Scene& scene)
 			*/
 //			matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 			drawFaces(scene,model, matrix);
+//			Utils::blur(colorBuffer, viewportWidth, viewportHeight);
 	}
 
 	/*
@@ -652,16 +653,6 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		v4 col = model->GetColor();
 		v3 c = Utils::back_from_hom(col);
 
-//		glm::vec3 lightColor = glm::vec3((43.00f / 256.00f), (176.00f / 256.00f), (216.00f / 256.00f));
-//		lightColor = glm::vec3(255.00f, 132.00f, 56.00f);
-//		lightColor = lightColor * (1 / 256.00f);
-		/*
-		float I = 0.50f * 0.50f + 0.30f *( 0.70f * tmp );
-		c = v3(
-			c.x * I * (43.00f / 256.00f),
-			c.y * I * (176.00f / 256.00f),
-			c.z * I * (216.00f / 256.00f));
-			*/
 
 		float refTheta = glm::dot(reflectDirection, v);
 		if (refTheta < 0.00f)  refTheta = 0.00f;
