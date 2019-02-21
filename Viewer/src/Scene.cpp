@@ -6,6 +6,7 @@
 Scene::Scene() :
 	activeCameraIndex(0),
 	activeModelIndex(0),
+	activeLightIndex(0),
 	cameraModel()
 {
 	//std::string path("C:\\Users\\user\\Documents\\GitHub\\project-the2musketeers\\data\\Camera.obj");
@@ -69,6 +70,32 @@ void Scene::SetActiveModelIndex(int index)
 const int Scene::GetActiveModelIndex() const
 {
 	return activeModelIndex;
+}
+
+void Scene::SetActiveLightIndex(int index)
+{
+	if (index >= 0 && index < lightSources.size())
+	{
+		activeLightIndex = index;
+	}
+}
+
+const int Scene::GetActiveLightIndex() const
+{
+	return activeLightIndex;
+}
+
+Light& Scene::getActiveLight()
+{
+	int index = activeLightIndex;
+	return lightSources[index];
+	// TODO: insert return statement here
+}
+
+Light Scene::getLightI(int i)
+{
+	if (i >= 0 && i < lightSources.size())
+	return lightSources[i];
 }
 
 const std::shared_ptr<MeshModel>& Scene::getActiveModel() const

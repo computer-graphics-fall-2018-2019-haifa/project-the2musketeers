@@ -29,7 +29,6 @@ static double yOff = 0;
 int main(int argc, char ** argv)
 {
 
-
 	int recentDragY = 0;
 	// Create GLFW window
 	int windowWidth = 1280, windowHeight = 720;

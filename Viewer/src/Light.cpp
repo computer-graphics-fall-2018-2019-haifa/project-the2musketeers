@@ -5,25 +5,24 @@
 Light::Light()
 {
 	position = glm::vec3(0,0,0);
-	intensity = glm::vec3(0,0,0);
+	intensity = glm::vec4(0,0,0,0);
 	direction = glm::vec3(0,0,0);
 	type = Point;
 	state = ON;
 }
 
-Light::Light(glm::vec3 dir = glm::vec3(0, 0, 0))
+Light::Light(glm::vec3 vector3, glm::vec4 i, LightType type)
 {
-	position = glm::vec3(0, 0, 0);
-	intensity = glm::vec3(0, 0, 0);
-	direction = dir;
-	type = Parallel;
-	state = ON;
-}
-Light::Light(glm::vec3 pos = glm::vec3(0, 0, 0), glm::vec3 i = glm::vec3(0, 0, 0))
-{
-	position = pos;
+	if (type == Point)
+	{
+		position = vector3;
+	}
+	else
+	{
+		direction = vector3;
+	}
+
 	intensity = i;
-	direction = glm::vec3(0, 0, 0);
 	type = Point;
 	state = ON;
 }
@@ -36,16 +35,16 @@ glm::vec3 Light::getPosition()
 {
 	return position;
 }
-glm::vec3 Light::setPosition(glm::vec3 pos)
+void  Light::setPosition(glm::vec3 pos)
 {
 	position = pos;
 }
 
-glm::vec3 Light::getIntensity()
+glm::vec4 Light::getIntensity()
 {
 	return intensity;
 }
-void Light::setIntensity(glm::vec3 i)
+void Light::setIntensity(glm::vec4 i)
 {
 	intensity = i;
 }
@@ -54,7 +53,7 @@ glm::vec3 Light::getDirection()
 {
 	return direction;
 }
-glm::vec3 Light::setDirection(glm::vec3 dir)
+void Light::setDirection(glm::vec3 dir)
 {
 	direction = dir;
 }
