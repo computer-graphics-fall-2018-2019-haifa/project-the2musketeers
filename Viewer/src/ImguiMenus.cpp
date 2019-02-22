@@ -14,12 +14,15 @@
 #include <random>
 #include <iostream>
 
+using namespace std;
 
 bool showDemoWindow = false;
 bool showCameraSittings = false;
 bool showColorSittings = false;
 static bool mod_cont = 0;
-
+static bool AddParLight = 0;
+static bool AddPointLight = 0;
+static float Light[3] = { 0,0,0 };
 
 glm::vec4 clearColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
@@ -41,31 +44,79 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		ImGui::Text("*****************************************************");
-		ImGui::Text("Color and drawing sittings");
-//		bool ver = scene.GetVertNormals();
-//		bool face = scene.GetFaceNormals();
-		//v4 ModelColor = scene.getColor(0);
-//		v4 vertNormColor = scene.getColor(1);
-//		v4 faceNormColor = scene.getColor(2);
+		ImGui::Text("Color and drawing and light sittings");
 		ImGui::ColorEdit3("clear color", (float*)&clearColor);
-	//	if (scene.GetModelCount()) {
-			//ImGui::ColorEdit3("Model Color", (float*)&ModelColor);
-//			ImGui::Checkbox("Draw Vertix Normals", &ver);
-//			ImGui::ColorEdit3("Vertix Normal color", (float*)&vertNormColor);
-//			ImGui::Checkbox("Draw Face Normals", &face);
-//			ImGui::ColorEdit3("Face Normal color", (float*)&faceNormColor);
-//			scene.setColor(ModelColor, 0);
-//			scene.setColor(vertNormColor, 1);
-//			scene.setColor(faceNormColor, 2);
-//			scene.setFaceNormals(face);
-//			scene.setVertNormals(ver);
 
-/*
-			bool bnbox = scene.GetBoundingBox();
-			ImGui::Checkbox("Draw Bounding Box", &bnbox);
-			scene.setBoundingBox(bnbox);
-			*/
-//		}
+
+		//shading:
+		static int shading = 0; // = get shading
+		if (shading==2) {
+			if (ImGui::Button("Phong shading")) {
+				shading = 0;
+				//set shading to flat
+			}
+		}
+		else {
+			if (shading == 1) {
+				if (ImGui::Button("gouraud shading")) {
+					shading = 2;
+					//set shading to phong
+				}
+			}
+			else {
+				if (ImGui::Button("Flat shading")) {
+					shading = 1;
+					//set shading to gouraud
+				}
+			}
+		}
+
+
+
+		//lights:
+		if (ImGui::Button("Change Active Light")) {
+			//change active light
+		}
+		bool ParOrPoint=0; //parallel=1 , point=0
+		v3 activeLight; // = direction or position
+		if (ParOrPoint) {
+			// activelight = get light direction
+			ImGui::InputFloat3("Light Direction", (float*)&activeLight, 3);
+			//set light direction
+		}
+		else {
+			// activelight = get light position
+			ImGui::InputFloat3("Light Position", (float*)&activeLight, 3);
+			//set light position
+
+		}
+		v4 LightColor; //  = get active light color
+		ImGui::ColorEdit3("Light intensity", (float*)&LightColor);
+		//set active light color
+		static bool OnOff; // = light is on or off
+		if (OnOff) {
+			if (ImGui::Button("ON")) {
+				OnOff = 0;
+				//set light to OFF
+			}
+		}
+		else {
+			if (ImGui::Button("OFF")) {
+				OnOff = 1;
+				//set light to ON
+			}
+		}
+		if (ImGui::Button("Delete Active Light")) {
+			//delete active light
+		}
+		static bool newlight = 0;
+		if (ImGui::Button("Add new Light")) {
+			newlight = 1;
+		}
+		
+
+
+
 		ImGui::Text("*****************************************************");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +241,41 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 
+		if (newlight)
+		{
+			ImGui::Begin("New light");
+			static v3 position = v3(0, 0, 0);
+			static v3 direction = v3(0, 0, 0);
+			static v4 Lcolor;
+			static bool poi = 1;
+			static bool par = 0;
 
+			ImGui::Checkbox("Point Light", &poi);
+			if (poi == 0)
+				par = 1;
+			else
+				par = 0;
+			ImGui::Checkbox("Parallel Light", &par);
+			if (par == 1)
+				poi = 0;
+			else
+				poi = 1;
+
+			
+			ImGui::ColorEdit3("New Light intensity", (float*)&Lcolor);
+			if(poi)
+				ImGui::InputFloat3("New Light Position", (float*)&position, 3);
+			else
+				ImGui::InputFloat3("New Light Direction", (float*)&direction, 3);
+			
+			
+			if (ImGui::Button("ADD")) 
+			{
+				newlight = 0;
+				// add new light to the scene
+			}
+			ImGui::End();
+		}
 
 
 
@@ -209,34 +294,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::End();
 	}
 
-/*	help for openning another window:
-
-	bool show_another_window;
-	ImGui::Checkbox("open new window", &show_another_window);
-	if (show_another window)
-	{
-		{
-		all
-		the
-		work
-		should
-		be
-		here
-		}
 
 
 
-		if (ImGui::Button("Close Me"))
-		{
-			showCameraSittings = false;
-		}
-		ImGui::End();
-	}
-*/
-
-
-
-	// 4. Demonstrate creating a fullscreen menu bar and populating it.
 	{
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoFocusOnAppearing;
 		if (ImGui::BeginMainMenuBar())
