@@ -7,6 +7,7 @@
 #include <memory>
 #include "MeshModel.h"
 #include "Camera.h"
+#include "Light.h"
 
 
 
@@ -20,13 +21,13 @@ private:
 	MeshModel cameraModel;
 	std::vector<std::shared_ptr<MeshModel>> models;
 	std::vector<Camera> cameras;
+	std::vector<Light> lightSources;
 
 	int activeCameraIndex;
 	int activeModelIndex;
+	int activeLightIndex;
 
 	float worldScale = 1.0f;
-
-
 
 public:
 	Scene();
@@ -42,6 +43,12 @@ public:
 
 	void SetActiveModelIndex(int index);
 	const int GetActiveModelIndex() const;
+
+	void SetActiveLightIndex(int index);
+	const int GetActiveLightIndex() const;
+
+	Light& getActiveLight();
+	Light getLightI(int i);
 
 	const std::shared_ptr<MeshModel>& getActiveModel() const;
 
