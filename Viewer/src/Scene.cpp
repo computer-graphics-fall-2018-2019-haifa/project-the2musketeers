@@ -6,7 +6,8 @@
 Scene::Scene() :
 	activeCameraIndex(0),
 	activeModelIndex(0),
-	activeLightIndex(0),
+	activeLightIndex(0), 
+	ambientIntenisity(glm::vec4(1,1,1,1)),
 	cameraModel()
 {
 	//std::string path("C:\\Users\\user\\Documents\\GitHub\\project-the2musketeers\\data\\Camera.obj");
@@ -26,9 +27,27 @@ void Scene::AddModel(const std::shared_ptr<MeshModel>& model)
 //	SetActiveModelIndex(models.size() - 1);
 }
 
+void Scene::AddLight(Light& light)
+{
+	lightSources.push_back(light);
+}
+const int Scene::getLightCount() const
+{
+	return lightSources.size();
+}
 const int Scene::GetModelCount() const
 {
 	return models.size();
+}
+void Scene::delteActiveLight()
+{
+	int size = lightSources.size();
+	if (size == 0)
+		return;
+	lightSources.erase(lightSources.begin() + activeLightIndex);
+	activeLightIndex--;
+	if (activeLightIndex < 0)
+		activeLightIndex = 0;
 }
 
 void Scene::AddCamera(const Camera& camera)
@@ -96,6 +115,16 @@ Light Scene::getLightI(int i)
 {
 	if (i >= 0 && i < lightSources.size())
 	return lightSources[i];
+}
+
+glm::vec4 Scene::getAmbientIntensity()
+{
+	return ambientIntenisity;
+}
+
+void Scene::setAmbientIntensity(const glm::vec4 ac)
+{
+	ambientIntenisity = ac;
 }
 
 const std::shared_ptr<MeshModel>& Scene::getActiveModel() const

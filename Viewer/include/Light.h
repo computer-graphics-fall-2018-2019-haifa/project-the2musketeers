@@ -5,8 +5,6 @@
 #include <memory>
 #include <imgui/imgui.h>
 
-enum LightType { Parallel,Point };
-enum LightState { OFF, ON };
 
 class Light
 {
@@ -14,12 +12,11 @@ private:
 	glm::vec3 position;
 	glm::vec4 intensity;
 	glm::vec3 direction;
-	LightType type;
-	LightState state;
-
+	bool isPoint;
+	bool isON;
 public:
 	Light();
-	Light(glm::vec3 vector3, glm::vec4 i, LightType type);
+	Light(glm::vec3 vector3, glm::vec4 i, bool pointOrParallel);
 
 	glm::vec3 getPosition();
 	void setPosition(glm::vec3 pos);
@@ -30,9 +27,12 @@ public:
 	glm::vec3 getDirection();
 	void setDirection(glm::vec3 dir);
 
+	bool isPointLight();
+
 	bool isLightOn();
 	void changeLightState();
 
 	~Light();
+
 };
 

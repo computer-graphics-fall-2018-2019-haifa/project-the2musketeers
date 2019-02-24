@@ -7,13 +7,13 @@ Light::Light()
 	position = glm::vec3(0,0,0);
 	intensity = glm::vec4(0,0,0,0);
 	direction = glm::vec3(0,0,0);
-	type = Point;
-	state = ON;
+	isPoint = 1;
+	isON = 1;
 }
 
-Light::Light(glm::vec3 vector3, glm::vec4 i, LightType type)
+Light::Light(glm::vec3 vector3, glm::vec4 i, bool pointOrParallel)
 {
-	if (type == Point)
+	if (pointOrParallel == true)
 	{
 		position = vector3;
 	}
@@ -23,8 +23,8 @@ Light::Light(glm::vec3 vector3, glm::vec4 i, LightType type)
 	}
 
 	intensity = i;
-	type = Point;
-	state = ON;
+	isPoint = pointOrParallel;
+	isON = true;
 }
 Light::~Light()
 {
@@ -58,16 +58,19 @@ void Light::setDirection(glm::vec3 dir)
 	direction = dir;
 }
 
+bool Light::isPointLight()
+{
+	return isPoint;
+}
+
 bool Light::isLightOn()
 {
-	if (state == ON)
-		return 1;
-	return 0;
+	return isON;
 }
 void Light::changeLightState()
 {
-	if (state == ON)
-		state = OFF;
+	if (isON)
+		isON = false;
 	else
-		state = ON;
+		isON = true;
 }

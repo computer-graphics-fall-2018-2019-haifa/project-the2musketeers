@@ -8,13 +8,14 @@
 
 MeshModel::MeshModel() {};
 
-MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName) :
+MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& verticesNormals, const std::string& modelName) :
 	modelName(modelName),
 	worldTransform(glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)),
 	objectTransform(glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)),
 	faces(faces),
 	vertices(vertices),
 	normals(normals),
+	verticesNormals(verticesNormals),
 	color(v4(0,0,0,1.00f))
 {
 
@@ -23,6 +24,39 @@ MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3
 MeshModel::~MeshModel()
 {
 
+}
+
+const float MeshModel::getAbmientConstanst() const
+{
+	return ambientK;
+}
+
+const float MeshModel::getDiffuseConstanst() const
+{
+	return diffuseK;
+}
+
+const float MeshModel::getSpecularConstanst() const
+{
+	return specularK;
+}
+
+void MeshModel::setAmbientConstant(const float k)
+{
+	if(k >= 0.00f && k <= 1.00f)
+		ambientK = k;
+}
+
+void MeshModel::setDiffuseConstanst(const float k)
+{
+	if (k >= 0.00f && k <= 1.00f)
+		diffuseK = k;
+}
+
+void MeshModel::setSpecularConstanst(const float k)
+{
+	if (k >= 0.00f && k <= 1.00f)
+		specularK = k;
 }
 
 void MeshModel::SetWorldTransformation(const glm::mat4x4& worldTransform)
@@ -80,6 +114,11 @@ const glm::vec3& MeshModel::getNormalI(int index)const
 {
 	if (index >= 0 && index < normals.size())
 		return normals[index];
+}
+const glm::vec3 & MeshModel::getVertexNormalI(int index) const
+{
+	if (index >= 0 && index < verticesNormals.size())
+		return verticesNormals[index];
 }
 const Face& MeshModel::getFaceI(int index) const
 {

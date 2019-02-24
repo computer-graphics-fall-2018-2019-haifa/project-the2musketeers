@@ -23,6 +23,8 @@ private:
 	std::vector<Camera> cameras;
 	std::vector<Light> lightSources;
 
+	glm::vec4 ambientIntenisity;
+
 	int activeCameraIndex;
 	int activeModelIndex;
 	int activeLightIndex;
@@ -38,6 +40,10 @@ public:
 	void AddCamera(const Camera& camera);
 	const int GetCameraCount() const;
 
+	void AddLight(Light& light);
+	void delteActiveLight();
+	const int getLightCount() const;
+
 	void SetActiveCameraIndex(int index);
 	const int GetActiveCameraIndex() const;
 
@@ -50,6 +56,8 @@ public:
 	Light& getActiveLight();
 	Light getLightI(int i);
 
+	glm::vec4 getAmbientIntensity();
+	void setAmbientIntensity(const glm::vec4 ac);
 	const std::shared_ptr<MeshModel>& getActiveModel() const;
 
 	const std::shared_ptr<MeshModel>& getModeli(int index) const;

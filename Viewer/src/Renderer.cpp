@@ -613,32 +613,41 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		v3 pp1 = Utils::back_from_hom(hp1);
 		v3 pp2 = Utils::back_from_hom(hp2);
 		v3 pp3 = Utils::back_from_hom(hp3);
+		/*
+				glm::vec3 fc = (pp1 + pp2 + pp3) / 3.000f;
 
-		glm::vec3 fc = (pp1 + pp2 + pp3) / 3.000f;
+				glm::vec3 fn = (
+					model->getNormalI(n1Index - 1) +
+					model->getNormalI(n2Index - 1) +
+					model->getNormalI(n3Index - 1)) / 3.0f;
 
-		glm::vec3 fn = (
-			model->getNormalI(n1Index - 1) + 
-			model->getNormalI(n2Index - 1) + 
-			model->getNormalI(n3Index - 1)) / 3.0f;
-		
-		//fc = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fc));
-		fn = fn + ((p1 + p2 + p3) / 3.00f);
+				//fc = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fc));
+				fn = fn + ((p1 + p2 + p3) / 3.00f);
+				fn = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fn));
+		//		fn = fc + fn;
+
+		//		std::cout << "Face" << i << ": " << pp1.z << "||" << pp2.x << "||" << pp3.x << std::endl;
+		//		drawLine(fn, fc, v3(0.95f, 0.00f, 0.40f));
+		*/
+		glm::vec3 fc = face.getFaceCenter();
+		glm::vec3 fn = face.getFaceNormal();
+
+		fn = fn + fc;
+
+		fc = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fc));
 		fn = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fn));
-//		fn = fc + fn;
-
-//		std::cout << "Face" << i << ": " << pp1.z << "||" << pp2.x << "||" << pp3.x << std::endl;
-//		drawLine(fn, fc, v3(0.95f, 0.00f, 0.40f));
-
 		if (fn.z <= fc.z)
 			continue;
-		
+
+
+
 		glm::vec3 lightPosition = v3(500.0f, 400.0f, 15000.0f);
 		glm::vec3 lightDirection = Utils::normalize(-(lightPosition - fc));
 
-		fn = Utils::normalize( fc-fn);
+		fn = Utils::normalize(fc - fn);
 		float tmp = Utils::dot_product(fn, lightDirection);
 		if (tmp < 0.00f) tmp = 0.00f;
-		
+
 		glm::vec3 reflectDirection = glm::reflect(-lightDirection, fn);
 		glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
 
@@ -660,8 +669,8 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		refTheta *= refTheta;
 		refTheta *= refTheta; //refTheta^4
 
-		glm::vec3 I = 
-			kAmbient * c + 
+		glm::vec3 I =
+			kAmbient * c +
 			lightIntensity * (
 				kDiffuse * tmp
 				+ kSpecular * refTheta
@@ -669,13 +678,19 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 			;
 
 		c = I;
-/*
-		v3 mColor = c;
-		std::cout << mColor.x << " " << mColor.y << " " << mColor.z << std::endl;
-*/
 
-		Renderer::DrawTriangleOnScreen(pp1,pp2,pp3, c);
+
+		Renderer::DrawTriangleOnScreen(pp1, pp2, pp3, c);
 	}
+		v3 c = v3(0.85, 0.85, 0.85);
+		for (int i = 0; i < 5; i++) {
+			v3 p = model->getVertixI(i);
+			v3 n = model->getVertexNormalI(i);
+			n += p;
+			n = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(n));
+			p = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p));
+			drawLine(n, p, c);
+		}
 }
 /*
 void Renderer::drawFaces(const Scene& scene, m4 matrix)

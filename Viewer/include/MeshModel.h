@@ -15,6 +15,7 @@ private:
 	std::vector<Face> faces;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
+	std::vector<glm::vec3> verticesNormals;
 	glm::mat4x4 worldTransform;
 	glm::mat4x4 objectTransform;
 	glm::vec4 color;
@@ -22,6 +23,9 @@ private:
 	glm::vec4 faceNormalsColor;
 	std::string modelName;
 	
+	float ambientK = 1.00f;
+	float diffuseK = 0.00f;
+	float specularK = 0.00f;
 
 	bool DrawVertNormals = 0;
 	bool DrawFaceNormals = 0;
@@ -38,8 +42,16 @@ private:
 
 public:
 	MeshModel();
-	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
+	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals,const std::vector<glm::vec3>& verticesNormals, const std::string& modelName = "");
 	virtual ~MeshModel();
+
+	const float getAbmientConstanst() const;
+	const float getDiffuseConstanst() const;
+	const float getSpecularConstanst() const;
+
+	void setAmbientConstant(const float k);
+	void setDiffuseConstanst(const float k);
+	void setSpecularConstanst(const float k);
 
 	void SetWorldTransformation(const glm::mat4x4& worldTransform);
 	const glm::mat4x4& GetWorldTransformation() const;
@@ -71,8 +83,10 @@ public:
 	const std::vector<glm::vec3>& getVertices() const;
 	const std::vector<glm::vec3>& getNormals() const;
 
+
 	const glm::vec3& getVertixI(int index)const;
 	const glm::vec3& getNormalI(int index)const;
+	const glm::vec3& getVertexNormalI(int index) const;
 	const Face& getFaceI(int index) const;
 
 	int getFacesNumber();

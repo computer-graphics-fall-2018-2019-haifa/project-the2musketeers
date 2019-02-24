@@ -13,6 +13,7 @@
 #include <nfd.h>
 #include <random>
 #include <iostream>
+#include "Light.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ bool showColorSittings = false;
 static bool mod_cont = 0;
 static bool AddParLight = 0;
 static bool AddPointLight = 0;
-static float Light[3] = { 0,0,0 };
+//static float Light[3] = { 0,0,0 };
 
 glm::vec4 clearColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
@@ -42,12 +43,46 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::Begin("Settings");
 
-		////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////
 		ImGui::Text("*****************************************************");
-		ImGui::Text("Color and drawing and light sittings");
+		ImGui::Text("Clera Colour: ");
 		ImGui::ColorEdit3("clear color", (float*)&clearColor);
+		ImGui::Text("*****************************************************");
 
+		ImGui::Text("Light Settings: ");
+		glm::vec4 ambColour = scene.getAmbientIntensity();
+		ImGui::ColorEdit3("Ambient Intensity", (float*)&ambColour);
+		scene.setAmbientIntensity(ambColour);
 
+		if (scene.getLightCount() > 0)
+		{
+			Light& activeLight = scene.getActiveLight();
+			v3 actvLightParameter; // = direction or position
+			if (activeLight.isPointLight())
+			{
+				actvLightParameter = activeLight.getPosition();
+				ImGui::InputFloat3("Light Position", (float*)&actvLightParameter, 3);
+				activeLight.setPosition(actvLightParameter);
+			}
+			else
+			{
+				actvLightParameter = activeLight.getDirection();
+				ImGui::InputFloat3("Light Direction", (float*)&actvLightParameter, 3);
+				activeLight.setDirection(actvLightParameter);
+			}
+			v4 LightColor = activeLight.getIntensity(); //  = get active light color
+			ImGui::ColorEdit3("Light Intensity", (float*)&LightColor);
+			activeLight.setIntensity(LightColor);
+
+			//set active light color
+			bool OnOff = activeLight.isLightOn(); // = light is on or off
+			char* onof = "OFF";
+			if (OnOff)
+				onof = "ON";
+			if (ImGui::Button(onof))
+				activeLight.changeLightState();
+		}
+/*
 		//shading:
 		static int shading = 0; // = get shading
 		if (shading==2) {
@@ -70,45 +105,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				}
 			}
 		}
+		*/
 
-
-
-		//lights:
-		if (ImGui::Button("Change Active Light")) {
-			//change active light
-		}
-		bool ParOrPoint=0; //parallel=1 , point=0
-		v3 activeLight; // = direction or position
-		if (ParOrPoint) {
-			// activelight = get light direction
-			ImGui::InputFloat3("Light Direction", (float*)&activeLight, 3);
-			//set light direction
-		}
-		else {
-			// activelight = get light position
-			ImGui::InputFloat3("Light Position", (float*)&activeLight, 3);
-			//set light position
-
-		}
-		v4 LightColor; //  = get active light color
-		ImGui::ColorEdit3("Light intensity", (float*)&LightColor);
-		//set active light color
-		static bool OnOff; // = light is on or off
-		if (OnOff) {
-			if (ImGui::Button("ON")) {
-				OnOff = 0;
-				//set light to OFF
-			}
-		}
-		else {
-			if (ImGui::Button("OFF")) {
-				OnOff = 1;
-				//set light to ON
-			}
-		}
-		if (ImGui::Button("Delete Active Light")) {
-			//delete active light
-		}
+//		if (ImGui::Button("Delete Active Light")) {		}
 		static bool newlight = 0;
 		if (ImGui::Button("Add new Light")) {
 			newlight = 1;
@@ -157,7 +156,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-		ImGui::Text("Model sittings");
+		ImGui::Text("Model Settings");
 
 		if (scene.GetModelCount()) {
 			if (ImGui::Button("Change Active Model")) 
@@ -243,7 +242,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (newlight)
 		{
-			ImGui::Begin("New light");
+			ImGui::Begin("New Light");
 			static v3 position = v3(0, 0, 0);
 			static v3 direction = v3(0, 0, 0);
 			static v4 Lcolor;
@@ -272,7 +271,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::Button("ADD")) 
 			{
 				newlight = 0;
-				// add new light to the scene
+				Light newLight;
+
+				if (poi)
+					newLight = Light(position, Lcolor, true);
+				else
+					newLight = Light(direction, Lcolor, false);
+
+				scene.AddLight(newLight);
 			}
 			ImGui::End();
 		}

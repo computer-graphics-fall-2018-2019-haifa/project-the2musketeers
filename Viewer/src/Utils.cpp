@@ -34,7 +34,7 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 	std::vector<glm::vec3> normals;
 	std::ifstream ifile(filePath.c_str());
 
-	
+
 	std::cout << filePath << std::endl;
 
 	bool isFirstVertex = true;
@@ -106,8 +106,8 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 		}
 	}
 
-	int facesNumer = faces.size();
-	for (int i = 0; i < facesNumer; i++)
+	int facesNumber = faces.size();
+	for (int i = 0; i < facesNumber; i++)
 	{
 		glm::vec3 v1 = vertices[faces[i].GetVertexIndex(0) - 1];
 		glm::vec3 v2 = vertices[faces[i].GetVertexIndex(1) - 1];
@@ -119,7 +119,39 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 		faces[i].setFaceCenter(v1, v2, v3);
 		faces[i].setFaceNormal(vn1, vn2, vn3);
 	}
-	MeshModel model =  MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
+	int vertNumber = vertices.size();
+	std::vector<glm::vec3> verticesNormals;
+	std::vector<int> vert2;
+
+	verticesNormals.resize(vertNumber, v3(0, 0, 0));
+	vert2.resize(vertNumber, 0);
+	int faceSize = faces.size();
+	for (int i = 0; i < faceSize; i++)
+	{
+		const Face& face = faces[i];
+		int v1Index = face.GetVertexIndex(0);
+		int v2Index = face.GetVertexIndex(1);
+		int v3Index = face.GetVertexIndex(2);
+		const v3& p1 = vertices[v1Index - 1];
+		const v3& p2 = vertices[v2Index - 1];
+		const v3& p3 = vertices[v3Index - 1];
+		int n1Index = face.GetNormalIndex(0);
+		int n2Index = face.GetNormalIndex(1);
+		int n3Index = face.GetNormalIndex(2);
+
+		verticesNormals[v1Index - 1] += normals[n1Index - 1];
+		vert2[v1Index - 1]++;
+		verticesNormals[v2Index - 1] += normals[n2Index - 1];
+		vert2[v2Index - 1]++;
+		verticesNormals[v3Index - 1] += normals[n3Index - 1];
+		vert2[v3Index - 1]++;
+	}
+	for (int i = 0; i < vertNumber; i++)
+	{
+		verticesNormals[i] /= vert2[i];
+	}
+
+	MeshModel model =  MeshModel(faces, vertices, normals, verticesNormals, Utils::GetFileName(filePath));
 	float scale = 1.0;
 	float x = mx.x-mn.x , y = mx.y - mn.y, z = mx.z - mn.z;
 	scale = (y > x) ? y : x;
@@ -498,3 +530,4 @@ void Utils::bloom_combine(float* original, float* blured_lights, int n, int m)
 	 delete[] lights;
 	 return;
 }
+
