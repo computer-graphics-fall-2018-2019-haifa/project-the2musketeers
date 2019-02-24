@@ -53,6 +53,8 @@ public:
 	static void bloom_combine(float* original, float* blured_lights, int n, int m);
 	static float* bloom_threshold(float* original, int n, int m);
 
+	static glm::vec3 color_interpolate(int x1, glm::vec3 col1, int x2, glm::vec3 col2, int i);
+
 	// Add here more static utility functions...
 	// For example:
 	//	1. function that gets an angle, and returns a rotation matrix around a certian axis

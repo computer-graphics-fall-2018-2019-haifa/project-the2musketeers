@@ -531,3 +531,9 @@ void Utils::bloom_combine(float* original, float* blured_lights, int n, int m)
 	 return;
 }
 
+
+
+ glm::vec3 color_interpolate(int x1, glm::vec3 col1, int x2, glm::vec3 col2, int i)
+ {
+	 return ((((float)i / (float)(x2 - x1))*(col2 - col1)) + col1);
+ }
