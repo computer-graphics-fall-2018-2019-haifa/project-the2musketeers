@@ -25,6 +25,11 @@ static bool AddParLight = 0;
 static bool AddPointLight = 0;
 //static float Light[3] = { 0,0,0 };
 
+
+static bool localFrame = 1;
+static bool worldFrame = 0;
+
+
 glm::vec4 clearColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
 const glm::vec4& GetClearColor() {return clearColor;}
@@ -172,69 +177,81 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			model->SetColor(mColor);
 
 
-			float scx = 1;
-			float scy = 1;
-			float scz = 1;
-			float scall = 1;
-			ImGui::SliderFloat("Scale by x", &scx, 0.900f, 1.100f);
-			ImGui::SliderFloat("Scale by y", &scy, 0.900f, 1.100f);
-			ImGui::SliderFloat("Scale by z", &scz, 0.900f, 1.100f);
-			ImGui::SliderFloat("Scale by all axis", &scall, 0.900f, 1.100f);
+			ImGui::Checkbox("Local Frame", &localFrame);
+			if (localFrame == 0)
+				worldFrame = 1;
+			else
+				worldFrame = 0;
+			ImGui::Checkbox("World Frame", &worldFrame);
+			if (worldFrame == 1)
+				localFrame = 0;
+			else
+				localFrame = 1;
+			if (localFrame)
+			{
+				float scx = 1;
+				float scy = 1;
+				float scz = 1;
+				float scall = 1;
+				ImGui::SliderFloat("Scale by x", &scx, 0.900f, 1.100f);
+				ImGui::SliderFloat("Scale by y", &scy, 0.900f, 1.100f);
+				ImGui::SliderFloat("Scale by z", &scz, 0.900f, 1.100f);
+				ImGui::SliderFloat("Scale by all axis", &scall, 0.900f, 1.100f);
 
-			model->objectchange(Utils::getScaleMatrix(scx,1.0f,1.0f));
-			model->objectchange(Utils::getScaleMatrix(1.0f, scy, 1.0f));
-			model->objectchange(Utils::getScaleMatrix(1.0f, 1.0f, scz));
-			model->objectchange(Utils::getScaleMatrix(scall, scall, scall));
-			
-
-	
-
-			float x_rotate = 0;
-			float y_rotate = 0;
-			float z_rotate = 0;
-			
-
-			ImGui::Text("Local Rotations");
-			ImGui::SliderAngle("Rotate X", &x_rotate, -10, 10);
-			ImGui::SliderAngle("Rotate Y", &y_rotate, -10, 10);
-			ImGui::SliderAngle("Rotate Z", &z_rotate, -10, 10);
-			glm::mat4x4 xMat,yMat,zMat;
-			xMat = Utils::getRotateMatrixBy_x(x_rotate);
-			yMat = Utils::getRotateMatrixBy_y(y_rotate);
-			zMat = Utils::getRotateMatrixBy_z(z_rotate);
-
-			model->objectchange(xMat);
-			model->objectchange(yMat);
-			model->objectchange(zMat);
+				model->objectchange(Utils::getScaleMatrix(scx, 1.0f, 1.0f));
+				model->objectchange(Utils::getScaleMatrix(1.0f, scy, 1.0f));
+				model->objectchange(Utils::getScaleMatrix(1.0f, 1.0f, scz));
+				model->objectchange(Utils::getScaleMatrix(scall, scall, scall));
 
 
 
-			float x_rotate2 = 0;
-			float y_rotate2 = 0;
-			float z_rotate2 = 0;
 
-			ImGui::Text("World Rotations");
-			ImGui::SliderAngle("Rotate X2", &x_rotate2, -10, 10);
-			ImGui::SliderAngle("Rotate Y2", &y_rotate2, -10, 10);
-			ImGui::SliderAngle("Rotate Z2", &z_rotate2, -10, 10);
-			model->worldchange(Utils::getRotateMatrixBy_x(x_rotate2));
-			model->worldchange(Utils::getRotateMatrixBy_y(y_rotate2));
-			model->worldchange(Utils::getRotateMatrixBy_z(z_rotate2));
-
-			
+				float x_rotate = 0;
+				float y_rotate = 0;
+				float z_rotate = 0;
 
 
+				ImGui::Text("Local Rotations");
+				ImGui::SliderAngle("Rotate X", &x_rotate, -10, 10);
+				ImGui::SliderAngle("Rotate Y", &y_rotate, -10, 10);
+				ImGui::SliderAngle("Rotate Z", &z_rotate, -10, 10);
+				glm::mat4x4 xMat, yMat, zMat;
+				xMat = Utils::getRotateMatrixBy_x(x_rotate);
+				yMat = Utils::getRotateMatrixBy_y(y_rotate);
+				zMat = Utils::getRotateMatrixBy_z(z_rotate);
 
-			float tx = 0;
-			float ty = 0;
-			float tz = 0;
-			ImGui::Text("Translations");
-			ImGui::SliderFloat("Translate by x", &tx, -2.000f, 2.000f);
-			ImGui::SliderFloat("Translate by y", &ty, -2.000f, 2.000f);
-			ImGui::SliderFloat("Translate by z", &tz, -2.000f, 2.000f);
+				model->objectchange(xMat);
+				model->objectchange(yMat);
+				model->objectchange(zMat);
 
-			model->worldchange(Utils::getTranslateMatrix(glm::vec3(tx,ty,tz)));
+			}
+			if (worldFrame)
+			{
+				float x_rotate2 = 0;
+				float y_rotate2 = 0;
+				float z_rotate2 = 0;
 
+				ImGui::Text("World Rotations");
+				ImGui::SliderAngle("Rotate X2", &x_rotate2, -10, 10);
+				ImGui::SliderAngle("Rotate Y2", &y_rotate2, -10, 10);
+				ImGui::SliderAngle("Rotate Z2", &z_rotate2, -10, 10);
+				model->worldchange(Utils::getRotateMatrixBy_x(x_rotate2));
+				model->worldchange(Utils::getRotateMatrixBy_y(y_rotate2));
+				model->worldchange(Utils::getRotateMatrixBy_z(z_rotate2));
+
+
+
+				float tx = 0;
+				float ty = 0;
+				float tz = 0;
+				ImGui::Text("Translations");
+				ImGui::SliderFloat("Translate by x", &tx, -2.000f, 2.000f);
+				ImGui::SliderFloat("Translate by y", &ty, -2.000f, 2.000f);
+				ImGui::SliderFloat("Translate by z", &tz, -2.000f, 2.000f);
+
+				model->worldchange(Utils::getTranslateMatrix(glm::vec3(tx, ty, tz)));
+
+			}
 
 		}
 
