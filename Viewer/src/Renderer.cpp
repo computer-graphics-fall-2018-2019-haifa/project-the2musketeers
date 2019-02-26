@@ -85,21 +85,28 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 	this->viewportY = viewportY;
 	this->viewportWidth = viewportWidth;
 	this->viewportHeight = viewportHeight;
+	glm::mat4 scale = Utils::getScaleMatrix(glm::vec3(viewportWidth / 2, viewportHeight / 2, 1));
+	glm::mat4 translate = Utils::getTranslateMatrix(glm::vec3(viewportWidth / 2, viewportHeight / 2, 0));
+	ViewPort = scale * translate;
 	createBuffers(viewportWidth, viewportHeight);
 	createOpenGLBuffer();
 }
 
 void Renderer::Render(Scene& scene)
 {
-//	m4 matrix = getTransformationsMatrix(scene);
-//	Draw_Line_Bresenham(0, 0, 100, 100, v3(1, 0, 0));
 	m4 lookat = scene.getActiveCamera().GetCameraLookAt();
+	lookat = glm::transpose(glm::inverse(lookat));
+	
 	m4 projectionMatrix = scene.getActiveCamera().getProjectionTransformation();
-
-	lookat = glm::inverse(lookat);
 	projectionMatrix = glm::transpose(projectionMatrix);
 
-	lookat = glm::transpose(lookat);
+	ViewPort = glm::transpose(ViewPort);
+	
+	glm::mat4x4 matt = ViewPort * projectionMatrix * lookat;
+
+	draw_ax(matt);
+
+
 	float worldScale = scene.getWorldScale();
 	int N = scene.GetModelCount();
 
@@ -1112,3 +1119,21 @@ m4 Renderer::getTransformationsMatrix(const Scene& scene)
 
 }
 */
+
+
+
+
+
+
+
+void Renderer::draw_ax(glm::mat4x4 m)
+{
+	glm::vec3 x = Utils::back_from_hom(m * Utils::swtitch_to_hom(glm::vec3(1.0f, 0.0f, 0.0f)));
+	glm::vec3 y = Utils::back_from_hom(m * Utils::swtitch_to_hom(glm::vec3(0.0f, 1.0f, 0.0f)));
+	glm::vec3 z = Utils::back_from_hom(m * Utils::swtitch_to_hom(glm::vec3(0.0f, 0.0f, 1.0f)));
+	glm::vec3 zero = Utils::back_from_hom(m * Utils::swtitch_to_hom(glm::vec3(0.0f, 0.0f, 0.0f)));
+	drawLine(zero, x, v3(1.0f, 0, 0));
+	drawLine(zero, y, v3(0, 1.0f, 0));
+	drawLine(zero, z, v3(0, 0, 1.0f));
+	return;
+}

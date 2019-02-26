@@ -47,6 +47,7 @@ int main(int argc, char ** argv)
 
 	// Create the renderer and the scene
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
+
 	Scene scene = Scene();
 
 	Camera camera1 = Camera(v3(0, 0, -500000), v3(0, 0, 0), v3(0, 1, 0));
@@ -217,6 +218,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
 
 	// Resize handling here... (a suggestion)
+	renderer.SetViewport(frameBufferWidth, frameBufferHeight);
 
 	// Clear the frame buffer
 	renderer.ClearColorBuffer(GetClearColor());

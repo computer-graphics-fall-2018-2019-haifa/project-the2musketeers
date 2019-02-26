@@ -22,6 +22,8 @@ private:
 	int viewportX;
 	int viewportY;
 
+	glm::mat4x4 ViewPort;
+
 	void putPixel(int x, int y, const glm::vec3& color);
 	void createBuffers(int viewportWidth, int viewportHeight);
 
@@ -48,8 +50,7 @@ public:
 	glm::vec3 calculateIntensity(Scene& scene, const std::shared_ptr<MeshModel>& model,
 		glm::vec3 p, glm::vec3 n);
 
-
-							
+	
 
 	void drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix);
 	
@@ -62,4 +63,7 @@ public:
 
 	float calc_min(float a, float b, float c, float d);
 	float calc_max(float a, float b, float c, float d);
+
+	void draw_ax(glm::mat4x4 m);
+
 };
