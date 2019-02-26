@@ -55,11 +55,7 @@ public:
 
 	static glm::vec3 color_interpolate(int x1, glm::vec3 col1, int x2, glm::vec3 col2, int i);
 
-	// Add here more static utility functions...
-	// For example:
-	//	1. function that gets an angle, and returns a rotation matrix around a certian axis
-	//	2. function that gets a vector, and returns a translation matrix
-	//	3. anything else that may be useful in global scope
+	static glm::vec3 interpolate(glm::vec3 p1, glm::vec3 I1, glm::vec3 p2, glm::vec3 I2, glm::vec3 p);
 
 private:
 	static std::string GetFileName(const std::string& filePath);

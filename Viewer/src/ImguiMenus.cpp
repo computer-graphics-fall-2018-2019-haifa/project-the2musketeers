@@ -55,6 +55,25 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("*****************************************************");
 
 		ImGui::Text("Light Settings: ");
+
+		char* blurSTR =  "Blur: OFF";
+		if (scene.blurState())
+		{
+			blurSTR = "Blur: ON";
+		}
+		if (ImGui::Button(blurSTR))
+			scene.changeBlurState();
+
+		char* bloomSTR = "Bloom: OFF";
+		if (scene.bloomState())
+		{
+			bloomSTR = "Bloom: ON";
+		}
+		ImGui::SameLine(100);
+		if (ImGui::Button(bloomSTR))
+			scene.changeBloomState();
+
+		
 		glm::vec4 ambColour = scene.getAmbientIntensity();
 		ImGui::ColorEdit3("Ambient Intensity", (float*)&ambColour);
 		scene.setAmbientIntensity(ambColour);
@@ -86,31 +105,32 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				onof = "ON";
 			if (ImGui::Button(onof))
 				activeLight.changeLightState();
+
+			if (ImGui::Button("Next Light"))
+				scene.nextLight();
+
 		}
-/*
+
 		//shading:
-		static int shading = 0; // = get shading
+		int shading = scene.getShadingType(); // = get shading
 		if (shading==2) {
 			if (ImGui::Button("Phong shading")) {
-				shading = 0;
+				scene.setShadingType(0);
 				//set shading to flat
 			}
 		}
-		else {
-			if (shading == 1) {
-				if (ImGui::Button("gouraud shading")) {
-					shading = 2;
-					//set shading to phong
-				}
-			}
-			else {
-				if (ImGui::Button("Flat shading")) {
-					shading = 1;
-					//set shading to gouraud
-				}
+		else if (shading == 1) {
+			if (ImGui::Button("gouraud shading")) {
+				scene.setShadingType(2);
+				//set shading to phong
 			}
 		}
-		*/
+		else {
+			if (ImGui::Button("Flat shading")) {
+				scene.setShadingType(1);
+				//set shading to gouraud
+			}
+		}
 
 //		if (ImGui::Button("Delete Active Light")) {		}
 		static bool newlight = 0;
@@ -123,7 +143,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::Text("*****************************************************");
 
-		//////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////
 		ImGui::Text("Camera Settings");
 
 		if (scene.GetCameraCount()) {
@@ -158,7 +178,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			//c.SetPerspectiveProjection(fov_angle_rad, 1280.0 / 720.0, Near, Far);
 		}
 		ImGui::Text("*****************************************************");
-		///////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////
 
 
 		ImGui::Text("Model Settings");
@@ -167,14 +187,24 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::Button("Change Active Model")) 
 				scene.SetActiveModelIndex((scene.GetActiveModelIndex() + 1) % scene.GetModelCount());
 
-
-
 			const std::shared_ptr<MeshModel>& model = scene.getActiveModel();
 
 			mColor = model->GetColor();
 //			std::cout << mColor.x << " " << mColor.y << " " << mColor.z << " " << mColor.w << std::endl;
 			ImGui::ColorEdit3("MeshModel Color", (float*)&mColor);
 			model->SetColor(mColor);
+
+			static float
+				ambientConstant = model->getAbmientConstanst(),
+				diffuseConstant = model->getDiffuseConstanst(),
+				specularConstant = model->getSpecularConstanst();
+
+			ImGui::SliderFloat("Ambient", &ambientConstant, 0.0f, 1.0f);
+			ImGui::SliderFloat("Diffuse", &diffuseConstant, 0.0f, 1.0f);
+			ImGui::SliderFloat("Specular", &specularConstant, 0.0f, 1.0f);
+			model->setAmbientConstant(ambientConstant);
+			model->setDiffuseConstanst(diffuseConstant);
+			model->setSpecularConstanst(specularConstant);
 
 
 			ImGui::Checkbox("Local Frame", &localFrame);
@@ -240,7 +270,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				model->worldchange(Utils::getRotateMatrixBy_z(z_rotate2));
 
 
-
 				float tx = 0;
 				float ty = 0;
 				float tz = 0;
@@ -252,9 +281,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				model->worldchange(Utils::getTranslateMatrix(glm::vec3(tx, ty, tz)));
 
 			}
-
 		}
-
 
 
 		if (newlight)
@@ -277,14 +304,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			else
 				poi = 1;
 
-			
+
 			ImGui::ColorEdit3("New Light intensity", (float*)&Lcolor);
 			if(poi)
 				ImGui::InputFloat3("New Light Position", (float*)&position, 3);
 			else
 				ImGui::InputFloat3("New Light Direction", (float*)&direction, 3);
 			
-			
+
 			if (ImGui::Button("ADD")) 
 			{
 				newlight = 0;
@@ -301,23 +328,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 
 
-
-
-
-
-
-
-
-
-
-
-
 		ImGui::Text("*****************************************************");
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
-
-
 
 
 	{

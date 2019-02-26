@@ -30,6 +30,9 @@ private:
 	int activeLightIndex;
 
 	float worldScale = 1.0f;
+	int shadingType;
+	bool blur;
+	bool bloomEffect;
 
 public:
 	Scene();
@@ -55,6 +58,15 @@ public:
 
 	Light& getActiveLight();
 	Light getLightI(int i);
+	void nextLight();
+
+	const int getShadingType() const;
+	void setShadingType(int t);
+
+	const bool blurState() const;
+	const bool bloomState() const;
+	void changeBlurState();
+	void changeBloomState();
 
 	glm::vec4 getAmbientIntensity();
 	void setAmbientIntensity(const glm::vec4 ac);

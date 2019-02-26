@@ -6,9 +6,12 @@
 Scene::Scene() :
 	activeCameraIndex(0),
 	activeModelIndex(0),
-	activeLightIndex(0), 
-	ambientIntenisity(glm::vec4(1,1,1,1)),
-	cameraModel()
+	activeLightIndex(0),
+	ambientIntenisity(glm::vec4(1, 1, 1, 1)),
+	cameraModel(),
+	shadingType(0),
+	blur(false),
+	bloomEffect(false)
 {
 	//std::string path("C:\\Users\\user\\Documents\\GitHub\\project-the2musketeers\\data\\Camera.obj");
 	//cameraModel = Utils::LoadMeshModel(path);
@@ -115,6 +118,49 @@ Light Scene::getLightI(int i)
 {
 	if (i >= 0 && i < lightSources.size())
 	return lightSources[i];
+}
+
+void Scene::nextLight()
+{
+	activeLightIndex++;
+	activeLightIndex %= lightSources.size();
+}
+
+const int Scene::getShadingType() const
+{
+	return shadingType;
+}
+
+void Scene::setShadingType(int t)
+{
+	if (t >= 0 && t < 3)
+		shadingType = t;
+}
+
+const bool Scene::blurState() const
+{
+	return blur;
+}
+
+const bool Scene::bloomState() const
+{
+	return bloomEffect;
+}
+
+void Scene::changeBlurState()
+{
+	if (blur)
+		blur = false;
+	else
+		blur = true;
+}
+
+void Scene::changeBloomState()
+{
+	if (bloomEffect)
+		bloomEffect = false;
+	else
+		bloomEffect = true;
 }
 
 glm::vec4 Scene::getAmbientIntensity()

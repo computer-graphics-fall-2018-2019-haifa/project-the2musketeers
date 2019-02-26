@@ -126,7 +126,10 @@ void Renderer::Render(Scene& scene)
 			*/
 //			matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 			drawFaces(scene,model, matrix);
-//			Utils::blur(colorBuffer, viewportWidth, viewportHeight);
+			if(scene.blurState())
+				Utils::blur(colorBuffer, viewportWidth, viewportHeight);
+			if(scene.bloomState())
+				Utils::bloom(colorBuffer, viewportWidth, viewportHeight);
 	}
 
 	/*
@@ -382,8 +385,10 @@ void Renderer::matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, MyMap& lin
 		e += (2 * dx);
 	}return;
 }
+
 void Renderer::drawLine(const v3&a, const v3& b, glm::vec3& Color)
 {
+
 	int x1 = a.x, x2 = b.x,
 		y1 = a.y, y2 = b.y,
 		z1 = a.z, z2 = b.z;
@@ -393,14 +398,25 @@ void Renderer::drawLine(const v3&a, const v3& b, glm::vec3& Color)
 	{
 		putPixel(x.second, x.first, Color);
 	}
-
 }
-void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color)
+
+
+
+
+void Renderer::DrawTriangleOnScreen(Scene& scene, const std::shared_ptr<MeshModel>& model, const v3& a, const v3& b, const v3& c,
+	const v3& fc, v3& normalA, v3& normalB, v3& normalC, v3& fn)
 {
 	int x1 = a.x, x2 = b.x, x3 = c.x,
 		y1 = a.y, y2 = b.y, y3 = c.y,
 		z1 = a.z, z2 = b.z, z3 = c.z;
 
+	glm::vec3 faceColor = calculateIntensity(scene, model, fc, fn);
+
+	glm::vec3 colorA = calculateIntensity(scene, model, a, normalA);
+	glm::vec3 colorB = calculateIntensity(scene, model, b, normalB);
+	glm::vec3 colorC = calculateIntensity(scene, model, c, normalC);
+
+	int shadingType = scene.getShadingType();
 
 	v3 ab = a - b;
 	v3 cb = c - b;
@@ -410,9 +426,9 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 	MyMap map1 = MyMap();
 	MyMap map2 = MyMap();
 	MyMap map3 = MyMap();
-	Draw_Line_Bresenham(x1, y1, x2, y2, map1);
-	Draw_Line_Bresenham(x1, y1, x3, y3, map2);
-	Draw_Line_Bresenham(x2, y2, x3, y3, map3);
+	Draw_Line_Bresenham(x1, y1, x2, y2, map1); //ab
+	Draw_Line_Bresenham(x1, y1, x3, y3, map2); //ac
+	Draw_Line_Bresenham(x2, y2, x3, y3, map3); //bc
 
 	int min_y = a.y, max_y = a.y;
 	if (b.y < min_y)
@@ -446,22 +462,30 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 			max_y = x.first;
 	}
 	*/
-
+	
 	for(int y=min_y;y<=max_y;y++)
 	{
 		MyMap::iterator it = map1.find(y);
 
 		int x1 = 500000;
+		int x1Line = -1;
 		int x2 = -500000;
+		int x2Line = -1;
 		int n = map1.count(y);
 
 		for (int i = 0; i < n; i++)
 		{
 			it = map1.find(y);
 			if (x1 > it->second)
+			{
 				x1 = it->second;
+				x1Line = 1;
+			}
 			if (x2 < it->second)
+			{
 				x2 = it->second;
+				x2Line = 1;
+			}
 			map1.erase(it);
 		}
 		n = map2.count(y);
@@ -469,9 +493,15 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 		{
 			it = map2.find(y);
 			if (x1 > it->second)
+			{
 				x1 = it->second;
+				x1Line = 2;
+			}
 			if (x2 < it->second)
+			{
 				x2 = it->second;
+				x2Line = 2;
+			}
 			map2.erase(it);
 		}
 		n = map3.count(y);
@@ -479,16 +509,57 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 		{
 			it = map3.find(y);
 			if (x1 > it->second)
+			{
 				x1 = it->second;
+				x1Line = 3;
+			}
 			if (x2 < it->second)
+			{
 				x2 = it->second;
+				x2Line = 3;
+			}
 			map3.erase(it);
+		}
+
+
+		glm::vec3 x1Color, x2Color;
+		glm::vec3 x1Normal, x2Normal;
+		if (shadingType == 1)
+		{
+			if (x1Line == 1)
+				x1Color = Utils::interpolate(a, colorA, b, colorB, glm::vec3(x1, y, 0));
+			else if (x1Line == 2)
+				x1Color = Utils::interpolate(a, colorA, c, colorC, glm::vec3(x1, y, 0));
+			else if (x1Line == 3)
+				x1Color = Utils::interpolate(b, colorB, c, colorC, glm::vec3(x1, y, 0));
+
+			if (x2Line == 1)
+				x2Color = Utils::interpolate(a, colorA, b, colorB, glm::vec3(x2, y, 0));
+			else if (x2Line == 2)
+				x2Color = Utils::interpolate(a, colorA, c, colorC, glm::vec3(x2, y, 0));
+			else if (x2Line == 3)
+				x2Color = Utils::interpolate(b, colorB, c, colorC, glm::vec3(x2, y, 0));
+		}
+		else if (shadingType == 2)
+		{
+			if (x1Line == 1)
+				x1Normal = Utils::interpolate(a, normalA, b, normalB, glm::vec3(x1, y, 0));
+			else if (x1Line == 2)
+				x1Normal = Utils::interpolate(a, normalA, c, normalC, glm::vec3(x1, y, 0));
+			else if (x1Line == 3)
+				x1Normal = Utils::interpolate(b, normalB, c, normalC, glm::vec3(x1, y, 0));
+
+			if (x2Line == 1)
+				x2Normal = Utils::interpolate(a, normalA, b, normalB, glm::vec3(x2, y, 0));
+			else if (x2Line == 2)
+				x2Normal = Utils::interpolate(a, normalA, c, normalC, glm::vec3(x2, y, 0));
+			else if (x2Line == 3)
+				x2Normal = Utils::interpolate(b, normalB, c, normalC, glm::vec3(x2, y, 0));
 		}
 
 		for (int x = x1; x <= x2; x++)
 		{
 			int z = -(abxcb.x * x + abxcb.y * y - d) / abxcb.z;
-//				float d = abxcb.x * b.x + abxcb.y * b.y + abxcb.z * b.z;
 			if ((y*viewportWidth + x) >= viewportHeight*viewportWidth)
 				continue;
 			if(((y*viewportWidth + x) < 0))
@@ -496,10 +567,29 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 			if (z > zBuffer[y*viewportWidth + x])
 			{
 				zBuffer[y*viewportWidth + x] = z;
-				putPixel(x, y, color);
+				glm::vec3 xColor;
+				glm::vec3 xNormal;
+				if (shadingType == 0)
+				{
+					xColor = faceColor;
+				}
+				else if (shadingType == 1)
+				{
+					xColor = Utils::interpolate(glm::vec3(x1, y, 0), x1Color, glm::vec3(x2, y, 0), x2Color, glm::vec3(x, y, 0));
+				}
+				else if (shadingType == 2)
+				{
+					xNormal = Utils::interpolate(glm::vec3(x1, y, 0), x1Normal, glm::vec3(x2, y, 0), x2Normal, glm::vec3(x, y, 0));
+					xColor = calculateIntensity(scene, model, glm::vec3(x, y, z), xNormal);
+				}
+//				glm::vec3 xColor = Utils::color_interpolate(x1, x1Color, x2, x2Color, x);
+//				glm::vec3 xColor  = Utils::interpolate(glm::vec3(x1,y,0), x1Color, glm::vec3(x2, y,0), x2Color, glm::vec3(x, y, 0));
+
+				putPixel(x, y, xColor);
 			}
 //			putPixel(x, y, color);
 		}
+
 		
 	}
 
@@ -584,7 +674,7 @@ void Renderer::DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& c
 
 void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix)
 {
-	matrix *= v4(100, 100, 100, 1);
+	matrix *= v4(30, 30, 30, 1);
 
 	matrix = glm::transpose(Utils::getTranslateMatrix(v3(500, 300, 0))) * matrix;
 
@@ -596,6 +686,7 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		int v1Index = face.GetVertexIndex(0);
 		int v2Index = face.GetVertexIndex(1);
 		int v3Index = face.GetVertexIndex(2);
+
 		int n1Index = face.GetNormalIndex(0);
 		int n2Index = face.GetNormalIndex(1);
 		int n3Index = face.GetNormalIndex(2);
@@ -603,44 +694,40 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 		const v3& p1 = model->getVertixI(v1Index - 1);
 		const v3& p2 = model->getVertixI(v2Index - 1);
 		const v3& p3 = model->getVertixI(v3Index - 1);
-		v4 hp1 = Utils::swtitch_to_hom(p1);
-		v4 hp2 = Utils::swtitch_to_hom(p2);
-		v4 hp3 = Utils::swtitch_to_hom(p3);
-		hp1 = matrix * hp1;
-		hp2 = matrix * hp2;
-		hp3 = matrix * hp3;
 
-		v3 pp1 = Utils::back_from_hom(hp1);
-		v3 pp2 = Utils::back_from_hom(hp2);
-		v3 pp3 = Utils::back_from_hom(hp3);
-		/*
-				glm::vec3 fc = (pp1 + pp2 + pp3) / 3.000f;
+//		v3 p = model->getVertixI(i);
+		v3 n1 = model->getVertexNormalI(v1Index - 1);
+		v3 n2 = model->getVertexNormalI(v2Index - 1);
+		v3 n3 = model->getVertexNormalI(v3Index - 1);
 
-				glm::vec3 fn = (
-					model->getNormalI(n1Index - 1) +
-					model->getNormalI(n2Index - 1) +
-					model->getNormalI(n3Index - 1)) / 3.0f;
+		n1 = n1 + p1;
+		n2 = n2 + p2;
+		n3 = n3 + p3;
+		
+		n1 = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(n1));
+		n2 = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(n2));
+		n3 = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(n3));
+//		p = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p));
 
-				//fc = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fc));
-				fn = fn + ((p1 + p2 + p3) / 3.00f);
-				fn = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fn));
-		//		fn = fc + fn;
+		v3 pp1 = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p1));
+		v3 pp2 = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p2));
+		v3 pp3 = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p3));
 
-		//		std::cout << "Face" << i << ": " << pp1.z << "||" << pp2.x << "||" << pp3.x << std::endl;
-		//		drawLine(fn, fc, v3(0.95f, 0.00f, 0.40f));
-		*/
+		
 		glm::vec3 fc = face.getFaceCenter();
 		glm::vec3 fn = face.getFaceNormal();
-
 		fn = fn + fc;
 
 		fc = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fc));
 		fn = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(fn));
-		if (fn.z <= fc.z)
+		if (fn.z < fc.z)
 			continue;
 
+		//drawLine(pp1, n1, glm::vec3(0,0,0));
+		//drawLine(pp2, n2, glm::vec3(0, 0, 0));
+		//drawLine(pp3, n3, glm::vec3(0, 0, 0));
 
-
+		/*
 		glm::vec3 lightPosition = v3(500.0f, 400.0f, 15000.0f);
 		glm::vec3 lightDirection = Utils::normalize(-(lightPosition - fc));
 
@@ -678,10 +765,13 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 			;
 
 		c = I;
+		*/
 
 
-		Renderer::DrawTriangleOnScreen(pp1, pp2, pp3, c);
+		Renderer::DrawTriangleOnScreen(scene, model ,pp1, pp2, pp3,fc,n1,n2,n3,fn);
 	}
+
+	/*
 		v3 c = v3(0.85, 0.85, 0.85);
 		for (int i = 0; i < 5; i++) {
 			v3 p = model->getVertixI(i);
@@ -691,6 +781,65 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 			p = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p));
 			drawLine(n, p, c);
 		}
+	*/
+}
+glm::vec3 Renderer::calculateIntensity(	Scene& scene, const std::shared_ptr<MeshModel>& model,
+								glm::vec3 p, glm::vec3 n)
+{
+	float
+		ambientConstant = model->getAbmientConstanst(),
+		diffuseConstant = model->getDiffuseConstanst(),
+		specularConstant = model->getSpecularConstanst();
+
+		glm::vec4 colour = model->GetColor();
+
+		glm::vec3 c = Utils::back_from_hom(colour);
+
+	glm::vec3 I =
+		ambientConstant * c;
+	int lightsNumber = scene.getLightCount();
+
+	for (int i = 0; i < lightsNumber; i++)
+	{
+		Light light = scene.getLightI(i);
+		if (light.isLightOn() == false)
+			continue;
+
+		if (light.isPointLight())
+		{
+			glm::vec3 lightPosition = light.getPosition();
+			glm::vec3 lightDirection = Utils::normalize(-(lightPosition - p));
+			glm::vec3 nnn  = Utils::normalize(p - n);
+			float tmp = Utils::dot_product(nnn, lightDirection);
+			if (tmp < 0.00f) tmp = 0.00f;
+
+			glm::vec3 reflectDirection = glm::reflect(-lightDirection, nnn);
+			glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
+
+			glm::vec3 v = glm::normalize(centerOfProjection - p);
+
+			float refTheta = glm::dot(reflectDirection, v);
+			if (refTheta < 0.00f)  refTheta = 0.00f;
+
+			refTheta *= refTheta;
+			refTheta *= refTheta; //refTheta^4
+
+			glm::vec4 lighIn4 = light.getIntensity();
+			glm::vec3 lighIn3 = glm::vec3(lighIn4.x, lighIn4.y, lighIn4.z);
+
+			I  = I + (lighIn3 * (
+				diffuseConstant * tmp
+				+ specularConstant * refTheta
+				));
+
+		}
+		else
+		{
+
+		}
+
+	}
+	return I;
 }
 /*
 void Renderer::drawFaces(const Scene& scene, m4 matrix)
@@ -886,7 +1035,7 @@ float Renderer::calc_max(float a, float b, float c, float d)
 }
 
 
-
+/*
 void Renderer::drawCamera(Scene& scene, Camera camera, glm::mat4 matrix)
 {
 	MeshModel model = scene.getCameraModel();
@@ -919,6 +1068,10 @@ void Renderer::drawCamera(Scene& scene, Camera camera, glm::mat4 matrix)
 			, Utils::back_from_hom(hp3), c);
 	}
 }
+*/
+
+
+
 /*
 const v3 Renderer::applyTransformations(const v3& point, const Scene& scene)
 {

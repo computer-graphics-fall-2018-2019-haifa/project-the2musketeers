@@ -66,6 +66,8 @@ int main(int argc, char ** argv)
 	scene.getActiveCamera().SetOrthographicProjection(1, 1.0, 0, 1);
 //	scene.getActiveCamera().SetPerspectiveProjection(20,1.2,5,1);
 
+	Light light = Light(glm::vec3(500, 400, 15000), glm::vec4(1, 1, 1, 1), 1);
+	scene.AddLight(light);
 
 	// Setup ImGui
 	ImGuiIO& io = SetupDearImgui(window);

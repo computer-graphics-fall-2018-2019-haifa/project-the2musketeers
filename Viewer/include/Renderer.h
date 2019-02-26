@@ -42,7 +42,15 @@ public:
 	void Draw_Line_Bresenham(int x1, int y1, int x2, int y2, MyMap& lineMap,bool flip=0);
 	void matsav_zevel_Bresenham(int x1, int y1, int x2, int y2, MyMap& lineMap); //when slope less than -1
 	// Add more methods/functionality as needed...
-	void DrawTriangleOnScreen(const v3& a, const v3& b, const v3& c, v3& color);
+	void DrawTriangleOnScreen(Scene& scene, const std::shared_ptr<MeshModel>& model, const v3& a, const v3& b, const v3& c,
+		const v3& faceCenter, v3& normalA, v3& normalB, v3& normalC, v3& faceNormal);
+
+	glm::vec3 calculateIntensity(Scene& scene, const std::shared_ptr<MeshModel>& model,
+		glm::vec3 p, glm::vec3 n);
+
+
+							
+
 	void drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, m4 matrix);
 	
 	const v3 applyTransformations(const v3& point,const Scene& scene);

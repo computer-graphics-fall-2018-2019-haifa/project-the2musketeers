@@ -148,7 +148,7 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 	}
 	for (int i = 0; i < vertNumber; i++)
 	{
-		verticesNormals[i] /= vert2[i];
+		verticesNormals[i] /= (float)vert2[i];
 	}
 
 	MeshModel model =  MeshModel(faces, vertices, normals, verticesNormals, Utils::GetFileName(filePath));
@@ -480,9 +480,11 @@ void Utils::bloom_combine(float* original, float* blured_lights, int n, int m)
 				original[INDEX(n, i, j, 1)] += blured_lights[INDEX(n, i, j, 1)];
 				original[INDEX(n, i, j, 2)] += blured_lights[INDEX(n, i, j, 2)];
 
+				/*
 				original[INDEX(n, i, j, 0)] *= 0.50f;
 				original[INDEX(n, i, j, 1)] *= 0.50f;
 				original[INDEX(n, i, j, 2)] *= 0.50f;
+				*/
 			}
 		}
 	}
@@ -533,7 +535,32 @@ void Utils::bloom_combine(float* original, float* blured_lights, int n, int m)
 
 
 
- glm::vec3 color_interpolate(int x1, glm::vec3 col1, int x2, glm::vec3 col2, int i)
+ glm::vec3 Utils::color_interpolate(int x1, glm::vec3 col1, int x2, glm::vec3 col2, int i)
  {
 	 return ((((float)i / (float)(x2 - x1))*(col2 - col1)) + col1);
+ }
+
+ glm::vec3 Utils::interpolate(glm::vec3 p1,glm::vec3 I1, glm::vec3 p2, glm::vec3 I2, glm::vec3 p)
+ {
+	 if (p1.x == p2.x && p1.y == p2.y)
+	 {
+		 return I1;
+	 }
+
+	 glm::vec3 I;
+	 float p1TOp2 = sqrtf(powf((p1.x - p2.x),2) + powf((p1.y - p2.y),2));
+	 float p1TOp = sqrtf(powf((p1.x - p.x), 2) + powf((p1.y - p.y), 2));
+
+	 float alpha = p1TOp / p1TOp2;
+	 I = (alpha * I2) + ((1 - alpha) * I1);
+	 I = ((p1TOp / p1TOp2)*(I2 - I1) + I1);
+
+	 if(p1.x == p2.x && p1.y == p2.y)
+	 {
+		 std::cout << "p1TOp2: " << p1TOp2 << std::endl;
+		 std::cout << I.x << "" << I.y << "" << I.z << "" << std::endl;
+		 std::cout << "***" << std::endl;
+	 }
+	 return I;
+//	 return ((p1TOp / p1TOp2)*(I2 - I1) + I1);
  }
