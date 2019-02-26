@@ -23,7 +23,6 @@ private:
 	std::vector<Camera> cameras;
 	std::vector<Light> lightSources;
 
-	glm::vec4 ambientIntenisity;
 
 	int activeCameraIndex;
 	int activeModelIndex;
@@ -68,8 +67,7 @@ public:
 	void changeBlurState();
 	void changeBloomState();
 
-	glm::vec4 getAmbientIntensity();
-	void setAmbientIntensity(const glm::vec4 ac);
+
 	const std::shared_ptr<MeshModel>& getActiveModel() const;
 
 	const std::shared_ptr<MeshModel>& getModeli(int index) const;

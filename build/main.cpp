@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	Camera camera1 = Camera(v3(0, 0, 50), v3(0, 0, 0), v3(0, 1, 0));
+	Camera camera1 = Camera(v3(0, 0, -500000), v3(0, 0, 0), v3(0, 1, 0));
 	scene.AddCamera(camera1);
 
 	Camera camera2 = Camera(v3(10, 5, 0), v3(0, 0, 0), v3(0, 1, 0));

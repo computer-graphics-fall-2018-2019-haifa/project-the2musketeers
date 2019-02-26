@@ -7,7 +7,7 @@ Scene::Scene() :
 	activeCameraIndex(0),
 	activeModelIndex(0),
 	activeLightIndex(0),
-	ambientIntenisity(glm::vec4(1, 1, 1, 1)),
+
 	cameraModel(),
 	shadingType(0),
 	blur(false),
@@ -163,15 +163,6 @@ void Scene::changeBloomState()
 		bloomEffect = true;
 }
 
-glm::vec4 Scene::getAmbientIntensity()
-{
-	return ambientIntenisity;
-}
-
-void Scene::setAmbientIntensity(const glm::vec4 ac)
-{
-	ambientIntenisity = ac;
-}
 
 const std::shared_ptr<MeshModel>& Scene::getActiveModel() const
 {

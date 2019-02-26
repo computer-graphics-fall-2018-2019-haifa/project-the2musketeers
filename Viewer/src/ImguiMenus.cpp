@@ -73,11 +73,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button(bloomSTR))
 			scene.changeBloomState();
 
-		
-		glm::vec4 ambColour = scene.getAmbientIntensity();
-		ImGui::ColorEdit3("Ambient Intensity", (float*)&ambColour);
-		scene.setAmbientIntensity(ambColour);
 
+		int lightPush = 90;
 		if (scene.getLightCount() > 0)
 		{
 			Light& activeLight = scene.getActiveLight();
@@ -100,44 +97,50 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 			//set active light color
 			bool OnOff = activeLight.isLightOn(); // = light is on or off
-			char* onof = "OFF";
+			char* onof = "Light: OFF";
 			if (OnOff)
-				onof = "ON";
+				onof = "Light: ON";
 			if (ImGui::Button(onof))
 				activeLight.changeLightState();
-
+			ImGui::SameLine(lightPush);
+			lightPush += 85;
 			if (ImGui::Button("Next Light"))
 				scene.nextLight();
-
+			ImGui::SameLine(lightPush);
+			lightPush += 125;
 		}
 
 		//shading:
+		char* shadingString = "Shading: Gouraud";
 		int shading = scene.getShadingType(); // = get shading
 		if (shading==2) {
-			if (ImGui::Button("Phong shading")) {
+			shadingString = "Shading: Phong";
+			if (ImGui::Button(shadingString)) {
 				scene.setShadingType(0);
 				//set shading to flat
 			}
 		}
 		else if (shading == 1) {
-			if (ImGui::Button("gouraud shading")) {
+			if (ImGui::Button(shadingString)) {
 				scene.setShadingType(2);
 				//set shading to phong
 			}
 		}
 		else {
-			if (ImGui::Button("Flat shading")) {
+			shadingString = "Shading: Flat";
+			if (ImGui::Button(shadingString)) {
 				scene.setShadingType(1);
 				//set shading to gouraud
 			}
 		}
+		ImGui::SameLine(lightPush);
 
 //		if (ImGui::Button("Delete Active Light")) {		}
 		static bool newlight = 0;
 		if (ImGui::Button("Add new Light")) {
 			newlight = 1;
 		}
-		
+
 
 
 

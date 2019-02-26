@@ -770,18 +770,6 @@ void Renderer::drawFaces(Scene& scene, const std::shared_ptr<MeshModel>& model, 
 
 		Renderer::DrawTriangleOnScreen(scene, model ,pp1, pp2, pp3,fc,n1,n2,n3,fn);
 	}
-
-	/*
-		v3 c = v3(0.85, 0.85, 0.85);
-		for (int i = 0; i < 5; i++) {
-			v3 p = model->getVertixI(i);
-			v3 n = model->getVertexNormalI(i);
-			n += p;
-			n = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(n));
-			p = Utils::back_from_hom(matrix*Utils::swtitch_to_hom(p));
-			drawLine(n, p, c);
-		}
-	*/
 }
 glm::vec3 Renderer::calculateIntensity(	Scene& scene, const std::shared_ptr<MeshModel>& model,
 								glm::vec3 p, glm::vec3 n)
@@ -805,38 +793,39 @@ glm::vec3 Renderer::calculateIntensity(	Scene& scene, const std::shared_ptr<Mesh
 		if (light.isLightOn() == false)
 			continue;
 
+		glm::vec3 lightDirection;
+
 		if (light.isPointLight())
 		{
 			glm::vec3 lightPosition = light.getPosition();
-			glm::vec3 lightDirection = Utils::normalize(-(lightPosition - p));
-			glm::vec3 nnn  = Utils::normalize(p - n);
-			float tmp = Utils::dot_product(nnn, lightDirection);
-			if (tmp < 0.00f) tmp = 0.00f;
-
-			glm::vec3 reflectDirection = glm::reflect(-lightDirection, nnn);
-			glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
-
-			glm::vec3 v = glm::normalize(centerOfProjection - p);
-
-			float refTheta = glm::dot(reflectDirection, v);
-			if (refTheta < 0.00f)  refTheta = 0.00f;
-
-			refTheta *= refTheta;
-			refTheta *= refTheta; //refTheta^4
-
-			glm::vec4 lighIn4 = light.getIntensity();
-			glm::vec3 lighIn3 = glm::vec3(lighIn4.x, lighIn4.y, lighIn4.z);
-
-			I  = I + (lighIn3 * (
-				diffuseConstant * tmp
-				+ specularConstant * refTheta
-				));
-
+			lightDirection = Utils::normalize(-(lightPosition - p));
 		}
 		else
 		{
-
+			lightDirection = glm::normalize(-light.getDirection());
 		}
+		glm::vec3 nnn  = Utils::normalize(p - n);
+		float tmp = glm::dot(nnn, lightDirection);
+		if (tmp < 0.00f) tmp = 0.000f;
+
+		glm::vec3 reflectDirection = glm::reflect(-lightDirection, nnn);
+		glm::vec3 centerOfProjection = scene.getActiveCamera().getCameraPosition();
+
+		glm::vec3 v = glm::normalize(centerOfProjection - p);
+
+		float refTheta = glm::dot(reflectDirection, v);
+		if (refTheta < 0.00f)  refTheta = 0.000f;
+
+		refTheta *= refTheta;
+		refTheta *= refTheta; //refTheta^4
+
+		glm::vec4 lighIn4 = light.getIntensity();
+		glm::vec3 lighIn3 = glm::vec3(lighIn4.x, lighIn4.y, lighIn4.z);
+
+		I  = I + (lighIn3 * (
+			diffuseConstant * tmp
+			+ specularConstant * refTheta
+			));
 
 	}
 	return I;
